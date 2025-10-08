@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { BookingProvider } from '@/contexts/BookingContext';
 import { BookingStepper } from '@/components/booking/BookingStepper';
 import { BookingSummary } from '@/components/booking/BookingSummary';
@@ -11,7 +12,14 @@ import { Step5ReviewPay } from '@/components/booking/steps/Step5ReviewPay';
 const STEPS = ['Service', 'Property', 'Schedule', 'Cleaner', 'Review'];
 
 const BookingContent = () => {
+  const { serviceName } = useParams();
   const [currentStep, setCurrentStep] = useState(1);
+
+  useEffect(() => {
+    if (serviceName) {
+      setCurrentStep(2);
+    }
+  }, [serviceName]);
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 5));
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));

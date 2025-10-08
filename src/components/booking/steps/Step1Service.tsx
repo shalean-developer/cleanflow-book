@@ -5,6 +5,7 @@ import { useBooking } from '@/contexts/BookingContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 interface Step1ServiceProps {
   onNext: () => void;
 }
@@ -15,6 +16,7 @@ export const Step1Service = ({
     bookingData,
     updateBooking
   } = useBooking();
+  const navigate = useNavigate();
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -32,6 +34,8 @@ export const Step1Service = ({
       serviceId: service.id,
       serviceName: service.name
     });
+    const serviceSlug = service.name.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/booking/service/${serviceSlug}`);
   };
   const canProceed = bookingData.serviceId;
   if (loading) {
