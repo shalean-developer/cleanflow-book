@@ -34,7 +34,10 @@ export const Step1Service = ({
       serviceId: service.id,
       serviceName: service.name
     });
-    const serviceSlug = service.name.toLowerCase().replace(/\s+/g, '-');
+    const serviceSlug = service.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
     navigate(`/booking/service/${serviceSlug}`);
   };
   const canProceed = bookingData.serviceId;
