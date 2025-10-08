@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useBooking } from '@/contexts/BookingContext';
@@ -12,6 +13,7 @@ interface Step5ReviewPayProps {
 }
 
 export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
+  const navigate = useNavigate();
   const { bookingData, resetBooking } = useBooking();
   const [processing, setProcessing] = useState(false);
 
@@ -53,18 +55,16 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
         await supabase.from('booking_extras').insert(extrasToInsert);
       }
 
-      toast.success('Booking confirmed!', {
-        description: 'Your cleaning service has been scheduled successfully.',
-      });
-
       resetBooking();
       
       // In production, integrate with Paystack here
-      // For now, we'll just show success
+      // For now, redirect to success page
+      navigate('/booking/confirmation?status=success');
       
     } catch (error) {
       console.error('Booking error:', error);
       toast.error('Failed to create booking. Please try again.');
+      navigate('/booking/confirmation?status=declined');
     } finally {
       setProcessing(false);
     }
