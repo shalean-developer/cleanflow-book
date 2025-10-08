@@ -16,13 +16,14 @@ export const TimeSlotGrid = ({ selectedTime, onTimeSelect, selectedDate }: TimeS
   const isTimeDisabled = (time: string) => {
     if (!selectedDate) return false;
     
+    const dateObj = selectedDate instanceof Date ? selectedDate : new Date(selectedDate);
     const now = new Date();
-    const isToday = selectedDate.toDateString() === now.toDateString();
+    const isToday = dateObj.toDateString() === now.toDateString();
     
     if (!isToday) return false;
     
     const [hours, minutes] = time.split(':').map(Number);
-    const slotTime = new Date(selectedDate);
+    const slotTime = new Date(dateObj);
     slotTime.setHours(hours, minutes, 0, 0);
     
     return slotTime <= now;

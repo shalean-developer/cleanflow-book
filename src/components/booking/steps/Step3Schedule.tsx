@@ -16,7 +16,9 @@ interface Step3ScheduleProps {
 export const Step3Schedule = ({ onNext, onBack }: Step3ScheduleProps) => {
   const { bookingData, updateBooking } = useBooking();
   const [serviceAreas, setServiceAreas] = useState<any[]>([]);
-  const [date, setDate] = useState<Date | undefined>(bookingData.date);
+  const [date, setDate] = useState<Date | undefined>(
+    bookingData.date ? new Date(bookingData.date) : undefined
+  );
 
   useEffect(() => {
     fetchServiceAreas();
