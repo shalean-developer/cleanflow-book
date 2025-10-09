@@ -64,17 +64,17 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('booking-data', JSON.stringify(bookingData));
   }, [bookingData]);
 
-  const calculateTotal = () => {
+  const calculateTotal = (data: BookingData = bookingData) => {
     let total = 300; // Base price
     
     // Add bedroom cost
-    total += bookingData.bedrooms * 100;
+    total += data.bedrooms * 100;
     
     // Add bathroom cost
-    total += bookingData.bathrooms * 80;
+    total += data.bathrooms * 80;
     
     // Add extras
-    const extrasTotal = bookingData.extras.reduce((sum, extra) => sum + extra.price, 0);
+    const extrasTotal = data.extras.reduce((sum, extra) => sum + extra.price, 0);
     total += extrasTotal;
     
     return total;
@@ -100,8 +100,8 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
       
       setBookingData(prev => {
         const updated = { ...prev, ...data };
-        // Recalculate total whenever booking changes
-        const newTotal = calculateTotal();
+        // Recalculate total with the updated data
+        const newTotal = calculateTotal(updated);
         return { ...updated, totalAmount: newTotal };
       });
     } catch (error) {
