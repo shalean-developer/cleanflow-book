@@ -47,16 +47,16 @@ export function CustomerSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b">
+      <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-3 py-4">
-          <Avatar className="h-10 w-10">
-            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+          <Avatar className="h-10 w-10 ring-2 ring-primary/20">
+            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold">
               {getUserInitials()}
             </AvatarFallback>
           </Avatar>
           {!isCollapsed && (
             <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-sm font-semibold text-foreground truncate">
+              <span className="text-sm font-semibold text-sidebar-foreground truncate">
                 {user?.email?.split('@')[0] || 'Customer'}
               </span>
               <span className="text-xs text-muted-foreground truncate">
@@ -78,14 +78,14 @@ export function CustomerSidebar() {
                       to={item.url} 
                       end={item.url === "/dashboard/customer"}
                       className={({ isActive }) => 
-                        `flex items-center gap-3 ${
+                        `flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 ${
                           isActive 
-                            ? "bg-primary text-primary-foreground font-semibold" 
-                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            ? "bg-primary text-primary-foreground font-semibold shadow-md scale-[1.02]" 
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:translate-x-1"
                         }`
                       }
                     >
-                      <item.icon className="h-4 w-4 shrink-0" />
+                      <item.icon className="h-5 w-5 shrink-0" />
                       <span className="truncate">{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -96,15 +96,15 @@ export function CustomerSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t">
+      <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton 
               onClick={handleSignOut} 
-              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" 
+              className="text-sidebar-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg px-3 py-2 transition-all duration-200 hover:translate-x-1" 
               tooltip="Sign Out"
             >
-              <LogOut className="h-4 w-4 shrink-0" />
+              <LogOut className="h-5 w-5 shrink-0" />
               <span>Sign Out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
