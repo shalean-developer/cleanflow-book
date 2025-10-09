@@ -8,14 +8,29 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import * as Icons from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 interface Extra {
   id: string;
   name: string;
   icon: string;
   description: string;
+}
+
+interface Service {
+  id: string;
+  name: string;
+  description: string;
+}
+
+interface ServiceArea {
+  id: string;
+  name: string;
 }
 
 export default function BookingQuote() {
@@ -32,8 +47,18 @@ export default function BookingQuote() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
 
+  // Service and location
+  const [services, setServices] = useState<Service[]>([]);
+  const [selectedService, setSelectedService] = useState('');
+  const [serviceAreas, setServiceAreas] = useState<ServiceArea[]>([]);
+  const [locationSearch, setLocationSearch] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [openLocationPopover, setOpenLocationPopover] = useState(false);
+
   useEffect(() => {
     fetchExtras();
+    fetchServices();
+    fetchServiceAreas();
   }, []);
 
   const fetchExtras = async () => {
@@ -50,6 +75,44 @@ export default function BookingQuote() {
       toast.error('Failed to load extra services');
     }
   };
+
+  const fetchServices = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('id, name, description')
+        .eq('active', true);
+
+      if (error) throw error;
+      setServices(data || []);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      toast.error('Failed to load services');
+    }
+  };
+
+  const fetchServiceAreas = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('service_areas')
+        .select('id, name')
+        .eq('active', true)
+        .order('name');
+
+      if (error) throw error;
+      setServiceAreas(data || []);
+    } catch (error) {
+      console.error('Error fetching service areas:', error);
+      toast.error('Failed to load service areas');
+    }
+  };
+
+  // Filter locations based on search (minimum 3 characters)
+  const filteredLocations = locationSearch.length >= 3
+    ? serviceAreas.filter(area =>
+        area.name.toLowerCase().includes(locationSearch.toLowerCase())
+      )
+    : [];
 
   const handleExtraToggle = (extraId: string) => {
     setSelectedExtras(prev =>
@@ -73,10 +136,24 @@ export default function BookingQuote() {
       toast.error('Please enter your phone number');
       return;
     }
+    if (!selectedService) {
+      toast.error('Please select a service type');
+      return;
+    }
+    if (!selectedLocation) {
+      toast.error('Please select your location');
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
+      // Get selected service name
+      const serviceName = services.find(s => s.id === selectedService)?.name || 'Cleaning Service';
+      
+      // Get selected location name
+      const locationName = serviceAreas.find(a => a.id === selectedLocation)?.name || locationSearch;
+
       // Get selected extras names for the email
       const selectedExtrasNames = extras
         .filter(extra => selectedExtras.includes(extra.id))
@@ -84,6 +161,9 @@ export default function BookingQuote() {
         .join(', ');
 
       const quoteMessage = `
+Service Type: ${serviceName}
+Location: ${locationName}
+
 Property Details:
 - Bedrooms: ${bedrooms}
 - Bathrooms: ${bathrooms}
@@ -97,7 +177,7 @@ ${specialInstructions ? `\nSpecial Instructions:\n${specialInstructions}` : ''}
           name: fullName,
           email: email,
           phone: phone,
-          service: 'Cleaning Service Quote',
+          service: serviceName,
           message: quoteMessage
         }
       });
@@ -174,6 +254,90 @@ ${specialInstructions ? `\nSpecial Instructions:\n${specialInstructions}` : ''}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full"
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Service Type and Location */}
+            <div>
+              <h2 className="text-2xl font-semibold mb-6">Service Information</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="service" className="text-base mb-2 block">
+                    Service Type <span className="text-destructive">*</span>
+                  </Label>
+                  <Select value={selectedService} onValueChange={setSelectedService}>
+                    <SelectTrigger id="service" className="w-full">
+                      <SelectValue placeholder="Select service type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {services.map(service => (
+                        <SelectItem key={service.id} value={service.id}>
+                          {service.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="location" className="text-base mb-2 block">
+                    Location <span className="text-destructive">*</span>
+                  </Label>
+                  <Popover open={openLocationPopover} onOpenChange={setOpenLocationPopover}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openLocationPopover}
+                        className="w-full justify-between"
+                      >
+                        {selectedLocation
+                          ? serviceAreas.find(area => area.id === selectedLocation)?.name
+                          : "Type 3 letters to search..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0" align="start">
+                      <Command>
+                        <CommandInput 
+                          placeholder="Type at least 3 letters..." 
+                          value={locationSearch}
+                          onValueChange={setLocationSearch}
+                        />
+                        <CommandList>
+                          <CommandEmpty>
+                            {locationSearch.length < 3 
+                              ? "Type at least 3 letters to search" 
+                              : "No locations found"}
+                          </CommandEmpty>
+                          {locationSearch.length >= 3 && (
+                            <CommandGroup>
+                              {filteredLocations.map(area => (
+                                <CommandItem
+                                  key={area.id}
+                                  value={area.name}
+                                  onSelect={() => {
+                                    setSelectedLocation(area.id);
+                                    setLocationSearch(area.name);
+                                    setOpenLocationPopover(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      selectedLocation === area.id ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  {area.name}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          )}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
             </div>
