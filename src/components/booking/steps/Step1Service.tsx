@@ -22,41 +22,19 @@ export const Step1Service = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    const abortController = new AbortController();
-    fetchServices(abortController);
-    
-    return () => {
-      abortController.abort();
-    };
+    fetchServices();
   }, []);
   
-  const fetchServices = async (abortController?: AbortController) => {
+  const fetchServices = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      console.log('[Step1Service] Starting to fetch services...');
-      
-      // Create a timeout promise
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => {
-          reject(new Error('Query timed out after 8 seconds'));
-        }, 8000);
-      });
-      
-      // Execute the query with a race against timeout
-      const queryPromise = supabase
+      const { data, error } = await supabase
         .from('services')
         .select('*')
-        .eq('active', true)
-        .abortSignal(abortController?.signal);
+        .eq('active', true);
       
-      const { data, error } = await Promise.race([
-        queryPromise,
-        timeoutPromise
-      ]) as any;
-      
-      console.log('[Step1Service] Query completed');
       console.log('[Step1Service] Data:', data);
       console.log('[Step1Service] Error:', error);
       
@@ -75,21 +53,14 @@ export const Step1Service = ({
       console.log('[Step1Service] Successfully loaded', data.length, 'services');
       setServices(data);
     } catch (err: any) {
-      if (err?.name === 'AbortError' || abortController?.signal.aborted) {
-        console.log('[Step1Service] Request cancelled');
-        return;
-      }
-      console.error('[Step1Service] Unexpected error:', err);
-      setError(err?.message || 'An unexpected error occurred. Please try again.');
+      console.error('[Step1Service] Error:', err);
+      setError(err?.message || 'Failed to load services. Please try again.');
     } finally {
-      if (!abortController?.signal.aborted) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   };
   const handleRetry = () => {
-    const abortController = new AbortController();
-    fetchServices(abortController);
+    fetchServices();
   };
 
   const handleServiceSelect = (service: any) => {
