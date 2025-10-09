@@ -46,7 +46,7 @@ export function CustomerSidebar() {
   const isCollapsed = state === "collapsed"
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="bg-sidebar-background border-r border-sidebar-border">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-3 py-4">
           <Avatar className="h-10 w-10 ring-2 ring-primary/20">
@@ -78,10 +78,10 @@ export function CustomerSidebar() {
                       to={item.url} 
                       end={item.url === "/dashboard/customer"}
                       className={({ isActive }) => 
-                        `flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 ${
+                        `flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 bg-transparent ${
                           isActive 
-                            ? "bg-primary text-primary-foreground font-semibold shadow-md scale-[1.02]" 
-                            : "text-gray-900 dark:text-gray-100 hover:bg-sidebar-accent hover:text-gray-900 dark:hover:text-gray-100 hover:translate-x-1"
+                            ? "!bg-primary !text-primary-foreground font-semibold shadow-md scale-[1.02]" 
+                            : "!text-slate-900 dark:!text-slate-100 hover:!bg-gray-100 dark:hover:!bg-gray-800 hover:translate-x-1"
                         }`
                       }
                     >
@@ -101,7 +101,7 @@ export function CustomerSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton 
               onClick={handleSignOut} 
-              className="text-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg px-3 py-2 transition-all duration-200 hover:translate-x-1" 
+              className="!text-slate-900 dark:!text-slate-100 hover:!bg-destructive/10 hover:!text-destructive rounded-lg px-3 py-2 transition-all duration-200 hover:translate-x-1 bg-transparent" 
               tooltip="Sign Out"
             >
               <LogOut className="h-5 w-5 shrink-0" />
