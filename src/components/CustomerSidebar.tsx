@@ -35,9 +35,6 @@ export function CustomerSidebar() {
     navigate('/auth')
   }
 
-  const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-primary text-primary-foreground font-medium" : "text-primary hover:bg-accent"
-
   const getUserInitials = () => {
     if (!user?.email) return "U"
     return user.email.charAt(0).toUpperCase()
@@ -46,47 +43,61 @@ export function CustomerSidebar() {
   const isCollapsed = state === "collapsed"
 
   return (
-    <Sidebar collapsible="icon" className="bg-sidebar-background border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border">
-        <div className="flex items-center gap-3 px-3 py-4">
-          <Avatar className="h-10 w-10 ring-2 ring-primary/20">
-            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-semibold">
-              {getUserInitials()}
-            </AvatarFallback>
-          </Avatar>
+    <Sidebar 
+      collapsible="icon" 
+      className="!bg-white dark:!bg-gray-900 border-none shadow-[8px_0_24px_-8px_rgba(0,0,0,0.08)]"
+    >
+      <SidebarHeader className="border-none pb-6 pt-6">
+        <div className="flex flex-col items-center gap-4 px-6">
           {!isCollapsed && (
-            <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-sm font-semibold text-sidebar-foreground truncate">
-                {user?.email?.split('@')[0] || 'Customer'}
-              </span>
-              <span className="text-xs text-muted-foreground truncate">
-                {user?.email}
-              </span>
+            <div className="text-center">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                Shalean
+              </h2>
+              <p className="text-xs text-muted-foreground font-medium">Cleaning Services</p>
             </div>
           )}
+          <div className="flex items-center gap-3 w-full">
+            <Avatar className="h-12 w-12 ring-2 ring-primary/20 shadow-md">
+              <AvatarFallback className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground font-bold text-lg">
+                {getUserInitials()}
+              </AvatarFallback>
+            </Avatar>
+            {!isCollapsed && (
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="text-sm font-semibold text-foreground truncate">
+                  {user?.email?.split('@')[0] || 'Customer'}
+                </span>
+                <span className="text-xs text-muted-foreground truncate">
+                  {user?.email}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-3">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-2">
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <NavLink 
                       to={item.url} 
                       end={item.url === "/dashboard/customer"}
+                      aria-label={item.title}
                       className={({ isActive }) => 
-                        `flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 bg-transparent ${
+                        `flex items-center gap-4 rounded-2xl px-4 py-3.5 transition-all duration-200 font-medium ${
                           isActive 
-                            ? "!bg-primary !text-primary-foreground font-semibold shadow-md scale-[1.02]" 
-                            : "!text-slate-900 dark:!text-slate-100 hover:!bg-gray-100 dark:hover:!bg-gray-800 hover:translate-x-1"
+                            ? "!bg-primary !text-white shadow-[0_4px_16px_-4px_rgba(12,83,237,0.4)] scale-[1.02] translate-x-1" 
+                            : "!text-gray-700 dark:!text-gray-300 hover:!bg-gray-50 dark:hover:!bg-gray-800 hover:shadow-[0_2px_8px_-2px_rgba(12,83,237,0.15)] hover:scale-[1.01] hover:translate-x-1"
                         }`
                       }
                     >
                       <item.icon className="h-5 w-5 shrink-0" />
-                      <span className="truncate">{item.title}</span>
+                      {!isCollapsed && <span className="truncate">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -96,16 +107,17 @@ export function CustomerSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border">
+      <SidebarFooter className="border-none px-3 pb-6">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton 
-              onClick={handleSignOut} 
-              className="!text-slate-900 dark:!text-slate-100 hover:!bg-destructive/10 hover:!text-destructive rounded-lg px-3 py-2 transition-all duration-200 hover:translate-x-1 bg-transparent" 
+              onClick={handleSignOut}
+              aria-label="Sign Out"
+              className="!text-gray-700 dark:!text-gray-300 hover:!bg-red-50 dark:hover:!bg-red-950/30 hover:!text-red-600 dark:hover:!text-red-400 rounded-2xl px-4 py-3.5 transition-all duration-200 hover:scale-[1.01] hover:translate-x-1 font-medium" 
               tooltip="Sign Out"
             >
               <LogOut className="h-5 w-5 shrink-0" />
-              <span>Sign Out</span>
+              {!isCollapsed && <span>Sign Out</span>}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
