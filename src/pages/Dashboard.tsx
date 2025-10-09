@@ -22,7 +22,7 @@ const Dashboard = () => {
           <p className="text-muted-foreground mb-6">
             Your booking dashboard is coming soon. Here you'll be able to view and manage all your bookings.
           </p>
-          <Button onClick={() => navigate('/booking')}>
+          <Button onClick={() => navigate('/booking/service/select')}>
             Book a Service
           </Button>
         </Card>

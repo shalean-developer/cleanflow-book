@@ -34,7 +34,7 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 size="lg"
-                onClick={() => navigate('/booking')}
+                onClick={() => navigate('/booking/service/select')}
                 className="text-lg px-8 py-6 h-auto"
               >
                 Book Now
@@ -105,7 +105,7 @@ const Index = () => {
             <Button
               size="lg"
               variant="secondary"
-              onClick={() => navigate('/booking')}
+              onClick={() => navigate('/booking/service/select')}
               className="text-lg px-8 py-6 h-auto"
             >
               Get Started
