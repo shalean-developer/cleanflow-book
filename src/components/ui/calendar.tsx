@@ -30,7 +30,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         row: "flex w-full mt-1",
         cell: "h-10 w-10 text-center text-sm p-0 relative",
         day: cn(
-          "h-10 w-10 p-0 font-normal rounded-md hover:bg-accent hover:text-accent-foreground aria-selected:opacity-100"
+          "h-10 w-10 p-0 font-normal rounded-md hover:bg-accent hover:text-accent-foreground aria-selected:opacity-100 inline-flex items-center justify-center"
         ),
         day_range_end: "day-range-end",
         day_selected:
