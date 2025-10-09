@@ -1,32 +1,45 @@
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user, userRole, loading } = useAuth();
+
+  useEffect(() => {
+    if (!user && !loading) {
+      navigate('/auth');
+      return;
+    }
+
+    if (user && userRole && !loading) {
+      // Redirect to role-specific dashboard
+      switch (userRole) {
+        case 'admin':
+          navigate('/dashboard/admin', { replace: true });
+          break;
+        case 'cleaner':
+          navigate('/dashboard/cleaner', { replace: true });
+          break;
+        case 'customer':
+        default:
+          navigate('/dashboard/customer', { replace: true });
+          break;
+      }
+    }
+  }, [user, userRole, loading, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <Button variant="outline" onClick={() => navigate('/')}>
-            <Home className="mr-2 h-4 w-4" />
-            Home
-          </Button>
+    <div className="min-h-screen bg-background">
+      <Header />
+      <div className="container mx-auto px-4 py-20">
+        <div className="text-center">
+          <div className="animate-pulse">Loading your dashboard...</div>
         </div>
-
-        <Card className="p-8 text-center">
-          <h2 className="text-2xl font-semibold mb-4">Welcome to Your Dashboard</h2>
-          <p className="text-muted-foreground mb-6">
-            Your booking dashboard is coming soon. Here you'll be able to view and manage all your bookings.
-          </p>
-          <Button onClick={() => navigate('/booking/service/select')}>
-            Book a Service
-          </Button>
-        </Card>
       </div>
+      <Footer />
     </div>
   );
 };

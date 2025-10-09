@@ -12,6 +12,9 @@ import BookingQuote from "./pages/BookingQuote";
 import QuoteConfirmation from "./pages/QuoteConfirmation";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import CustomerDashboard from "./pages/CustomerDashboard";
+import CleanerDashboard from "./pages/CleanerDashboard";
 import Services from "./pages/Services";
 import HowItWorks from "./pages/HowItWorks";
 import Locations from "./pages/Locations";
@@ -75,6 +78,30 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/admin" 
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/customer" 
+              element={
+                <ProtectedRoute>
+                  <CustomerDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/cleaner" 
+              element={
+                <ProtectedRoute>
+                  <CleanerDashboard />
                 </ProtectedRoute>
               } 
             />
