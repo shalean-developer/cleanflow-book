@@ -23,11 +23,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userRole, setUserRole] = useState<string | null>(null);
 
   const fetchUserRole = async (userId: string) => {
+    console.log('[AuthContext] Fetching user role for:', userId);
     try {
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', userId);
+      
+      console.log('[AuthContext] User role data:', data, 'Error:', error);
       
       if (error) {
         console.error('Error fetching user role:', error);
@@ -35,15 +38,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else if (data && data.length > 0) {
         // If user has multiple roles, prioritize admin > cleaner > customer
         const roles = data.map(r => r.role);
+        console.log('[AuthContext] User roles:', roles);
         if (roles.includes('admin')) {
+          console.log('[AuthContext] User is admin');
           setUserRole('admin');
         } else if (roles.includes('cleaner')) {
+          console.log('[AuthContext] User is cleaner');
           setUserRole('cleaner');
         } else {
+          console.log('[AuthContext] User role:', roles[0]);
           setUserRole(roles[0]);
         }
       } else {
         // If no role exists, default to customer
+        console.log('[AuthContext] No role found, defaulting to customer');
         setUserRole('customer');
       }
     } catch (error) {
@@ -55,14 +63,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    console.log('[AuthContext] Setting up auth listeners...');
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('[AuthContext] Auth state changed. Event:', event, 'User:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
+        console.log('[AuthContext] Fetching role for user:', session.user.id);
         await fetchUserRole(session.user.id);
       } else {
+        console.log('[AuthContext] No user in session');
         setUserRole(null);
         setLoading(false);
       }
@@ -70,17 +83,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // THEN check for existing session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log('[AuthContext] Got existing session. User:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
+        console.log('[AuthContext] Fetching role for existing session user:', session.user.id);
         await fetchUserRole(session.user.id);
       } else {
+        console.log('[AuthContext] No existing session');
         setLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('[AuthContext] Cleaning up subscription');
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {

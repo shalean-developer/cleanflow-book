@@ -50,11 +50,14 @@ const AdminDashboard = () => {
   }, [user, userRole, authLoading, navigate]);
 
   const loadDashboardStats = async () => {
+    console.log('[AdminDashboard] Loading dashboard stats...');
     try {
       // Get total bookings
-      const { count: bookingsCount } = await supabase
+      const { count: bookingsCount, error: bookingsError } = await supabase
         .from('bookings')
         .select('*', { count: 'exact', head: true });
+      
+      console.log('[AdminDashboard] Bookings count:', bookingsCount, 'Error:', bookingsError);
 
       // Get total revenue
       const { data: revenueData } = await supabase
