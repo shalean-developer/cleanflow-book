@@ -58,19 +58,19 @@ const Index = () => {
     role: 'Lead Cleaner',
     image: luciaImage,
     initials: 'LP',
-    experience: '8 years'
+    comment: 'Detail-oriented and reliable'
   }, {
     name: 'Normatter Mazhinji',
     role: 'Deep Clean Specialist',
     image: normatterImage,
     initials: 'NM',
-    experience: '6 years'
+    comment: 'Expert in deep cleaning'
   }, {
     name: 'Nyasha Mudani',
     role: 'Senior Cleaner',
     image: nyashaImage,
     initials: 'NM',
-    experience: '5 years'
+    comment: 'Thorough and professional'
   }];
   const benefits = [{
     icon: Shield,
@@ -313,7 +313,7 @@ const Index = () => {
                   <CardDescription className="text-sm mt-1">{member.role}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Badge variant="secondary">{member.experience} experience</Badge>
+                  <Badge variant="secondary">{member.comment}</Badge>
                 </CardContent>
               </Card>)}
           </div>
