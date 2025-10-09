@@ -1,42 +1,14 @@
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { LogIn, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { user, userRole, signOut } = useAuth();
-
-  const handleDashboardClick = () => {
-    if (!userRole) {
-      navigate('/dashboard/customer');
-      return;
-    }
-    
-    switch (userRole) {
-      case 'admin':
-        navigate('/dashboard/admin');
-        break;
-      case 'cleaner':
-        navigate('/dashboard/cleaner');
-        break;
-      default:
-        navigate('/dashboard/customer');
-    }
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
-  };
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background backdrop-blur supports-[backdrop-filter]:bg-background">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2 font-bold text-xl">
+          <div className="flex items-center gap-2 font-bold text-xl cursor-pointer" onClick={() => navigate('/')}>
             <img src="/favicon.png" alt="Shalean Logo" className="w-6 h-6" />
             <span>Shalean</span>
           </div>
@@ -49,38 +21,9 @@ export const Header = () => {
             <a href="/blog" className="text-sm font-medium hover:text-primary transition-colors">Blog</a>
           </div>
           <div className="flex items-center gap-3">
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Avatar className="cursor-pointer hover:opacity-80 transition-opacity">
-                    <AvatarImage src={user?.user_metadata?.avatar_url} />
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {user.email?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-background z-50" align="end">
-                  <DropdownMenuItem onClick={handleDashboardClick} className="cursor-pointer">
-                    <User className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <>
-                <Button variant="ghost" onClick={() => navigate('/auth')}>
-                  Log In
-                </Button>
-                <Button onClick={() => navigate('/auth')}>
-                  Sign Up
-                </Button>
-              </>
-            )}
+            <Button onClick={() => navigate('/contact')}>
+              Get Started
+            </Button>
           </div>
         </div>
       </nav>
