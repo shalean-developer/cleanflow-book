@@ -47,7 +47,8 @@ serve(async (req) => {
       .select(`
         *,
         services(name),
-        service_areas(name)
+        service_areas(name),
+        cleaners(full_name)
       `)
       .eq('id', bookingId)
       .single();
@@ -68,6 +69,22 @@ serve(async (req) => {
     const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Customer';
     const serviceName = booking.services?.name || 'Cleaning Service';
     const areaName = booking.service_areas?.name || 'Cape Town';
+    const cleanerName = booking.cleaners?.full_name || 'To be assigned';
+    
+    // Fetch booking extras
+    const { data: bookingExtras } = await supabase
+      .from('booking_extras')
+      .select(`
+        quantity,
+        extras(name, base_price)
+      `)
+      .eq('booking_id', bookingId);
+    
+    const extrasHtml = bookingExtras && bookingExtras.length > 0
+      ? bookingExtras.map(extra => 
+          `<li>${extra.extras.name} x${extra.quantity} - ${booking.currency} ${extra.extras.base_price * extra.quantity}</li>`
+        ).join('')
+      : '<li>None</li>';
 
     // Format date and time
     const bookingDate = new Date(booking.date).toLocaleDateString('en-ZA', {
@@ -87,10 +104,17 @@ serve(async (req) => {
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h2 style="color: #333; margin-top: 0;">Booking Details</h2>
           <p><strong>Service:</strong> ${serviceName}</p>
+          <p><strong>Frequency:</strong> ${booking.frequency || 'Once-off'}</p>
           <p><strong>Date:</strong> ${bookingDate}</p>
           <p><strong>Time:</strong> ${booking.time}</p>
-          <p><strong>Location:</strong> ${areaName}</p>
+          <p><strong>Service Area:</strong> ${areaName}</p>
+          ${booking.house_details ? `<p><strong>Location Address:</strong> ${booking.house_details}</p>` : ''}
           <p><strong>Property:</strong> ${booking.bedrooms} bedroom(s), ${booking.bathrooms} bathroom(s)</p>
+          <p><strong>Assigned Cleaner:</strong> ${cleanerName}</p>
+          <p><strong>Selected Extras:</strong></p>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            ${extrasHtml}
+          </ul>
           <p><strong>Total Amount:</strong> ${booking.currency} ${booking.total_amount}</p>
           ${booking.special_instructions ? `<p><strong>Special Instructions:</strong> ${booking.special_instructions}</p>` : ''}
         </div>
@@ -120,14 +144,20 @@ serve(async (req) => {
           <p><strong>Booking ID:</strong> ${bookingId}</p>
           <p><strong>Customer:</strong> ${userName} (${user.email})</p>
           <p><strong>Service:</strong> ${serviceName}</p>
+          <p><strong>Frequency:</strong> ${booking.frequency || 'Once-off'}</p>
           <p><strong>Date:</strong> ${bookingDate}</p>
           <p><strong>Time:</strong> ${booking.time}</p>
-          <p><strong>Location:</strong> ${areaName}</p>
+          <p><strong>Service Area:</strong> ${areaName}</p>
+          ${booking.house_details ? `<p><strong>Customer Location:</strong> ${booking.house_details}</p>` : ''}
           <p><strong>Property:</strong> ${booking.bedrooms} bedroom(s), ${booking.bathrooms} bathroom(s)</p>
+          <p><strong>Assigned Cleaner:</strong> ${cleanerName}</p>
+          <p><strong>Selected Extras:</strong></p>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            ${extrasHtml}
+          </ul>
           <p><strong>Total Amount:</strong> ${booking.currency} ${booking.total_amount}</p>
           <p><strong>Payment Status:</strong> ${booking.status}</p>
           ${booking.special_instructions ? `<p><strong>Special Instructions:</strong> ${booking.special_instructions}</p>` : ''}
-          ${booking.house_details ? `<p><strong>House Details:</strong> ${booking.house_details}</p>` : ''}
         </div>
       </div>
     `;
