@@ -50,16 +50,15 @@ export function CustomerSidebar() {
   const isCollapsed = state === "collapsed"
 
   return (
-    <Sidebar collapsible="icon"
-    >
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2 px-2 py-4">
           <Avatar className="h-8 w-8">
-            <AvatarFallback>{getUserInitials()}</AvatarFallback>
+            <AvatarFallback className="bg-primary text-primary-foreground">{getUserInitials()}</AvatarFallback>
           </Avatar>
           {!isCollapsed && (
             <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-sm font-semibold truncate">
+              <span className="text-sm font-semibold text-foreground truncate">
                 {user?.email?.split('@')[0] || 'Customer'}
               </span>
               <span className="text-xs text-muted-foreground truncate">
@@ -72,15 +71,23 @@ export function CustomerSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-muted-foreground">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} end className={getNavCls}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <NavLink 
+                      to={item.url} 
+                      end={item.url === "/dashboard/customer"}
+                      className={({ isActive }) => 
+                        isActive 
+                          ? "bg-primary text-primary-foreground font-medium flex items-center gap-2" 
+                          : "text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2"
+                      }
+                    >
                       <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -90,15 +97,22 @@ export function CustomerSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-muted-foreground">Account</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {accountItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavCls}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <NavLink 
+                      to={item.url}
+                      className={({ isActive }) => 
+                        isActive 
+                          ? "bg-primary text-primary-foreground font-medium flex items-center gap-2" 
+                          : "text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2"
+                      }
+                    >
                       <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -111,9 +125,9 @@ export function CustomerSidebar() {
       <SidebarFooter className="border-t">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut}>
+            <SidebarMenuButton onClick={handleSignOut} className="text-foreground hover:bg-accent hover:text-accent-foreground" tooltip="Sign Out">
               <LogOut className="h-4 w-4" />
-              {!isCollapsed && <span>Sign Out</span>}
+              <span>Sign Out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
