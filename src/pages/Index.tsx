@@ -305,7 +305,12 @@ const Index = () => {
                     </AvatarFallback>
                   </Avatar>
                   <CardTitle>{member.name}</CardTitle>
-                  <CardDescription className="text-base">{member.role}</CardDescription>
+                  <div className="flex justify-center gap-1 mt-2">
+                    {[...Array(5)].map((_, idx) => (
+                      <Star key={idx} className="w-4 h-4 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <CardDescription className="text-sm mt-1">{member.role}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge variant="secondary">{member.experience} experience</Badge>
