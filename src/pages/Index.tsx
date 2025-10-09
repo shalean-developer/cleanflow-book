@@ -185,10 +185,8 @@ const Index = () => {
                 Book Now
                 <Calendar className="w-5 h-5 ml-2" />
               </Button>
-              <Button size="lg" variant="outline" onClick={() => document.getElementById('services')?.scrollIntoView({
-              behavior: 'smooth'
-            })} className="text-lg px-8 h-auto py-[12px]">
-                View Services
+              <Button size="lg" variant="outline" onClick={() => navigate('/booking/quote')} className="text-lg px-8 h-auto py-[12px]">
+                Get Free Quote
               </Button>
             </div>
 
