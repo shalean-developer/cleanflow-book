@@ -40,7 +40,7 @@ export function CustomerSidebar() {
   }
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-primary text-primary-foreground font-medium" : "text-foreground hover:bg-accent hover:text-accent-foreground"
+    isActive ? "bg-primary text-primary-foreground font-medium" : "text-primary hover:bg-accent"
 
   const getUserInitials = () => {
     if (!user?.email) return "U"
