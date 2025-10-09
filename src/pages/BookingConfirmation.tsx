@@ -29,27 +29,37 @@ const BookingConfirmation = () => {
       setVerifying(true);
       
       try {
-        // Verify the payment was successful by checking the payments table
-        const { data: payment, error: paymentError } = await supabase
-          .from('payments')
-          .select('*, bookings(*)')
-          .eq('reference', reference)
-          .single();
+        // Get the auth token
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          throw new Error('No active session');
+        }
 
-        if (paymentError || !payment) {
-          console.error('Payment verification error:', paymentError);
+        // Call the verify-paystack-payment edge function
+        const { data: verifyData, error: verifyError } = await supabase.functions.invoke(
+          'verify-paystack-payment',
+          {
+            body: { reference },
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          }
+        );
+
+        if (verifyError || !verifyData?.success) {
+          console.error('Payment verification error:', verifyError);
           setStatus('failed');
           toast.error('Payment verification failed');
-        } else if (payment.status === 'success') {
-          setStatus('success');
-          localStorage.removeItem('booking-data');
-          localStorage.removeItem('paystack_reference');
-          localStorage.removeItem('booking_id');
-          toast.success('Payment verified successfully!');
-        } else {
-          setStatus('failed');
-          toast.error('Payment not completed');
+          return;
         }
+
+        // Payment verified successfully
+        setStatus('success');
+        localStorage.removeItem('booking-data');
+        localStorage.removeItem('paystack_reference');
+        localStorage.removeItem('booking_id');
+        toast.success('Payment verified successfully!');
+        
       } catch (error) {
         console.error('Error verifying payment:', error);
         setStatus('failed');
@@ -60,7 +70,7 @@ const BookingConfirmation = () => {
     };
 
     verifyPayment();
-  }, [reference]);
+  }, [reference, searchParams]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center p-4">
