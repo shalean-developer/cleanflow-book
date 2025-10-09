@@ -130,7 +130,7 @@ const Index = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2 font-bold text-xl">
               <Sparkles className="w-6 h-6 text-primary" />
-              <span>Shalean Cleaning</span>
+              <span>Shalean</span>
             </div>
             <div className="hidden md:flex items-center gap-6">
               <a href="#services" className="text-sm font-medium hover:text-primary transition-colors">Services</a>
