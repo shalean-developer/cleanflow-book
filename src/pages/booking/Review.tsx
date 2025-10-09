@@ -105,30 +105,35 @@ export default function Review() {
             pricing: pricing,
           },
         },
-        callback: async (response) => {
-          try {
-            const { data: verifyData, error: verifyError } = await supabase.functions.invoke(
-              'verify-paystack-payment',
-              { body: { reference: response.reference } }
-            );
+        callback: (response: any) => {
+          // Handle verification in a separate async function
+          const verifyPayment = async () => {
+            try {
+              const { data: verifyData, error: verifyError } = await supabase.functions.invoke(
+                'verify-paystack-payment',
+                { body: { reference: response.reference } }
+              );
 
-            if (verifyError) throw verifyError;
+              if (verifyError) throw verifyError;
 
-            if (verifyData.success) {
-              reset();
-              navigate(`/booking/confirmation?ref=${response.reference}`);
-            } else {
-              throw new Error('Payment verification failed');
+              if (verifyData.success) {
+                reset();
+                navigate(`/booking/confirmation?ref=${response.reference}`);
+              } else {
+                throw new Error('Payment verification failed');
+              }
+            } catch (error: any) {
+              toast({
+                title: 'Payment Error',
+                description: error.message,
+                variant: 'destructive',
+              });
+            } finally {
+              setPaying(false);
             }
-          } catch (error: any) {
-            toast({
-              title: 'Payment Error',
-              description: error.message,
-              variant: 'destructive',
-            });
-          } finally {
-            setPaying(false);
-          }
+          };
+          
+          verifyPayment();
         },
         onClose: () => {
           setPaying(false);
