@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useBooking } from '@/contexts/BookingContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 interface Step1ServiceProps {
@@ -18,30 +20,44 @@ export const Step1Service = ({
   } = useBooking();
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     fetchServices();
   }, []);
   const fetchServices = async () => {
     try {
-      console.log('[Step1Service] Fetching services...');
+      setLoading(true);
+      setError(null);
+      
+      console.log('[Step1Service] Starting to fetch services...');
+      console.log('[Step1Service] Supabase client initialized:', !!supabase);
+      
       const { data, error } = await supabase
         .from('services')
         .select('*')
         .eq('active', true);
       
-      console.log('[Step1Service] Query completed. Data:', data, 'Error:', error);
+      console.log('[Step1Service] Query completed successfully');
+      console.log('[Step1Service] Data received:', data);
+      console.log('[Step1Service] Error:', error);
       
       if (error) {
-        console.error('[Step1Service] Error fetching services:', error);
+        console.error('[Step1Service] Supabase error:', error);
+        setError(`Failed to load services: ${error.message}`);
         return;
       }
       
-      if (data) {
-        console.log('[Step1Service] Setting services:', data.length, 'services found');
-        setServices(data);
+      if (!data || data.length === 0) {
+        console.warn('[Step1Service] No active services found in database');
+        setError('No services available at the moment. Please try again later.');
+        return;
       }
+      
+      console.log('[Step1Service] Successfully loaded', data.length, 'services');
+      setServices(data);
     } catch (err) {
-      console.error('[Step1Service] Exception in fetchServices:', err);
+      console.error('[Step1Service] Unexpected error:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -63,7 +79,41 @@ export const Step1Service = ({
   };
   const canProceed = bookingData.serviceId;
   if (loading) {
-    return <div className="text-center py-12">Loading services...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <p className="text-muted-foreground">Loading services...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-2xl mx-auto py-12 space-y-4">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <div className="flex justify-center">
+          <Button onClick={fetchServices} variant="outline">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (services.length === 0) {
+    return (
+      <div className="max-w-2xl mx-auto py-12 text-center space-y-4">
+        <p className="text-muted-foreground">No services available at the moment.</p>
+        <Button onClick={fetchServices} variant="outline">
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Refresh
+        </Button>
+      </div>
+    );
   }
   return <div className="space-y-6">
       <div className="text-center space-y-2">
