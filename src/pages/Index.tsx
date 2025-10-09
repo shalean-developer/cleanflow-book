@@ -16,6 +16,7 @@ import serviceStandardImage from '@/assets/service-standard-cleaning.jpg';
 import serviceDeepImage from '@/assets/service-deep-cleaning.jpg';
 import serviceMoveImage from '@/assets/service-move-inout.jpg';
 import serviceSpecializedImage from '@/assets/service-specialized.jpg';
+import cleaningTeamHero from '@/assets/cleaning-team-hero.jpg';
 const Index = () => {
   const navigate = useNavigate();
   const {
@@ -483,9 +484,43 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Final CTA Section */}
+      {/* Team in Action Section */}
       <section className="py-24 bg-muted/30">
-        
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+            <div className="space-y-6">
+              <Badge className="mb-2" variant="outline">Our Team in Action</Badge>
+              <h2 className="text-4xl md:text-5xl font-bold">
+                Professional Service,
+                <br />
+                <span className="bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+                  Delivered Every Time
+                </span>
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Our experienced cleaning professionals take pride in delivering exceptional results. 
+                With attention to detail and a commitment to excellence, we transform spaces into 
+                spotless environments you'll love coming home to.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Button size="lg" onClick={() => navigate('/booking/service/select')}>
+                  Book Our Team
+                  <Calendar className="w-5 h-5 ml-2" />
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => navigate('/booking/quote')}>
+                  Get a Quote
+                </Button>
+              </div>
+            </div>
+            <div className="relative">
+              <img 
+                src={cleaningTeamHero} 
+                alt="Professional cleaning team at work"
+                className="rounded-2xl shadow-2xl w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
