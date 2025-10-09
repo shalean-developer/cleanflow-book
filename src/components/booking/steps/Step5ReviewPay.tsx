@@ -259,7 +259,7 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
         <p className="text-muted-foreground">Confirm your booking details and complete your reservation</p>
       </div>
 
-      <Card className="p-6 space-y-6">
+      <Card className="p-6 space-y-6 mx-auto max-w-2xl">
         <div>
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
