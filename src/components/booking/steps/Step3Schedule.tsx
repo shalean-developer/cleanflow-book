@@ -92,17 +92,15 @@ export const Step3Schedule = ({ onNext, onBack }: Step3ScheduleProps) => {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        <Card className="p-4 md:p-6">
-          <Label className="text-lg mb-4 block">Select Date</Label>
-          <div className="flex justify-center">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={handleDateSelect}
-              disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-              className="rounded-md border"
-            />
-          </div>
+        <Card className="p-4 md:p-6 max-w-md mx-auto">
+          <Label className="text-lg mb-4 block font-semibold">Select Date</Label>
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={handleDateSelect}
+            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+            className="rounded-lg border-0 w-full"
+          />
         </Card>
 
         <div className="space-y-6">
