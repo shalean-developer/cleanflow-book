@@ -340,7 +340,7 @@ const Index = () => {
                 Apply Now
                 <ClipboardCheck className="w-5 h-5 ml-2" />
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 h-auto bg-white/10 border-white/20 hover:bg-white/20 text-white hover:text-white">
+              <Button size="lg" variant="outline" className="text-lg px-8 h-auto bg-white/10 border-white/20 hover:bg-white/20 text-white hover:text-white py-[12px]">
                 Learn More
               </Button>
             </div>
