@@ -65,7 +65,7 @@ export const Step3Schedule = ({
       <div className="grid lg:grid-cols-2 gap-8">
         <Card className="p-6">
           <Label className="text-lg mb-4 block">Select Date</Label>
-          <Calendar mode="single" selected={date} onSelect={handleDateSelect} disabled={date => date < new Date(new Date().setHours(0, 0, 0, 0))} className="rounded-md border w-full" />
+          <Calendar mode="single" selected={date} onSelect={handleDateSelect} disabled={date => date < new Date(new Date().setHours(0, 0, 0, 0))} className="rounded-md border w-full my-[8px]" />
         </Card>
 
         <div className="space-y-6">
