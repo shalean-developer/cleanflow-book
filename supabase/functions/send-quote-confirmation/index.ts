@@ -9,11 +9,23 @@ const corsHeaders = {
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 interface QuoteRequestData {
-  name: string;
-  email: string;
-  phone?: string;
-  service: string;
-  message?: string;
+  id: string;
+  customer: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  };
+  location: {
+    address1: string;
+    address2: string;
+    city: string;
+    postal: string;
+  };
+  bedrooms: number;
+  bathrooms: number;
+  extras: string[];
+  instructions: string;
 }
 
 serve(async (req) => {
@@ -22,26 +34,39 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, phone, service, message }: QuoteRequestData = await req.json();
+    const quoteData: QuoteRequestData = await req.json();
     
-    if (!name || !email || !service) {
-      throw new Error('Name, email, and service are required');
+    if (!quoteData.id || !quoteData.customer.email) {
+      throw new Error('Quote ID and email are required');
     }
 
-    console.log('Sending quote confirmation to:', email);
+    console.log('Sending quote confirmation for:', quoteData.id);
+
+    const { customer, location, bedrooms, bathrooms, extras, instructions } = quoteData;
+    const fullName = `${customer.firstName} ${customer.lastName}`;
+    const fullAddress = `${location.address1}${location.address2 ? ', ' + location.address2 : ''}, ${location.city}, ${location.postal}`;
+    
+    const extrasText = extras.length > 0 
+      ? extras.map(e => e.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+      : 'None';
 
     // Send confirmation email to customer
     const customerEmailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #333;">Quote Request Received</h1>
-        <p>Hi ${name},</p>
+        <h1 style="color: #0C53ED;">Quote Request Received</h1>
+        <p>Hi ${customer.firstName},</p>
         <p>Thank you for your interest in Shalean Cleaning Services! We have received your quote request and will get back to you within 24 hours.</p>
         
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h2 style="color: #333; margin-top: 0;">Your Request Details</h2>
-          <p><strong>Service:</strong> ${service}</p>
-          ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-          ${message ? `<p><strong>Message:</strong> ${message}</p>` : ''}
+          <p><strong>Quote Reference:</strong> ${quoteData.id}</p>
+          <p><strong>Name:</strong> ${fullName}</p>
+          <p><strong>Phone:</strong> ${customer.phone}</p>
+          <p><strong>Address:</strong> ${fullAddress}</p>
+          <p><strong>Bedrooms:</strong> ${bedrooms}</p>
+          <p><strong>Bathrooms:</strong> ${bathrooms}</p>
+          <p><strong>Additional Services:</strong> ${extrasText}</p>
+          ${instructions ? `<p><strong>Special Instructions:</strong> ${instructions}</p>` : ''}
         </div>
         
         <p>One of our team members will review your request and contact you shortly with a customized quote.</p>
@@ -50,9 +75,9 @@ serve(async (req) => {
     `;
 
     await resend.emails.send({
-      from: 'Shalean Cleaning Services <bookings@shalean.com>',
-      to: [email],
-      subject: 'Quote Request Received - Shalean Cleaning Services',
+      from: 'Shalean Bookings <bookings@shalean.com>',
+      to: [customer.email],
+      subject: `Your Shalean Booking Quote Request – ${fullName}`,
       html: customerEmailHtml,
     });
 
@@ -61,16 +86,20 @@ serve(async (req) => {
     // Send notification to admin
     const adminEmailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h1 style="color: #333;">New Quote Request</h1>
+        <h1 style="color: #0C53ED;">New Quote Request</h1>
         <p>A new quote request has been received.</p>
         
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h2 style="color: #333; margin-top: 0;">Customer Details</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-          <p><strong>Service:</strong> ${service}</p>
-          ${message ? `<p><strong>Message:</strong> ${message}</p>` : ''}
+          <p><strong>Quote Reference:</strong> ${quoteData.id}</p>
+          <p><strong>Name:</strong> ${fullName}</p>
+          <p><strong>Email:</strong> ${customer.email}</p>
+          <p><strong>Phone:</strong> ${customer.phone}</p>
+          <p><strong>Address:</strong> ${fullAddress}</p>
+          <p><strong>Bedrooms:</strong> ${bedrooms}</p>
+          <p><strong>Bathrooms:</strong> ${bathrooms}</p>
+          <p><strong>Additional Services:</strong> ${extrasText}</p>
+          ${instructions ? `<p><strong>Special Instructions:</strong> ${instructions}</p>` : ''}
         </div>
         
         <p>Please respond to this quote request within 24 hours.</p>
@@ -78,9 +107,9 @@ serve(async (req) => {
     `;
 
     await resend.emails.send({
-      from: 'Shalean Cleaning Services System <bookings@shalean.com>',
+      from: 'Shalean Bookings <bookings@shalean.com>',
       to: ['bookings@shalean.com'],
-      subject: `New Quote Request: ${service}`,
+      subject: `New Quote Request: ${fullName}`,
       html: adminEmailHtml,
     });
 

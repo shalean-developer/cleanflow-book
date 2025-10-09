@@ -18,6 +18,8 @@ import Schedule from "./pages/booking/Schedule";
 import Cleaner from "./pages/booking/Cleaner";
 import Review from "./pages/booking/Review";
 import Confirmation from "./pages/booking/Confirmation";
+import Quote from "./pages/booking/Quote";
+import QuoteConfirmation from "./pages/QuoteConfirmation";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,8 @@ const App = () => (
             <Route path="/booking/cleaner" element={<Cleaner />} />
             <Route path="/booking/review" element={<Review />} />
             <Route path="/booking/confirmation" element={<Confirmation />} />
+            <Route path="/booking/quote" element={<Quote />} />
+            <Route path="/quote/confirmation" element={<QuoteConfirmation />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
