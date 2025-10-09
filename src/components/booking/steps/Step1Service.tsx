@@ -30,10 +30,20 @@ export const Step1Service = ({
       setLoading(true);
       setError(null);
       
-      const { data, error } = await supabase
+      console.log('[Step1Service] About to query services table');
+      
+      const query = supabase
         .from('services')
         .select('*')
         .eq('active', true);
+      
+      console.log('[Step1Service] Query object created:', query);
+      
+      const result = await query;
+      
+      console.log('[Step1Service] Query result received:', result);
+      
+      const { data, error } = result;
       
       console.log('[Step1Service] Data:', data);
       console.log('[Step1Service] Error:', error);
