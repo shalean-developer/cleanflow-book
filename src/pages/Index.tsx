@@ -6,7 +6,6 @@ import { Sparkles, CheckCircle, Star, Calendar, Home, Building2, Droplets, Clipb
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
 import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';
@@ -139,8 +138,8 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/10" />
-        <div className="container mx-auto px-4 py-24 md:py-32 relative">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
+        <div className="container mx-auto md:py-32 relative px-0 py-[12px]">
+          <div className="max-w-4xl mx-auto text-center space-y-8 my-0 py-[12px]">
             <Badge className="inline-flex items-center gap-2 px-4 py-2" variant="outline">
               <Sparkles className="w-4 h-4" />
               Cape Town's Trusted Cleaning Experts
@@ -200,11 +199,7 @@ const Index = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {services.map((service, i) => <Card key={i} className="hover:shadow-lg transition-shadow border-2 hover:border-primary/20 overflow-hidden">
-                <img 
-                  src={service.image} 
-                  alt={service.title}
-                  className="w-full h-40 object-cover"
-                />
+                <img src={service.image} alt={service.title} className="w-full h-40 object-cover" />
                 <CardHeader>
                   <CardTitle className="text-xl">{service.title}</CardTitle>
                   <CardDescription className="text-base">{service.description}</CardDescription>
@@ -270,9 +265,7 @@ const Index = () => {
                   </Avatar>
                   <CardTitle>{member.name}</CardTitle>
                   <div className="flex justify-center gap-1 mt-2">
-                    {[...Array(5)].map((_, idx) => (
-                      <Star key={idx} className="w-4 h-4 fill-primary text-primary" />
-                    ))}
+                    {[...Array(5)].map((_, idx) => <Star key={idx} className="w-4 h-4 fill-primary text-primary" />)}
                   </div>
                   <CardDescription className="text-sm mt-1">{member.role}</CardDescription>
                 </CardHeader>
@@ -362,11 +355,7 @@ const Index = () => {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {blogPosts.map((post, i) => <Card key={i} className="hover:shadow-lg transition-shadow overflow-hidden group cursor-pointer">
-                <img 
-                  src={post.image} 
-                  alt={post.title}
-                  className="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+                <img src={post.image} alt={post.title} className="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 <CardHeader>
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant="secondary">{post.category}</Badge>
@@ -458,18 +447,13 @@ const Index = () => {
               </div>
             </div>
             <div className="relative">
-              <img 
-                src={cleaningTeamHero} 
-                alt="Professional cleaning team at work"
-                className="rounded-2xl shadow-2xl w-full h-auto object-cover"
-              />
+              <img src={cleaningTeamHero} alt="Professional cleaning team at work" className="rounded-2xl shadow-2xl w-full h-auto object-cover" />
             </div>
           </div>
         </div>
       </section>
 
       <Footer />
-      <NewCustomerPromoModal />
     </div>;
 };
 export default Index;
