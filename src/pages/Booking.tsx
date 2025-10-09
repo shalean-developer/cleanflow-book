@@ -62,7 +62,7 @@ const BookingContent = () => {
       <div className="container mx-auto px-4 py-8">
         <BookingStepper currentStep={currentStep} steps={STEPS} />
         
-        <div className="grid lg:grid-cols-[1fr_300px] gap-8 mt-8 my-0">
+        <div className="grid lg:grid-cols-[1fr_300px] gap-8 mt-8 my-0 mx-auto max-w-7xl">
           <div>
             {currentStep === 1 && <Step1Service onNext={nextStep} />}
             {currentStep === 2 && <Step2Property onNext={nextStep} onBack={prevStep} />}
