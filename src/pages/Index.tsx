@@ -443,27 +443,7 @@ const Index = () => {
 
       {/* Final CTA Section */}
       <section className="py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <Card className="max-w-4xl mx-auto border-2 border-primary/20 shadow-xl">
-            <CardHeader className="text-center pb-8 pt-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mx-auto mb-6">
-                <Sparkles className="w-8 h-8 text-primary" />
-              </div>
-              <CardTitle className="text-4xl md:text-5xl mb-4">
-                Ready for a Spotless Home?
-              </CardTitle>
-              <CardDescription className="text-lg">
-                Book your cleaning service today and experience the Shalean difference
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center pb-12">
-              <Button size="lg" onClick={() => navigate('/booking/service/select')} className="text-lg px-10 py-6 h-auto shadow-lg hover:shadow-xl">
-                Book Now
-                <Calendar className="w-5 h-5 ml-2" />
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        
       </section>
 
       {/* Footer */}
