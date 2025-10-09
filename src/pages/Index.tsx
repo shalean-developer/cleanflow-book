@@ -6,6 +6,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sparkles, CheckCircle, Star, Calendar, LogIn, User, Home, Building2, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import luciaImage from '@/assets/lucia-pazvakavambwa.jpg';
+import normatterImage from '@/assets/normatter-mazhinji.jpg';
+import nyashaImage from '@/assets/nyasha-mudani.jpg';
 const Index = () => {
   const navigate = useNavigate();
   const {
@@ -51,29 +54,23 @@ const Index = () => {
     description: 'Relax while we handle the rest'
   }];
   const team = [{
-    name: 'Sarah Johnson',
+    name: 'Lucia Pazvakavambwa',
     role: 'Lead Cleaner',
-    image: '',
-    initials: 'SJ',
+    image: luciaImage,
+    initials: 'LP',
     experience: '8 years'
   }, {
-    name: 'Michael Chen',
+    name: 'Normatter Mazhinji',
     role: 'Deep Clean Specialist',
-    image: '',
-    initials: 'MC',
+    image: normatterImage,
+    initials: 'NM',
     experience: '6 years'
   }, {
-    name: 'Emma Davis',
+    name: 'Nyasha Mudani',
     role: 'Senior Cleaner',
-    image: '',
-    initials: 'ED',
+    image: nyashaImage,
+    initials: 'NM',
     experience: '5 years'
-  }, {
-    name: 'James Wilson',
-    role: 'Team Supervisor',
-    image: '',
-    initials: 'JW',
-    experience: '10 years'
   }];
   const benefits = [{
     icon: Shield,
@@ -298,7 +295,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {team.map((member, i) => <Card key={i} className="text-center hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-primary/10">
