@@ -31,21 +31,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (error) {
         console.error('Error fetching user role:', error);
-        setUserRole(null);
+        setUserRole('customer'); // Default to customer on error
       } else if (data && data.length > 0) {
-        // If user has multiple roles, prioritize admin
+        // If user has multiple roles, prioritize admin > cleaner > customer
         const roles = data.map(r => r.role);
         if (roles.includes('admin')) {
           setUserRole('admin');
+        } else if (roles.includes('cleaner')) {
+          setUserRole('cleaner');
         } else {
           setUserRole(roles[0]);
         }
       } else {
-        setUserRole(null);
+        // If no role exists, default to customer
+        setUserRole('customer');
       }
     } catch (error) {
       console.error('Caught error fetching user role:', error);
-      setUserRole(null);
+      setUserRole('customer'); // Default to customer on error
     } finally {
       setLoading(false);
     }

@@ -7,7 +7,25 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, userRole, signOut } = useAuth();
+
+  const handleDashboardClick = () => {
+    if (!userRole) {
+      navigate('/dashboard/customer');
+      return;
+    }
+    
+    switch (userRole) {
+      case 'admin':
+        navigate('/dashboard/admin');
+        break;
+      case 'cleaner':
+        navigate('/dashboard/cleaner');
+        break;
+      default:
+        navigate('/dashboard/customer');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background backdrop-blur supports-[backdrop-filter]:bg-background">
@@ -37,7 +55,7 @@ export const Header = () => {
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 bg-background z-50" align="end">
-                  <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer">
+                  <DropdownMenuItem onClick={handleDashboardClick} className="cursor-pointer">
                     <User className="w-4 h-4 mr-2" />
                     Dashboard
                   </DropdownMenuItem>
