@@ -9,6 +9,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';
+import blogCleaningTipsImage from '@/assets/blog-cleaning-tips.jpg';
+import blogSpringCleaningImage from '@/assets/blog-spring-cleaning.jpg';
+import blogEcoProductsImage from '@/assets/blog-eco-products.jpg';
 const Index = () => {
   const navigate = useNavigate();
   const {
@@ -93,17 +96,20 @@ const Index = () => {
     title: '10 Tips for Maintaining a Clean Home',
     excerpt: 'Simple daily habits that make a big difference in keeping your home spotless',
     date: 'March 15, 2025',
-    category: 'Tips & Tricks'
+    category: 'Tips & Tricks',
+    image: blogCleaningTipsImage
   }, {
     title: 'Spring Cleaning Checklist',
     excerpt: 'Your complete guide to refreshing every corner of your home this season',
     date: 'March 10, 2025',
-    category: 'Guides'
+    category: 'Guides',
+    image: blogSpringCleaningImage
   }, {
     title: 'Eco-Friendly Cleaning Products We Love',
     excerpt: 'Discover our favorite green cleaning solutions that are safe and effective',
     date: 'March 5, 2025',
-    category: 'Products'
+    category: 'Products',
+    image: blogEcoProductsImage
   }];
   const reviews = [{
     name: 'Jessica Miller',
@@ -398,7 +404,11 @@ const Index = () => {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {blogPosts.map((post, i) => <Card key={i} className="hover:shadow-lg transition-shadow overflow-hidden group cursor-pointer">
-                <div className="h-48 bg-gradient-to-br from-primary/20 to-primary/5 group-hover:from-primary/30 group-hover:to-primary/10 transition-all" />
+                <img 
+                  src={post.image} 
+                  alt={post.title}
+                  className="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
                 <CardHeader>
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant="secondary">{post.category}</Badge>
