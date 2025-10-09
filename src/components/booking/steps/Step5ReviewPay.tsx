@@ -10,9 +10,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { initializePaystackPayment } from '@/lib/paystack';
 
-// Get Paystack public key from environment
-const PAYSTACK_PUBLIC_KEY = 'pk_test_b5d8e62d4c48e3d6c07b7a4bc2b8f59e2a4c3d6f';
-
 interface Step5ReviewPayProps {
   onBack: () => void;
 }
@@ -23,6 +20,7 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
   const { user } = useAuth();
   const { bookingData, resetBooking } = useBooking();
   const [processing, setProcessing] = useState(false);
+  const [paystackPublicKey, setPaystackPublicKey] = useState<string>('');
 
   // Check authentication on mount
   useEffect(() => {
@@ -32,7 +30,29 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
     }
   }, [user, navigate, serviceName]);
 
+  // Fetch Paystack public key
+  useEffect(() => {
+    const fetchPublicKey = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('get-paystack-public-key');
+        if (error) throw error;
+        if (data?.publicKey) {
+          setPaystackPublicKey(data.publicKey);
+        }
+      } catch (error) {
+        console.error('Error fetching Paystack public key:', error);
+        toast.error('Failed to load payment configuration');
+      }
+    };
+    fetchPublicKey();
+  }, []);
+
   const handlePayment = async () => {
+    if (!paystackPublicKey) {
+      toast.error('Payment system not ready. Please try again.');
+      return;
+    }
+
     setProcessing(true);
     
     try {
@@ -181,7 +201,7 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
       };
 
       const paystack = initializePaystackPayment({
-        key: PAYSTACK_PUBLIC_KEY,
+        key: paystackPublicKey,
         email: userEmail,
         amount: amountInCents,
         currency: 'ZAR',
