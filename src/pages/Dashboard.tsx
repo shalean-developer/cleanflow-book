@@ -9,14 +9,20 @@ const Dashboard = () => {
   const { user, userRole, loading } = useAuth();
 
   useEffect(() => {
-    if (!user && !loading) {
+    // Don't do anything while still loading
+    if (loading) return;
+
+    // Redirect to auth if no user
+    if (!user) {
       navigate('/auth');
       return;
     }
 
-    if (user && userRole && !loading) {
-      // Redirect to role-specific dashboard
-      switch (userRole) {
+    // Once user is loaded and we're not loading anymore, redirect based on role
+    // Default to customer if no role is found
+    if (user) {
+      const targetRole = userRole || 'customer';
+      switch (targetRole) {
         case 'admin':
           navigate('/dashboard/admin', { replace: true });
           break;
