@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useBookingStore } from '@/store/bookingStore';
 import { Button } from '@/components/ui/button';
 import { CleanerCard } from '@/components/booking/CleanerCard';
+import { ChooseForMeCard } from '@/components/booking/ChooseForMeCard';
 import { StickySummary } from '@/components/booking/StickySummary';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Header } from '@/components/Header';
@@ -60,6 +61,12 @@ export default function Cleaner() {
     setCleaner(id, name);
   };
 
+  const handleChooseForMe = () => {
+    setSelectedCleanerId('auto-match');
+    setCleaner('auto-match', 'Auto-matched by Shalean');
+    navigate('/booking/review');
+  };
+
   const handleContinue = () => {
     if (selectedCleanerId) {
       navigate('/booking/review');
@@ -85,29 +92,33 @@ export default function Cleaner() {
                 </p>
               </div>
 
-              {filteredCleaners.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground mb-4">No cleaners available for your selected time and location.</p>
-                  <Button variant="outline" onClick={() => navigate('/booking/schedule')}>
-                    Change Schedule
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredCleaners.map((cleaner) => (
-                    <CleanerCard
-                      key={cleaner.id}
-                      id={cleaner.id}
-                      name={cleaner.name}
-                      rating={Number(cleaner.rating)}
-                      serviceAreas={cleaner.service_areas}
-                      isAvailable={true}
-                      selected={selectedCleanerId === cleaner.id}
-                      onSelect={handleSelectCleaner}
-                    />
-                  ))}
-                </div>
-              )}
+              <div className="space-y-6">
+                <ChooseForMeCard onSelect={handleChooseForMe} />
+
+                {filteredCleaners.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground mb-4">No cleaners available for your selected time and location.</p>
+                    <Button variant="outline" onClick={() => navigate('/booking/schedule')}>
+                      Change Schedule
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredCleaners.map((cleaner) => (
+                      <CleanerCard
+                        key={cleaner.id}
+                        id={cleaner.id}
+                        name={cleaner.name}
+                        rating={Number(cleaner.rating)}
+                        serviceAreas={cleaner.service_areas}
+                        isAvailable={true}
+                        selected={selectedCleanerId === cleaner.id}
+                        onSelect={handleSelectCleaner}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {filteredCleaners.length > 0 && (
                 <Button onClick={handleContinue} size="lg" className="w-full md:w-auto" disabled={!selectedCleanerId}>
