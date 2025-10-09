@@ -134,10 +134,11 @@ const Index = () => {
               <span>Shalean</span>
             </div>
             <div className="hidden md:flex items-center gap-6">
+              <a href="#" className="text-sm font-medium hover:text-primary transition-colors">Home</a>
               <a href="#services" className="text-sm font-medium hover:text-primary transition-colors">Services</a>
               <a href="#how-it-works" className="text-sm font-medium hover:text-primary transition-colors">How It Works</a>
-              <a href="#team" className="text-sm font-medium hover:text-primary transition-colors">Team</a>
-              <a href="#reviews" className="text-sm font-medium hover:text-primary transition-colors">Reviews</a>
+              <a href="#locations" className="text-sm font-medium hover:text-primary transition-colors">Locations</a>
+              <a href="#contact" className="text-sm font-medium hover:text-primary transition-colors">Contact Us</a>
               <a href="#blog" className="text-sm font-medium hover:text-primary transition-colors">Blog</a>
             </div>
             <div className="flex items-center gap-3">
