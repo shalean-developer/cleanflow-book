@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useBooking } from '@/contexts/BookingContext';
-import { Calendar, MapPin, User, Clock, Home, Sparkles } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Calendar, MapPin, User, Clock, Home, Sparkles, LogIn } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -14,8 +15,18 @@ interface Step5ReviewPayProps {
 
 export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
   const navigate = useNavigate();
+  const { serviceName } = useParams();
+  const { user } = useAuth();
   const { bookingData, resetBooking } = useBooking();
   const [processing, setProcessing] = useState(false);
+
+  // Check authentication on mount
+  useEffect(() => {
+    if (!user) {
+      const returnUrl = `/booking/service/${serviceName || 'select'}`;
+      navigate(`/auth?returnTo=${encodeURIComponent(returnUrl)}`);
+    }
+  }, [user, navigate, serviceName]);
 
   const handlePayment = async () => {
     setProcessing(true);
@@ -103,11 +114,16 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
     }
   };
 
+  // Don't render if not authenticated
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="space-y-8 max-w-3xl mx-auto">
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">Review & Pay</h2>
-        <p className="text-muted-foreground">Confirm your booking details</p>
+        <p className="text-muted-foreground">Confirm your booking details and complete your reservation</p>
       </div>
 
       <Card className="p-6 space-y-6">

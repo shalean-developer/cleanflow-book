@@ -26,19 +26,11 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route 
               path="/booking/service/select" 
-              element={
-                <ProtectedRoute>
-                  <Booking />
-                </ProtectedRoute>
-              } 
+              element={<Booking />} 
             />
             <Route 
               path="/booking/service/:serviceName" 
-              element={
-                <ProtectedRoute>
-                  <Booking />
-                </ProtectedRoute>
-              } 
+              element={<Booking />} 
             />
             <Route 
               path="/booking/confirmation" 
