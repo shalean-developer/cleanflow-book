@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useBooking } from '@/contexts/BookingContext';
 import { supabase } from '@/integrations/supabase/client';
 import { TimeSlotGrid } from '../TimeSlotGrid';
@@ -16,6 +21,9 @@ interface Step3ScheduleProps {
 export const Step3Schedule = ({ onNext, onBack }: Step3ScheduleProps) => {
   const { bookingData, updateBooking } = useBooking();
   const [serviceAreas, setServiceAreas] = useState<any[]>([]);
+  const [filteredAreas, setFilteredAreas] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(
     bookingData.date ? new Date(bookingData.date) : undefined
   );
@@ -24,13 +32,29 @@ export const Step3Schedule = ({ onNext, onBack }: Step3ScheduleProps) => {
     fetchServiceAreas();
   }, []);
 
+  useEffect(() => {
+    if (searchQuery.length >= 3) {
+      const filtered = serviceAreas.filter(area =>
+        area.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredAreas(filtered);
+    } else if (searchQuery.length === 0) {
+      setFilteredAreas(serviceAreas);
+    } else {
+      setFilteredAreas([]);
+    }
+  }, [searchQuery, serviceAreas]);
+
   const fetchServiceAreas = async () => {
     const { data } = await supabase
       .from('service_areas')
       .select('*')
       .eq('active', true);
     
-    if (data) setServiceAreas(data);
+    if (data) {
+      setServiceAreas(data);
+      setFilteredAreas(data);
+    }
   };
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
@@ -47,6 +71,11 @@ export const Step3Schedule = ({ onNext, onBack }: Step3ScheduleProps) => {
   const handleAreaChange = (areaId: string) => {
     const area = serviceAreas.find(a => a.id === areaId);
     updateBooking({ areaId, areaName: area?.name });
+    setOpen(false);
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateBooking({ houseDetails: e.target.value });
   };
 
   const handleFrequencyChange = (frequency: string) => {
@@ -77,18 +106,68 @@ export const Step3Schedule = ({ onNext, onBack }: Step3ScheduleProps) => {
         <div className="space-y-6">
           <div>
             <Label htmlFor="area" className="text-lg">Service Location</Label>
-            <Select value={bookingData.areaId} onValueChange={handleAreaChange}>
-              <SelectTrigger id="area" className="mt-2">
-                <SelectValue placeholder="Select your area" />
-              </SelectTrigger>
-              <SelectContent>
-                {serviceAreas.map((area) => (
-                  <SelectItem key={area.id} value={area.id}>
-                    {area.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-full justify-between mt-2"
+                >
+                  {bookingData.areaId
+                    ? serviceAreas.find((area) => area.id === bookingData.areaId)?.name
+                    : "Select your area..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0 bg-background z-50" align="start">
+                <Command>
+                  <CommandInput 
+                    placeholder="Type at least 3 letters to search..." 
+                    value={searchQuery}
+                    onValueChange={setSearchQuery}
+                  />
+                  <CommandList>
+                    <CommandEmpty>
+                      {searchQuery.length < 3 
+                        ? "Type at least 3 letters to search" 
+                        : "No location found."}
+                    </CommandEmpty>
+                    {searchQuery.length >= 3 && (
+                      <CommandGroup>
+                        {filteredAreas.map((area) => (
+                          <CommandItem
+                            key={area.id}
+                            value={area.id}
+                            onSelect={() => handleAreaChange(area.id)}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                bookingData.areaId === area.id ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {area.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    )}
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div>
+            <Label htmlFor="address" className="text-lg">Home Address</Label>
+            <Input
+              id="address"
+              type="text"
+              placeholder="Enter your full home address"
+              value={bookingData.houseDetails || ''}
+              onChange={handleAddressChange}
+              className="mt-2"
+            />
           </div>
 
           <div>
@@ -97,7 +176,7 @@ export const Step3Schedule = ({ onNext, onBack }: Step3ScheduleProps) => {
               <SelectTrigger id="frequency" className="mt-2">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background z-50">
                 <SelectItem value="once-off">Once-off</SelectItem>
                 <SelectItem value="weekly">Weekly</SelectItem>
                 <SelectItem value="bi-weekly">Bi-weekly</SelectItem>
