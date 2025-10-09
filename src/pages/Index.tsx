@@ -6,9 +6,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sparkles, CheckCircle, Star, Calendar, LogIn, User, Home, Building2, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import luciaImage from '@/assets/lucia-pazvakavambwa.jpg';
-import normatterImage from '@/assets/normatter-mazhinji.jpg';
-import nyashaImage from '@/assets/nyasha-mudani.jpg';
+import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
+import normatterImage from '@/assets/normatter-mazhinji.webp';
+import nyashaImage from '@/assets/nyasha-mudani.webp';
 const Index = () => {
   const navigate = useNavigate();
   const {
