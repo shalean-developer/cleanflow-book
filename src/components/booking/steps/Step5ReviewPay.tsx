@@ -77,6 +77,7 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
           p_bathrooms: bookingData.bathrooms,
           p_extra_ids: extraIds.length > 0 ? extraIds : null,
           p_service_id: bookingData.serviceId || null,
+          p_frequency: bookingData.frequency || 'once-off',
         });
 
       if (priceError) {

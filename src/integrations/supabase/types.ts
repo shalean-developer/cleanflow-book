@@ -423,6 +423,13 @@ export type Database = {
               p_bathrooms: number
               p_bedrooms: number
               p_extra_ids: string[]
+              p_frequency?: string
+              p_service_id?: string
+            }
+          | {
+              p_bathrooms: number
+              p_bedrooms: number
+              p_extra_ids: string[]
               p_service_id?: string
             }
         Returns: number
