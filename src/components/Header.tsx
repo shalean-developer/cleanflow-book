@@ -27,6 +27,11 @@ export const Header = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b bg-background backdrop-blur supports-[backdrop-filter]:bg-background">
       <nav className="container mx-auto px-4 py-4">
@@ -60,7 +65,7 @@ export const Header = () => {
                     Dashboard
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive">
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
                     <LogIn className="w-4 h-4 mr-2" />
                     Sign Out
                   </DropdownMenuItem>
