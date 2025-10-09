@@ -187,7 +187,7 @@ const Index = () => {
               </Button>
               <Button size="lg" variant="outline" onClick={() => document.getElementById('services')?.scrollIntoView({
               behavior: 'smooth'
-            })} className="text-lg px-8 py-6 h-auto">
+            })} className="text-lg px-8 h-auto py-[12px]">
                 View Services
               </Button>
             </div>
