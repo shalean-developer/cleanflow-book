@@ -12,6 +12,11 @@ import BookingQuote from "./pages/BookingQuote";
 import QuoteConfirmation from "./pages/QuoteConfirmation";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import Dashboard from "./pages/Dashboard";
+import Services from "./pages/Services";
+import HowItWorks from "./pages/HowItWorks";
+import Locations from "./pages/Locations";
+import ContactUs from "./pages/ContactUs";
+import Blog from "./pages/Blog";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +31,11 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/locations" element={<Locations />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/blog" element={<Blog />} />
             <Route path="/booking/quote" element={<BookingQuote />} />
             <Route path="/booking/quote/confirmation" element={<QuoteConfirmation />} />
             <Route 
