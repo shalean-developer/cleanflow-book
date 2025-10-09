@@ -2,180 +2,128 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Sparkles, 
-  CheckCircle, 
-  Star, 
-  Calendar, 
-  LogIn, 
-  User,
-  Home,
-  Building2,
-  Droplets,
-  ClipboardCheck,
-  Users,
-  Award,
-  Clock,
-  Shield,
-  BookOpen,
-  Briefcase,
-  Quote
-} from 'lucide-react';
+import { Sparkles, CheckCircle, Star, Calendar, LogIn, User, Home, Building2, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-
 const Index = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
-
-  const services = [
-    {
-      icon: Home,
-      title: 'Standard Cleaning',
-      description: 'Regular home maintenance to keep your space fresh and tidy',
-      features: ['Dusting & vacuuming', 'Kitchen & bathroom', 'Floor cleaning']
-    },
-    {
-      icon: Droplets,
-      title: 'Deep Cleaning',
-      description: 'Thorough top-to-bottom cleaning for a spotless home',
-      features: ['Behind appliances', 'Inside cabinets', 'Window cleaning']
-    },
-    {
-      icon: Building2,
-      title: 'Move In/Out',
-      description: 'Complete cleaning for seamless transitions',
-      features: ['Empty property focus', 'All surfaces sanitized', 'Ready for occupancy']
-    },
-    {
-      icon: Sparkles,
-      title: 'Specialized Services',
-      description: 'Carpet, upholstery, and post-construction cleaning',
-      features: ['Carpet shampooing', 'Furniture deep clean', 'Dust removal']
-    }
-  ];
-
-  const steps = [
-    {
-      number: '01',
-      title: 'Choose Your Service',
-      description: 'Select the cleaning package that fits your needs'
-    },
-    {
-      number: '02',
-      title: 'Pick Date & Time',
-      description: 'Book a slot that works with your schedule'
-    },
-    {
-      number: '03',
-      title: 'Meet Your Cleaner',
-      description: 'Get matched with a vetted professional'
-    },
-    {
-      number: '04',
-      title: 'Enjoy Your Clean Home',
-      description: 'Relax while we handle the rest'
-    }
-  ];
-
-  const team = [
-    {
-      name: 'Sarah Johnson',
-      role: 'Lead Cleaner',
-      image: '',
-      initials: 'SJ',
-      experience: '8 years'
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Deep Clean Specialist',
-      image: '',
-      initials: 'MC',
-      experience: '6 years'
-    },
-    {
-      name: 'Emma Davis',
-      role: 'Senior Cleaner',
-      image: '',
-      initials: 'ED',
-      experience: '5 years'
-    },
-    {
-      name: 'James Wilson',
-      role: 'Team Supervisor',
-      image: '',
-      initials: 'JW',
-      experience: '10 years'
-    }
-  ];
-
-  const benefits = [
-    {
-      icon: Shield,
-      title: 'Fully Insured',
-      description: 'All cleaners are insured and background-checked for your peace of mind'
-    },
-    {
-      icon: Award,
-      title: 'Quality Guaranteed',
-      description: "Not satisfied? We'll re-clean for free within 24 hours"
-    },
-    {
-      icon: Clock,
-      title: 'Flexible Scheduling',
-      description: 'Book one-time or recurring services that fit your lifestyle'
-    },
-    {
-      icon: Users,
-      title: 'Experienced Team',
-      description: 'Our cleaners average 7+ years of professional experience'
-    }
-  ];
-
-  const blogPosts = [
-    {
-      title: '10 Tips for Maintaining a Clean Home',
-      excerpt: 'Simple daily habits that make a big difference in keeping your home spotless',
-      date: 'March 15, 2025',
-      category: 'Tips & Tricks'
-    },
-    {
-      title: 'Spring Cleaning Checklist',
-      excerpt: 'Your complete guide to refreshing every corner of your home this season',
-      date: 'March 10, 2025',
-      category: 'Guides'
-    },
-    {
-      title: 'Eco-Friendly Cleaning Products We Love',
-      excerpt: 'Discover our favorite green cleaning solutions that are safe and effective',
-      date: 'March 5, 2025',
-      category: 'Products'
-    }
-  ];
-
-  const reviews = [
-    {
-      name: 'Jessica Miller',
-      rating: 5,
-      comment: 'Absolutely amazing service! My home has never looked better. The team was professional and thorough.',
-      date: 'March 2025'
-    },
-    {
-      name: 'Robert Thompson',
-      rating: 5,
-      comment: "I've tried several cleaning services in Cape Town, and Shalean is by far the best. Reliable and detail-oriented.",
-      date: 'February 2025'
-    },
-    {
-      name: 'Amanda Foster',
-      rating: 5,
-      comment: 'The deep cleaning service exceeded my expectations. Every corner sparkles! Highly recommend.',
-      date: 'February 2025'
-    }
-  ];
-
-  return (
-    <div className="min-h-screen">
+  const {
+    user,
+    signOut
+  } = useAuth();
+  const services = [{
+    icon: Home,
+    title: 'Standard Cleaning',
+    description: 'Regular home maintenance to keep your space fresh and tidy',
+    features: ['Dusting & vacuuming', 'Kitchen & bathroom', 'Floor cleaning']
+  }, {
+    icon: Droplets,
+    title: 'Deep Cleaning',
+    description: 'Thorough top-to-bottom cleaning for a spotless home',
+    features: ['Behind appliances', 'Inside cabinets', 'Window cleaning']
+  }, {
+    icon: Building2,
+    title: 'Move In/Out',
+    description: 'Complete cleaning for seamless transitions',
+    features: ['Empty property focus', 'All surfaces sanitized', 'Ready for occupancy']
+  }, {
+    icon: Sparkles,
+    title: 'Specialized Services',
+    description: 'Carpet, upholstery, and post-construction cleaning',
+    features: ['Carpet shampooing', 'Furniture deep clean', 'Dust removal']
+  }];
+  const steps = [{
+    number: '01',
+    title: 'Choose Your Service',
+    description: 'Select the cleaning package that fits your needs'
+  }, {
+    number: '02',
+    title: 'Pick Date & Time',
+    description: 'Book a slot that works with your schedule'
+  }, {
+    number: '03',
+    title: 'Meet Your Cleaner',
+    description: 'Get matched with a vetted professional'
+  }, {
+    number: '04',
+    title: 'Enjoy Your Clean Home',
+    description: 'Relax while we handle the rest'
+  }];
+  const team = [{
+    name: 'Sarah Johnson',
+    role: 'Lead Cleaner',
+    image: '',
+    initials: 'SJ',
+    experience: '8 years'
+  }, {
+    name: 'Michael Chen',
+    role: 'Deep Clean Specialist',
+    image: '',
+    initials: 'MC',
+    experience: '6 years'
+  }, {
+    name: 'Emma Davis',
+    role: 'Senior Cleaner',
+    image: '',
+    initials: 'ED',
+    experience: '5 years'
+  }, {
+    name: 'James Wilson',
+    role: 'Team Supervisor',
+    image: '',
+    initials: 'JW',
+    experience: '10 years'
+  }];
+  const benefits = [{
+    icon: Shield,
+    title: 'Fully Insured',
+    description: 'All cleaners are insured and background-checked for your peace of mind'
+  }, {
+    icon: Award,
+    title: 'Quality Guaranteed',
+    description: "Not satisfied? We'll re-clean for free within 24 hours"
+  }, {
+    icon: Clock,
+    title: 'Flexible Scheduling',
+    description: 'Book one-time or recurring services that fit your lifestyle'
+  }, {
+    icon: Users,
+    title: 'Experienced Team',
+    description: 'Our cleaners average 7+ years of professional experience'
+  }];
+  const blogPosts = [{
+    title: '10 Tips for Maintaining a Clean Home',
+    excerpt: 'Simple daily habits that make a big difference in keeping your home spotless',
+    date: 'March 15, 2025',
+    category: 'Tips & Tricks'
+  }, {
+    title: 'Spring Cleaning Checklist',
+    excerpt: 'Your complete guide to refreshing every corner of your home this season',
+    date: 'March 10, 2025',
+    category: 'Guides'
+  }, {
+    title: 'Eco-Friendly Cleaning Products We Love',
+    excerpt: 'Discover our favorite green cleaning solutions that are safe and effective',
+    date: 'March 5, 2025',
+    category: 'Products'
+  }];
+  const reviews = [{
+    name: 'Jessica Miller',
+    rating: 5,
+    comment: 'Absolutely amazing service! My home has never looked better. The team was professional and thorough.',
+    date: 'March 2025'
+  }, {
+    name: 'Robert Thompson',
+    rating: 5,
+    comment: "I've tried several cleaning services in Cape Town, and Shalean is by far the best. Reliable and detail-oriented.",
+    date: 'February 2025'
+  }, {
+    name: 'Amanda Foster',
+    rating: 5,
+    comment: 'The deep cleaning service exceeded my expectations. Every corner sparkles! Highly recommend.',
+    date: 'February 2025'
+  }];
+  return <div className="min-h-screen">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <nav className="container mx-auto px-4 py-4">
@@ -192,26 +140,18 @@ const Index = () => {
               <a href="#blog" className="text-sm font-medium hover:text-primary transition-colors">Blog</a>
             </div>
             <div className="flex items-center gap-3">
-              {user ? (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => navigate('/dashboard')}
-                  >
+              {user ? <>
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
                     <User className="w-4 h-4 mr-2" />
                     Dashboard
                   </Button>
                   <Button variant="outline" size="sm" onClick={signOut}>
                     Sign Out
                   </Button>
-                </>
-              ) : (
-                <Button size="sm" onClick={() => navigate('/auth')}>
+                </> : <Button size="sm" onClick={() => navigate('/auth')}>
                   <LogIn className="w-4 h-4 mr-2" />
                   Sign In
-                </Button>
-              )}
+                </Button>}
             </div>
           </div>
         </nav>
@@ -241,20 +181,13 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-              <Button
-                size="lg"
-                onClick={() => navigate('/booking/service/select')}
-                className="text-lg px-8 py-6 h-auto shadow-lg hover:shadow-xl transition-shadow"
-              >
+              <Button size="lg" onClick={() => navigate('/booking/service/select')} className="text-lg px-8 h-auto shadow-lg hover:shadow-xl transition-shadow py-[12px]">
                 Book Now
                 <Calendar className="w-5 h-5 ml-2" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-                className="text-lg px-8 py-6 h-auto"
-              >
+              <Button size="lg" variant="outline" onClick={() => document.getElementById('services')?.scrollIntoView({
+              behavior: 'smooth'
+            })} className="text-lg px-8 py-6 h-auto">
                 View Services
               </Button>
             </div>
@@ -289,8 +222,7 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {services.map((service, i) => (
-              <Card key={i} className="hover:shadow-lg transition-shadow border-2 hover:border-primary/20">
+            {services.map((service, i) => <Card key={i} className="hover:shadow-lg transition-shadow border-2 hover:border-primary/20">
                 <CardHeader>
                   <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                     <service.icon className="w-7 h-7 text-primary" />
@@ -300,16 +232,13 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-sm">
+                    {service.features.map((feature, idx) => <li key={idx} className="flex items-center gap-2 text-sm">
                         <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
                         <span>{feature}</span>
-                      </li>
-                    ))}
+                      </li>)}
                   </ul>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -326,11 +255,8 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-            {steps.map((step, i) => (
-              <div key={i} className="relative">
-                {i < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />
-                )}
+            {steps.map((step, i) => <div key={i} className="relative">
+                {i < steps.length - 1 && <div className="hidden lg:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />}
                 <div className="text-center space-y-4">
                   <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-glow text-primary-foreground text-2xl font-bold shadow-lg">
                     {step.number}
@@ -338,8 +264,7 @@ const Index = () => {
                   <h3 className="text-xl font-semibold">{step.title}</h3>
                   <p className="text-muted-foreground">{step.description}</p>
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </section>
@@ -356,8 +281,7 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {team.map((member, i) => (
-              <Card key={i} className="text-center hover:shadow-lg transition-shadow">
+            {team.map((member, i) => <Card key={i} className="text-center hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-primary/10">
                     <AvatarImage src={member.image} />
@@ -371,8 +295,7 @@ const Index = () => {
                 <CardContent>
                   <Badge variant="secondary">{member.experience} experience</Badge>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -389,15 +312,13 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-            {benefits.map((benefit, i) => (
-              <div key={i} className="text-center space-y-4">
+            {benefits.map((benefit, i) => <div key={i} className="text-center space-y-4">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary">
                   <benefit.icon className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-semibold">{benefit.title}</h3>
                 <p className="text-muted-foreground">{benefit.description}</p>
-              </div>
-            ))}
+              </div>)}
           </div>
         </div>
       </section>
@@ -415,19 +336,11 @@ const Index = () => {
               passionate, reliable cleaners to join the Shalean family.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button
-                size="lg"
-                variant="secondary"
-                className="text-lg px-8 py-6 h-auto shadow-xl"
-              >
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-6 h-auto shadow-xl">
                 Apply Now
                 <ClipboardCheck className="w-5 h-5 ml-2" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6 h-auto bg-white/10 border-white/20 hover:bg-white/20 text-white hover:text-white"
-              >
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 h-auto bg-white/10 border-white/20 hover:bg-white/20 text-white hover:text-white">
                 Learn More
               </Button>
             </div>
@@ -464,8 +377,7 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {blogPosts.map((post, i) => (
-              <Card key={i} className="hover:shadow-lg transition-shadow overflow-hidden group cursor-pointer">
+            {blogPosts.map((post, i) => <Card key={i} className="hover:shadow-lg transition-shadow overflow-hidden group cursor-pointer">
                 <div className="h-48 bg-gradient-to-br from-primary/20 to-primary/5 group-hover:from-primary/30 group-hover:to-primary/10 transition-all" />
                 <CardHeader>
                   <div className="flex items-center gap-2 mb-2">
@@ -482,8 +394,7 @@ const Index = () => {
                     Read More →
                   </Button>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -500,14 +411,11 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {reviews.map((review, i) => (
-              <Card key={i} className="hover:shadow-lg transition-shadow">
+            {reviews.map((review, i) => <Card key={i} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex gap-1">
-                      {[...Array(review.rating)].map((_, idx) => (
-                        <Star key={idx} className="w-5 h-5 fill-primary text-primary" />
-                      ))}
+                      {[...Array(review.rating)].map((_, idx) => <Star key={idx} className="w-5 h-5 fill-primary text-primary" />)}
                     </div>
                     <Quote className="w-8 h-8 text-primary/20" />
                   </div>
@@ -528,8 +436,7 @@ const Index = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -550,11 +457,7 @@ const Index = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center pb-12">
-              <Button
-                size="lg"
-                onClick={() => navigate('/booking/service/select')}
-                className="text-lg px-10 py-6 h-auto shadow-lg hover:shadow-xl"
-              >
+              <Button size="lg" onClick={() => navigate('/booking/service/select')} className="text-lg px-10 py-6 h-auto shadow-lg hover:shadow-xl">
                 Book Now
                 <Calendar className="w-5 h-5 ml-2" />
               </Button>
@@ -608,8 +511,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
