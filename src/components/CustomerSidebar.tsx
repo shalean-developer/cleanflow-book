@@ -91,8 +91,8 @@ export function CustomerSidebar() {
                       className={({ isActive }) => 
                         `flex items-center gap-4 rounded-2xl px-4 py-3.5 transition-all duration-200 font-medium ${
                           isActive 
-                            ? "!bg-primary !text-white shadow-[0_4px_16px_-4px_rgba(12,83,237,0.4)] scale-[1.02] translate-x-1" 
-                            : "!text-gray-700 dark:!text-gray-300 hover:!bg-gray-50 dark:hover:!bg-gray-800 hover:shadow-[0_2px_8px_-2px_rgba(12,83,237,0.15)] hover:scale-[1.01] hover:translate-x-1"
+                            ? "!bg-primary !text-black shadow-[0_4px_16px_-4px_rgba(12,83,237,0.4)] scale-[1.02] translate-x-1" 
+                            : "!text-black hover:!bg-gray-50 dark:hover:!bg-gray-800 hover:shadow-[0_2px_8px_-2px_rgba(12,83,237,0.15)] hover:scale-[1.01] hover:translate-x-1"
                         }`
                       }
                     >
