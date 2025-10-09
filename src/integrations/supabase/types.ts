@@ -306,6 +306,7 @@ export type Database = {
           bedroom_price: number
           created_at: string | null
           id: string
+          service_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -315,6 +316,7 @@ export type Database = {
           bedroom_price?: number
           created_at?: string | null
           id?: string
+          service_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -324,9 +326,18 @@ export type Database = {
           bedroom_price?: number
           created_at?: string | null
           id?: string
+          service_id?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pricing_config_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -403,7 +414,14 @@ export type Database = {
     }
     Functions: {
       calculate_booking_price: {
-        Args: { p_bathrooms: number; p_bedrooms: number; p_extra_ids: string[] }
+        Args:
+          | { p_bathrooms: number; p_bedrooms: number; p_extra_ids: string[] }
+          | {
+              p_bathrooms: number
+              p_bedrooms: number
+              p_extra_ids: string[]
+              p_service_id?: string
+            }
         Returns: number
       }
     }

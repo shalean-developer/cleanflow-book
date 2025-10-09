@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { z } from 'zod';
+import { supabase } from '@/integrations/supabase/client';
 
 // Validation schemas
 export const bookingValidationSchema = z.object({
@@ -31,8 +32,8 @@ export interface BookingData {
 
 interface BookingContextType {
   bookingData: BookingData;
-  updateBooking: (data: Partial<BookingData>) => void;
-  calculateTotal: () => number;
+  updateBooking: (data: Partial<BookingData>) => Promise<void>;
+  calculateTotal: () => Promise<number>;
   resetBooking: () => void;
 }
 
@@ -64,14 +65,31 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('booking-data', JSON.stringify(bookingData));
   }, [bookingData]);
 
-  const calculateTotal = (data: BookingData = bookingData) => {
-    let total = 300; // Base price
-    
-    // Add bedroom cost
-    total += data.bedrooms * 100;
-    
-    // Add bathroom cost
-    total += data.bathrooms * 80;
+  const calculateTotal = async (data: BookingData = bookingData): Promise<number> => {
+    // Fetch service-specific pricing from database
+    let basePrice = 300;
+    let bedroomPrice = 100;
+    let bathroomPrice = 80;
+
+    if (data.serviceId) {
+      const { data: pricingData } = await supabase
+        .from('pricing_config')
+        .select('base_price, bedroom_price, bathroom_price')
+        .eq('service_id', data.serviceId)
+        .eq('active', true)
+        .maybeSingle();
+
+      if (pricingData) {
+        basePrice = Number(pricingData.base_price);
+        bedroomPrice = Number(pricingData.bedroom_price);
+        bathroomPrice = Number(pricingData.bathroom_price);
+      }
+    }
+
+    // Calculate total
+    let total = basePrice;
+    total += data.bedrooms * bedroomPrice;
+    total += data.bathrooms * bathroomPrice;
     
     // Add extras
     const extrasTotal = data.extras.reduce((sum, extra) => sum + extra.price, 0);
@@ -80,7 +98,7 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
     return total;
   };
 
-  const updateBooking = (data: Partial<BookingData>) => {
+  const updateBooking = async (data: Partial<BookingData>) => {
     // Only validate fields that are being updated
     try {
       // Build validation object with only the fields being updated
@@ -98,12 +116,11 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
         bookingValidationSchema.partial().parse(fieldsToValidate);
       }
       
-      setBookingData(prev => {
-        const updated = { ...prev, ...data };
-        // Recalculate total with the updated data
-        const newTotal = calculateTotal(updated);
-        return { ...updated, totalAmount: newTotal };
-      });
+      const updated = { ...bookingData, ...data };
+      // Recalculate total with the updated data
+      const newTotal = await calculateTotal(updated);
+      
+      setBookingData({ ...updated, totalAmount: newTotal });
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error('Validation error:', error.errors);
