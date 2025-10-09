@@ -101,6 +101,7 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
           service_id: bookingData.serviceId,
           area_id: bookingData.areaId,
           cleaner_id: bookingData.cleanerId,
+          address: bookingData.address,
           date: bookingData.date?.toISOString().split('T')[0],
           time: bookingData.time,
           bedrooms: bookingData.bedrooms,

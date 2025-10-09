@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import ShaleanCalendar from '@/components/ui/shalean-calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -9,8 +10,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { TimeSlotGrid } from '../TimeSlotGrid';
 import { Card } from '@/components/ui/card';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Search, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 interface Step3ScheduleProps {
   onNext: () => void;
   onBack: () => void;
@@ -24,15 +26,32 @@ export const Step3Schedule = ({
     updateBooking
   } = useBooking();
   const [serviceAreas, setServiceAreas] = useState<any[]>([]);
+  const [filteredAreas, setFilteredAreas] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [date, setDate] = useState<Date | undefined>(bookingData.date ? new Date(bookingData.date) : undefined);
   useEffect(() => {
     fetchServiceAreas();
   }, []);
+  
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = serviceAreas.filter(area =>
+        area.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredAreas(filtered);
+    } else {
+      setFilteredAreas(serviceAreas);
+    }
+  }, [searchQuery, serviceAreas]);
+  
   const fetchServiceAreas = async () => {
     const {
       data
     } = await supabase.from('service_areas').select('*').eq('active', true);
-    if (data) setServiceAreas(data);
+    if (data) {
+      setServiceAreas(data);
+      setFilteredAreas(data);
+    }
   };
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (selectedDate) {
@@ -59,7 +78,16 @@ export const Step3Schedule = ({
       frequency
     });
   };
-  const canProceed = bookingData.date && bookingData.time && bookingData.areaId;
+  const getFrequencyDiscount = (frequency: string) => {
+    switch (frequency) {
+      case 'weekly': return '15% off';
+      case 'bi-weekly': return '10% off';
+      case 'monthly': return '5% off';
+      default: return '';
+    }
+  };
+
+  const canProceed = bookingData.date && bookingData.time && bookingData.areaId && bookingData.address;
   return <div className="space-y-8 max-w-5xl mx-auto">
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">Schedule Your Service</h2>
@@ -96,32 +124,99 @@ export const Step3Schedule = ({
 
         <div className="space-y-6">
           <div>
-            <Label htmlFor="area" className="text-lg">Service Location</Label>
-            <Select value={bookingData.areaId} onValueChange={handleAreaChange}>
-              <SelectTrigger id="area" className="mt-2">
-                <SelectValue placeholder="Select your area" />
-              </SelectTrigger>
-              <SelectContent>
-                {serviceAreas.map(area => <SelectItem key={area.id} value={area.id}>
-                    {area.name}
-                  </SelectItem>)}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="area" className="text-lg flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              Service Location
+            </Label>
+            <div className="mt-2 space-y-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search location..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <Select value={bookingData.areaId} onValueChange={handleAreaChange}>
+                <SelectTrigger id="area">
+                  <SelectValue placeholder="Select your area" />
+                </SelectTrigger>
+                <SelectContent className="bg-background z-50">
+                  {filteredAreas.length > 0 ? (
+                    filteredAreas.map(area => (
+                      <SelectItem key={area.id} value={area.id}>
+                        {area.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <div className="py-6 text-center text-sm text-muted-foreground">
+                      No locations found
+                    </div>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="address" className="text-lg">Service Address</Label>
+            <Input
+              id="address"
+              placeholder="Enter your full service address"
+              value={bookingData.address || ''}
+              onChange={(e) => updateBooking({ address: e.target.value })}
+              className="mt-2"
+              maxLength={200}
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Please provide your complete address including street, unit number, etc.
+            </p>
           </div>
 
           <div>
             <Label htmlFor="frequency" className="text-lg">Frequency</Label>
             <Select value={bookingData.frequency} onValueChange={handleFrequencyChange}>
-              <SelectTrigger id="frequency" className="mt-2 my-0">
+              <SelectTrigger id="frequency" className="mt-2">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="once-off">Once-off</SelectItem>
-                <SelectItem value="weekly">Weekly</SelectItem>
-                <SelectItem value="bi-weekly">Bi-weekly</SelectItem>
-                <SelectItem value="monthly">Monthly</SelectItem>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="once-off">
+                  <div className="flex items-center justify-between w-full">
+                    <span>Once-off</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="weekly">
+                  <div className="flex items-center gap-2">
+                    <span>Weekly</span>
+                    <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400">
+                      15% off
+                    </Badge>
+                  </div>
+                </SelectItem>
+                <SelectItem value="bi-weekly">
+                  <div className="flex items-center gap-2">
+                    <span>Bi-weekly</span>
+                    <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400">
+                      10% off
+                    </Badge>
+                  </div>
+                </SelectItem>
+                <SelectItem value="monthly">
+                  <div className="flex items-center gap-2">
+                    <span>Monthly</span>
+                    <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400">
+                      5% off
+                    </Badge>
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
+            {bookingData.frequency !== 'once-off' && (
+              <p className="text-sm text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                🎉 You're saving {getFrequencyDiscount(bookingData.frequency)} with {bookingData.frequency} service!
+              </p>
+            )}
           </div>
         </div>
       </div>

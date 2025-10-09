@@ -49,6 +49,7 @@ export type Database = {
       }
       bookings: {
         Row: {
+          address: string | null
           area_id: string | null
           bathrooms: number | null
           bedrooms: number | null
@@ -68,6 +69,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          address?: string | null
           area_id?: string | null
           bathrooms?: number | null
           bedrooms?: number | null
@@ -87,6 +89,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          address?: string | null
           area_id?: string | null
           bathrooms?: number | null
           bedrooms?: number | null

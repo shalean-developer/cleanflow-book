@@ -8,6 +8,7 @@ export const bookingValidationSchema = z.object({
   bathrooms: z.number().min(1).max(8),
   houseDetails: z.string().max(500).optional(),
   specialInstructions: z.string().max(1000).optional(),
+  address: z.string().min(5, 'Address must be at least 5 characters').max(200, 'Address must be less than 200 characters').optional(),
   date: z.date().min(new Date()).max(new Date(Date.now() + 180 * 24 * 60 * 60 * 1000)).optional(), // 6 months ahead
   frequency: z.enum(['once-off', 'weekly', 'bi-weekly', 'monthly']),
 });
@@ -24,10 +25,12 @@ export interface BookingData {
   time?: string;
   areaId?: string;
   areaName?: string;
+  address?: string;
   frequency: string;
   cleanerId?: string;
   cleanerName?: string;
   totalAmount: number;
+  discount?: number;
 }
 
 interface BookingContextType {
@@ -95,7 +98,17 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
     const extrasTotal = data.extras.reduce((sum, extra) => sum + extra.price, 0);
     total += extrasTotal;
     
-    return total;
+    // Apply frequency discount
+    let discount = 0;
+    if (data.frequency === 'weekly') {
+      discount = total * 0.15; // 15% discount
+    } else if (data.frequency === 'bi-weekly') {
+      discount = total * 0.10; // 10% discount
+    } else if (data.frequency === 'monthly') {
+      discount = total * 0.05; // 5% discount
+    }
+    
+    return total - discount;
   };
 
   const updateBooking = async (data: Partial<BookingData>) => {
@@ -108,6 +121,7 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
       if (data.bathrooms !== undefined) fieldsToValidate.bathrooms = data.bathrooms;
       if (data.houseDetails !== undefined) fieldsToValidate.houseDetails = data.houseDetails;
       if (data.specialInstructions !== undefined) fieldsToValidate.specialInstructions = data.specialInstructions;
+      if (data.address !== undefined) fieldsToValidate.address = data.address;
       if (data.date !== undefined) fieldsToValidate.date = data.date;
       if (data.frequency !== undefined) fieldsToValidate.frequency = data.frequency;
       

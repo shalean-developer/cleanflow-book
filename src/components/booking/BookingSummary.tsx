@@ -1,10 +1,22 @@
-import { Calendar, MapPin, User, Clock, Sparkles } from 'lucide-react';
+import { Calendar, MapPin, User, Clock, Sparkles, Tag } from 'lucide-react';
 import { useBooking } from '@/contexts/BookingContext';
 import { Card } from '@/components/ui/card';
 import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
 
 export const BookingSummary = () => {
   const { bookingData } = useBooking();
+
+  const getFrequencyDiscount = () => {
+    switch (bookingData.frequency) {
+      case 'weekly': return 15;
+      case 'bi-weekly': return 10;
+      case 'monthly': return 5;
+      default: return 0;
+    }
+  };
+
+  const discount = getFrequencyDiscount();
 
   return (
     <Card className="p-6 space-y-4 sticky top-4">
@@ -61,6 +73,22 @@ export const BookingSummary = () => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <MapPin className="w-4 h-4" />
             <span>{bookingData.areaName}</span>
+          </div>
+        )}
+        
+        {bookingData.address && (
+          <div className="text-xs text-muted-foreground pl-6">
+            {bookingData.address}
+          </div>
+        )}
+        
+        {bookingData.frequency && bookingData.frequency !== 'once-off' && (
+          <div className="flex items-center gap-2">
+            <Tag className="w-4 h-4 text-green-600" />
+            <span className="text-sm capitalize">{bookingData.frequency}</span>
+            <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:text-green-400 text-xs">
+              {discount}% off
+            </Badge>
           </div>
         )}
         
