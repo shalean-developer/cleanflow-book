@@ -182,6 +182,23 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
             })
             .eq('reference', reference);
 
+          // Send confirmation emails to customer and admin
+          try {
+            const { error: emailError } = await supabase.functions.invoke('send-booking-confirmation', {
+              body: { bookingId: booking.id }
+            });
+
+            if (emailError) {
+              console.error('Error sending confirmation emails:', emailError);
+              // Don't fail the booking if emails fail
+            } else {
+              console.log('Confirmation emails sent successfully');
+            }
+          } catch (emailError) {
+            console.error('Failed to send confirmation emails:', emailError);
+            // Continue with booking confirmation even if email fails
+          }
+
           // Clear booking data
           resetBooking();
           localStorage.removeItem('booking-data');
