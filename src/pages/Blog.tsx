@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight, BookOpen, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import blogCleaningTipsImage from '@/assets/blog-cleaning-tips.jpg';
 import blogSpringCleaningImage from '@/assets/blog-spring-cleaning.jpg';
 import blogEcoProductsImage from '@/assets/blog-eco-products.jpg';
@@ -77,20 +79,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background">
-        <nav className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 font-bold text-xl cursor-pointer" onClick={() => navigate('/')}>
-              <img src="/favicon.png" alt="Shalean Logo" className="w-6 h-6" />
-              <span>Shalean</span>
-            </div>
-            <Button variant="outline" onClick={() => navigate('/')}>
-              Back to Home
-            </Button>
-          </div>
-        </nav>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-20">
@@ -248,6 +237,7 @@ const Blog = () => {
           </Card>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

@@ -2,10 +2,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { Sparkles, CheckCircle, Star, Calendar, LogIn, User, Home, Building2, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote } from 'lucide-react';
+import { Sparkles, CheckCircle, Star, Calendar, Home, Building2, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';
@@ -19,10 +19,6 @@ import serviceSpecializedImage from '@/assets/service-specialized.jpg';
 import cleaningTeamHero from '@/assets/cleaning-team-hero.jpg';
 const Index = () => {
   const navigate = useNavigate();
-  const {
-    user,
-    signOut
-  } = useAuth();
   const services = [{
     icon: Home,
     image: serviceStandardImage,
@@ -137,59 +133,7 @@ const Index = () => {
     date: 'February 2025'
   }];
   return <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-background backdrop-blur supports-[backdrop-filter]:bg-background">
-        <nav className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 font-bold text-xl">
-              <img src="/favicon.png" alt="Shalean Logo" className="w-6 h-6" />
-              <span>Shalean</span>
-            </div>
-            <div className="hidden md:flex items-center gap-6">
-              <a href="/" className="text-sm font-medium hover:text-primary transition-colors">Home</a>
-              <a href="/services" className="text-sm font-medium hover:text-primary transition-colors">Services</a>
-              <a href="/how-it-works" className="text-sm font-medium hover:text-primary transition-colors">How It Works</a>
-              <a href="/locations" className="text-sm font-medium hover:text-primary transition-colors">Locations</a>
-              <a href="/contact" className="text-sm font-medium hover:text-primary transition-colors">Contact Us</a>
-              <a href="/blog" className="text-sm font-medium hover:text-primary transition-colors">Blog</a>
-            </div>
-            <div className="flex items-center gap-3">
-              {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Avatar className="cursor-pointer hover:opacity-80 transition-opacity">
-                      <AvatarImage src={user?.user_metadata?.avatar_url} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {user.email?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 bg-background z-50" align="end">
-                    <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer">
-                      <User className="w-4 h-4 mr-2" />
-                      Dashboard
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive">
-                      <LogIn className="w-4 h-4 mr-2" />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <>
-                  <Button variant="ghost" onClick={() => navigate('/auth')}>
-                    Log In
-                  </Button>
-                  <Button onClick={() => navigate('/auth')}>
-                    Sign Up
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </nav>
-      </header>
+      <Header />
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
@@ -523,51 +467,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-card border-t py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 font-bold text-lg mb-4">
-                <img src="/favicon.png" alt="Shalean Logo" className="w-5 h-5" />
-                <span>Shalean</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Professional cleaning services across Cape Town. Quality you can trust.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Services</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#services" className="hover:text-primary transition-colors">Standard Cleaning</a></li>
-                <li><a href="#services" className="hover:text-primary transition-colors">Deep Cleaning</a></li>
-                <li><a href="#services" className="hover:text-primary transition-colors">Move In/Out</a></li>
-                <li><a href="#services" className="hover:text-primary transition-colors">Specialized Services</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#team" className="hover:text-primary transition-colors">Our Team</a></li>
-                <li><a href="#careers" className="hover:text-primary transition-colors">Careers</a></li>
-                <li><a href="#reviews" className="hover:text-primary transition-colors">Reviews</a></li>
-                <li><a href="#blog" className="hover:text-primary transition-colors">Blog</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Contact</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Cape Town, South Africa</li>
-                <li>info@shalean.co.za</li>
-                <li>+27 21 123 4567</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2025 Shalean Cleaning Services. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>;
 };
 export default Index;

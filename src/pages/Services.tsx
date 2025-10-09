@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Home, Droplets, Building2, Sparkles, CheckCircle, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import serviceStandardImage from '@/assets/service-standard-cleaning.jpg';
 import serviceDeepImage from '@/assets/service-deep-cleaning.jpg';
 import serviceMoveImage from '@/assets/service-move-inout.jpg';
@@ -76,20 +78,7 @@ const Services = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background">
-        <nav className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2 font-bold text-xl cursor-pointer" onClick={() => navigate('/')}>
-              <img src="/favicon.png" alt="Shalean Logo" className="w-6 h-6" />
-              <span>Shalean</span>
-            </div>
-            <Button variant="outline" onClick={() => navigate('/')}>
-              Back to Home
-            </Button>
-          </div>
-        </nav>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-20">
@@ -181,6 +170,7 @@ const Services = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
