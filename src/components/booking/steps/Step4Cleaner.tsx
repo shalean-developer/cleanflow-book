@@ -92,14 +92,22 @@ export const Step4Cleaner = ({ onNext, onBack }: Step4CleanerProps) => {
       ) : (
         <>
           <div className="space-y-4">
-            {cleaners.map((cleaner) => (
-              <CleanerCard
-                key={cleaner.id}
-                cleaner={cleaner}
-                selected={bookingData.cleanerId === cleaner.id}
-                onSelect={() => handleCleanerSelect(cleaner)}
-              />
-            ))}
+            {cleaners.map((cleaner) => {
+              const availableDays = cleaner.cleaner_availability?.map((avail: any) => {
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                return days[avail.weekday];
+              }) || [];
+              
+              return (
+                <CleanerCard
+                  key={cleaner.id}
+                  cleaner={cleaner}
+                  availableDays={availableDays}
+                  selected={bookingData.cleanerId === cleaner.id}
+                  onSelect={() => handleCleanerSelect(cleaner)}
+                />
+              );
+            })}
           </div>
 
           <div className="flex justify-between pt-4">

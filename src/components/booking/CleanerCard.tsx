@@ -27,7 +27,7 @@ interface CleanerCardProps {
 }
 
 export const CleanerCard = ({ cleaner, availableDays, selected, onSelect }: CleanerCardProps) => {
-  const photoSrc = cleaner.photo_url ? photoMap[cleaner.photo_url] : null;
+  const photoSrc = cleaner.photo_url && photoMap[cleaner.photo_url] ? photoMap[cleaner.photo_url] : null;
   
   return (
     <Card
