@@ -113,7 +113,7 @@ serve(async (req) => {
           <ul style="margin: 5px 0; padding-left: 20px;">
             ${extrasHtml}
           </ul>
-          <p><strong>Total Amount:</strong> ${booking.currency} ${booking.total_amount}</p>
+          <p><strong>Total Amount:</strong> ZAR ${booking.total_amount}</p>
           ${booking.special_instructions ? `<p><strong>Special Instructions:</strong> ${booking.special_instructions}</p>` : ''}
         </div>
         
@@ -152,7 +152,7 @@ serve(async (req) => {
           <ul style="margin: 5px 0; padding-left: 20px;">
             ${extrasHtml}
           </ul>
-          <p><strong>Total Amount:</strong> ${booking.currency} ${booking.total_amount}</p>
+          <p><strong>Total Amount:</strong> ZAR ${booking.total_amount}</p>
           <p><strong>Payment Status:</strong> ${booking.status}</p>
           ${booking.special_instructions ? `<p><strong>Special Instructions:</strong> ${booking.special_instructions}</p>` : ''}
         </div>

@@ -80,6 +80,7 @@ serve(async (req) => {
         special_instructions: bookingData.special_instructions,
         cleaner_id: bookingData.cleaner_id,
         pricing: bookingData.pricing,
+        total_amount: bookingData.pricing.total,
         customer_email: user.email,
         status: 'confirmed',
         payment_reference: reference,

@@ -35,6 +35,7 @@ export default function Confirmation() {
   }, [reference, navigate]);
 
   const pricing = booking?.pricing as any;
+  const bookingWithAmount = booking as any;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -87,7 +88,7 @@ export default function Confirmation() {
                   <div>
                     <div className="text-sm text-muted-foreground">Total Paid</div>
                     <div className="font-bold text-primary">
-                      {pricing ? formatCurrencyZAR(pricing.total) : ''}
+                      {bookingWithAmount.total_amount ? formatCurrencyZAR(Number(bookingWithAmount.total_amount)) : ''}
                     </div>
                   </div>
                 </div>
