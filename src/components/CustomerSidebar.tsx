@@ -81,7 +81,7 @@ export function CustomerSidebar() {
                         `flex items-center gap-3 ${
                           isActive 
                             ? "bg-primary text-primary-foreground font-semibold" 
-                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            : "text-foreground hover:bg-accent hover:text-accent-foreground"
                         }`
                       }
                     >
@@ -101,7 +101,7 @@ export function CustomerSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton 
               onClick={handleSignOut} 
-              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" 
+              className="text-foreground hover:bg-accent hover:text-accent-foreground" 
               tooltip="Sign Out"
             >
               <LogOut className="h-4 w-4 shrink-0" />
