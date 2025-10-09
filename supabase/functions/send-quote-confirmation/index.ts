@@ -35,7 +35,7 @@ serve(async (req) => {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1 style="color: #333;">Quote Request Received</h1>
         <p>Hi ${name},</p>
-        <p>Thank you for your interest in SparkleClean! We have received your quote request and will get back to you within 24 hours.</p>
+        <p>Thank you for your interest in Shalean Cleaning Services! We have received your quote request and will get back to you within 24 hours.</p>
         
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h2 style="color: #333; margin-top: 0;">Your Request Details</h2>
@@ -45,14 +45,14 @@ serve(async (req) => {
         </div>
         
         <p>One of our team members will review your request and contact you shortly with a customized quote.</p>
-        <p>Best regards,<br>SparkleClean Team</p>
+        <p>Best regards,<br>Shalean Cleaning Services Team</p>
       </div>
     `;
 
     await resend.emails.send({
-      from: 'SparkleClean <bookings@shalean.com>',
+      from: 'Shalean Cleaning Services <bookings@shalean.com>',
       to: [email],
-      subject: 'Quote Request Received - SparkleClean',
+      subject: 'Quote Request Received - Shalean Cleaning Services',
       html: customerEmailHtml,
     });
 
@@ -78,7 +78,7 @@ serve(async (req) => {
     `;
 
     await resend.emails.send({
-      from: 'SparkleClean System <bookings@shalean.com>',
+      from: 'Shalean Cleaning Services System <bookings@shalean.com>',
       to: ['bookings@shalean.com'],
       subject: `New Quote Request: ${service}`,
       html: adminEmailHtml,

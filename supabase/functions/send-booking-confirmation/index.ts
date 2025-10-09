@@ -83,7 +83,7 @@ serve(async (req) => {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1 style="color: #333;">Booking Confirmation</h1>
         <p>Hi ${userName},</p>
-        <p>Thank you for booking with SparkleClean! Your booking has been confirmed.</p>
+        <p>Thank you for booking with Shalean Cleaning Services! Your booking has been confirmed.</p>
         
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h2 style="color: #333; margin-top: 0;">Booking Details</h2>
@@ -97,14 +97,14 @@ serve(async (req) => {
         </div>
         
         <p>We look forward to providing you with excellent service!</p>
-        <p>Best regards,<br>SparkleClean Team</p>
+        <p>Best regards,<br>Shalean Cleaning Services Team</p>
       </div>
     `;
 
     await resend.emails.send({
-      from: 'SparkleClean <bookings@shalean.com>',
+      from: 'Shalean Cleaning Services <bookings@shalean.com>',
       to: [user.email!],
-      subject: 'Booking Confirmation - SparkleClean',
+      subject: 'Booking Confirmation - Shalean Cleaning Services',
       html: customerEmailHtml,
     });
 
@@ -134,7 +134,7 @@ serve(async (req) => {
     `;
 
     await resend.emails.send({
-      from: 'SparkleClean System <bookings@shalean.com>',
+      from: 'Shalean Cleaning Services System <bookings@shalean.com>',
       to: ['bookings@shalean.com'],
       subject: `New Booking: ${serviceName} - ${bookingDate}`,
       html: adminEmailHtml,
