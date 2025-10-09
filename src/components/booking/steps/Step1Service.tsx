@@ -4,12 +4,14 @@ import { useBooking } from '@/contexts/BookingContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 interface Step1ServiceProps {
   onNext: () => void;
 }
 export const Step1Service = ({
   onNext
 }: Step1ServiceProps) => {
+  const navigate = useNavigate();
   const {
     bookingData,
     updateBooking
@@ -31,6 +33,15 @@ export const Step1Service = ({
       serviceId: service.id,
       serviceName: service.name
     });
+    
+    // Create URL-friendly slug from service name
+    const serviceSlug = service.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    // Navigate to the property step with service name in URL
+    navigate(`/booking/service/${serviceSlug}`);
     onNext();
   };
   const canProceed = bookingData.serviceId;
