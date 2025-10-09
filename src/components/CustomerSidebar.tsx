@@ -78,13 +78,15 @@ export function CustomerSidebar() {
                       to={item.url} 
                       end={item.url === "/dashboard/customer"}
                       className={({ isActive }) => 
-                        isActive 
-                          ? "bg-primary text-primary-foreground font-medium flex items-center gap-3 relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-primary-foreground" 
-                          : "text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-3"
+                        `flex items-center gap-3 ${
+                          isActive 
+                            ? "bg-primary text-primary-foreground font-semibold" 
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        }`
                       }
                     >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -97,8 +99,12 @@ export function CustomerSidebar() {
       <SidebarFooter className="border-t">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} className="text-foreground hover:bg-accent hover:text-accent-foreground" tooltip="Sign Out">
-              <LogOut className="h-4 w-4" />
+            <SidebarMenuButton 
+              onClick={handleSignOut} 
+              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" 
+              tooltip="Sign Out"
+            >
+              <LogOut className="h-4 w-4 shrink-0" />
               <span>Sign Out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
