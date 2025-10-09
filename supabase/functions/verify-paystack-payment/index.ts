@@ -68,6 +68,18 @@ serve(async (req) => {
       throw new Error('Failed to update booking status');
     }
 
+    // Send confirmation emails in the background
+    console.log('Triggering confirmation emails for booking:', booking.id);
+    supabase.functions.invoke('send-booking-confirmation', {
+      body: { bookingId: booking.id }
+    }).then(({ error: emailError }) => {
+      if (emailError) {
+        console.error('Error sending confirmation emails:', emailError);
+      } else {
+        console.log('Confirmation emails triggered successfully');
+      }
+    });
+
     return new Response(
       JSON.stringify({
         success: true,

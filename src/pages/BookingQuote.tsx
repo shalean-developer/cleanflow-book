@@ -25,6 +25,7 @@ export default function BookingQuote() {
   const [extras, setExtras] = useState<Extra[]>([]);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [specialInstructions, setSpecialInstructions] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Contact information
   const [fullName, setFullName] = useState('');
@@ -58,7 +59,7 @@ export default function BookingQuote() {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate contact information
     if (!fullName.trim()) {
       toast.error('Please enter your full name');
@@ -73,19 +74,50 @@ export default function BookingQuote() {
       return;
     }
 
-    const quote = {
-      fullName,
-      email,
-      phone,
-      bedrooms: Number(bedrooms),
-      bathrooms: Number(bathrooms),
-      extras: selectedExtras,
-      specialInstructions
-    };
-    console.log('Quote:', quote);
-    
-    // Navigate to confirmation page
-    navigate('/booking/quote/confirmation');
+    setIsSubmitting(true);
+
+    try {
+      // Get selected extras names for the email
+      const selectedExtrasNames = extras
+        .filter(extra => selectedExtras.includes(extra.id))
+        .map(extra => extra.name)
+        .join(', ');
+
+      const quoteMessage = `
+Property Details:
+- Bedrooms: ${bedrooms}
+- Bathrooms: ${bathrooms}
+${selectedExtrasNames ? `- Extra Services: ${selectedExtrasNames}` : ''}
+${specialInstructions ? `\nSpecial Instructions:\n${specialInstructions}` : ''}
+      `.trim();
+
+      // Send quote confirmation email
+      const { error } = await supabase.functions.invoke('send-quote-confirmation', {
+        body: {
+          name: fullName,
+          email: email,
+          phone: phone,
+          service: 'Cleaning Service Quote',
+          message: quoteMessage
+        }
+      });
+
+      if (error) {
+        console.error('Error sending quote confirmation:', error);
+        toast.error('Failed to send confirmation email');
+        return;
+      }
+
+      toast.success('Quote request submitted successfully!');
+      
+      // Navigate to confirmation page
+      navigate('/booking/quote/confirmation');
+    } catch (error) {
+      console.error('Error submitting quote:', error);
+      toast.error('Failed to submit quote request');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -247,8 +279,9 @@ export default function BookingQuote() {
                 onClick={handleSubmit}
                 size="lg"
                 className="w-full md:w-auto px-12"
+                disabled={isSubmitting}
               >
-                Request Quote
+                {isSubmitting ? 'Submitting...' : 'Request Quote'}
               </Button>
             </div>
           </div>
