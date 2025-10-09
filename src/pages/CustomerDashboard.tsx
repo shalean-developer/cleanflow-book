@@ -2,14 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Calendar, 
-  Clock, 
   MapPin, 
   User,
   Plus,
@@ -18,6 +15,8 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { CustomerSidebar } from '@/components/CustomerSidebar';
 
 interface Booking {
   id: string;
@@ -130,114 +129,126 @@ const CustomerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center">Loading...</div>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <CustomerSidebar />
+          <div className="flex-1 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
         </div>
-        <Footer />
-      </div>
+      </SidebarProvider>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">My Dashboard</h1>
-            <p className="text-muted-foreground">Manage your cleaning bookings</p>
-          </div>
-          <Button size="lg" onClick={() => navigate('/booking/service/select')}>
-            <Plus className="w-4 h-4 mr-2" />
-            New Booking
-          </Button>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Upcoming Bookings
-              </CardTitle>
-              <Calendar className="w-5 h-5 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{upcomingBookings.length}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Bookings
-              </CardTitle>
-              <History className="w-5 h-5 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{bookings.length}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Member Since
-              </CardTitle>
-              <Star className="w-5 h-5 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">
-                {user?.created_at ? format(new Date(user.created_at), 'MMM yyyy') : '-'}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Upcoming Bookings */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-            <Calendar className="w-6 h-6 text-primary" />
-            Upcoming Bookings
-          </h2>
-          {upcomingBookings.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {upcomingBookings.map((booking) => (
-                <BookingCard key={booking.id} booking={booking} />
-              ))}
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <CustomerSidebar />
+        
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <header className="h-16 border-b flex items-center px-6 bg-background">
+            <SidebarTrigger />
+            <div className="ml-4">
+              <h1 className="text-2xl font-bold">Customer Dashboard</h1>
             </div>
-          ) : (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">No upcoming bookings</p>
-                <Button onClick={() => navigate('/booking/service/select')}>
-                  Book Your First Cleaning
+          </header>
+
+          <main className="flex-1 overflow-auto p-6">
+            <div className="max-w-7xl mx-auto space-y-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-3xl font-bold">Welcome Back!</h2>
+                  <p className="text-muted-foreground">Manage your cleaning bookings</p>
+                </div>
+                <Button size="lg" onClick={() => navigate('/booking/service/select')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Booking
                 </Button>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+              </div>
 
-        {/* Past Bookings */}
-        {pastBookings.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <History className="w-6 h-6 text-primary" />
-              Past Bookings
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {pastBookings.slice(0, 6).map((booking) => (
-                <BookingCard key={booking.id} booking={booking} />
-              ))}
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Upcoming Bookings
+                    </CardTitle>
+                    <Calendar className="w-5 h-5 text-primary" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">{upcomingBookings.length}</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Total Bookings
+                    </CardTitle>
+                    <History className="w-5 h-5 text-primary" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">{bookings.length}</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                      Member Since
+                    </CardTitle>
+                    <Star className="w-5 h-5 text-primary" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">
+                      {user?.created_at ? format(new Date(user.created_at), 'MMM yyyy') : '-'}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Upcoming Bookings */}
+              <div>
+                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <Calendar className="w-6 h-6 text-primary" />
+                  Upcoming Bookings
+                </h3>
+                {upcomingBookings.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {upcomingBookings.map((booking) => (
+                      <BookingCard key={booking.id} booking={booking} />
+                    ))}
+                  </div>
+                ) : (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground mb-4">No upcoming bookings</p>
+                      <Button onClick={() => navigate('/booking/service/select')}>
+                        Book Your First Cleaning
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+
+              {/* Past Bookings */}
+              {pastBookings.length > 0 && (
+                <div>
+                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                    <History className="w-6 h-6 text-primary" />
+                    Past Bookings
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {pastBookings.slice(0, 6).map((booking) => (
+                      <BookingCard key={booking.id} booking={booking} />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
-      </main>
-
-      <Footer />
-    </div>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
