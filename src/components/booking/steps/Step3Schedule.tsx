@@ -128,21 +128,25 @@ export const Step3Schedule = ({
               <MapPin className="w-4 h-4" />
               Service Location
             </Label>
-            <div className="mt-2 space-y-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search location..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-              <Select value={bookingData.areaId} onValueChange={handleAreaChange}>
-                <SelectTrigger id="area">
-                  <SelectValue placeholder="Select your area" />
-                </SelectTrigger>
-                <SelectContent className="bg-background z-50">
+            <Select value={bookingData.areaId} onValueChange={handleAreaChange}>
+              <SelectTrigger id="area" className="mt-2">
+                <SelectValue placeholder="Select your area" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <div className="sticky top-0 bg-background p-2 border-b z-10">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                    <Input
+                      placeholder="Search location..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9 h-9"
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </div>
+                <div className="max-h-[300px] overflow-y-auto">
                   {filteredAreas.length > 0 ? (
                     filteredAreas.map(area => (
                       <SelectItem key={area.id} value={area.id}>
@@ -154,9 +158,9 @@ export const Step3Schedule = ({
                       No locations found
                     </div>
                   )}
-                </SelectContent>
-              </Select>
-            </div>
+                </div>
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
