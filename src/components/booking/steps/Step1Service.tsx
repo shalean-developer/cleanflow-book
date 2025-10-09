@@ -22,29 +22,11 @@ export const Step1Service = ({
     fetchServices();
   }, []);
   const fetchServices = async () => {
-    try {
-      console.log('[Step1Service] Fetching services...');
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('active', true);
-      
-      console.log('[Step1Service] Query completed. Data:', data, 'Error:', error);
-      
-      if (error) {
-        console.error('[Step1Service] Error fetching services:', error);
-        return;
-      }
-      
-      if (data) {
-        console.log('[Step1Service] Setting services:', data.length, 'services found');
-        setServices(data);
-      }
-    } catch (err) {
-      console.error('[Step1Service] Exception in fetchServices:', err);
-    } finally {
-      setLoading(false);
-    }
+    console.log('[Step1Service] Fetching services...');
+    const { data, error } = await supabase.from('services').select('*').eq('active', true);
+    console.log('[Step1Service] Services data:', data, 'Error:', error);
+    if (data) setServices(data);
+    setLoading(false);
   };
   const handleServiceSelect = (service: any) => {
     updateBooking({

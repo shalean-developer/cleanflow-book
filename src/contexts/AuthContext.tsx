@@ -63,19 +63,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    console.log('[AuthContext] Setting up auth listeners...');
-    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('[AuthContext] Auth state changed. Event:', event, 'User:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        console.log('[AuthContext] Fetching role for user:', session.user.id);
         await fetchUserRole(session.user.id);
       } else {
-        console.log('[AuthContext] No user in session');
         setUserRole(null);
         setLoading(false);
       }
@@ -83,23 +78,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // THEN check for existing session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      console.log('[AuthContext] Got existing session. User:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        console.log('[AuthContext] Fetching role for existing session user:', session.user.id);
         await fetchUserRole(session.user.id);
       } else {
-        console.log('[AuthContext] No existing session');
         setLoading(false);
       }
     });
 
-    return () => {
-      console.log('[AuthContext] Cleaning up subscription');
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
