@@ -45,11 +45,11 @@ export default function Review() {
   const { data: cleaner } = useQuery({
     queryKey: ['cleaner', booking.cleanerId],
     queryFn: async () => {
-      if (!booking.cleanerId) return null;
+      if (!booking.cleanerId || booking.cleanerId === 'auto-match') return null;
       const { data } = await supabase.from('cleaners').select('*').eq('id', booking.cleanerId).maybeSingle();
       return data;
     },
-    enabled: !!booking.cleanerId,
+    enabled: !!booking.cleanerId && booking.cleanerId !== 'auto-match',
   });
 
   const { data: paystackKey } = useQuery({
@@ -211,10 +211,12 @@ export default function Review() {
                         <div className="text-sm text-muted-foreground">Rooms</div>
                         <div className="font-medium">{booking.bedrooms} bed, {booking.bathrooms} bath</div>
                       </div>
-                      {cleaner && (
+                      {booking.cleanerId && (
                         <div>
                           <div className="text-sm text-muted-foreground">Cleaner</div>
-                          <div className="font-medium">{cleaner.name}</div>
+                          <div className="font-medium">
+                            {booking.cleanerId === 'auto-match' ? 'Auto-matched by Shalean' : cleaner?.name}
+                          </div>
                         </div>
                       )}
                     </div>
