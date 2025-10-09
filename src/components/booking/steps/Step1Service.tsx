@@ -35,9 +35,18 @@ export const Step1Service = ({
       setLoading(true);
       setError(null);
       
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      
       console.log('[Step1Service] Starting to fetch services...');
-      console.log('[Step1Service] Supabase client initialized:', !!supabase);
-      console.log('[Step1Service] Supabase URL exists:', !!import.meta.env.VITE_SUPABASE_URL);
+      console.log('[Step1Service] Supabase URL:', supabaseUrl ? `${supabaseUrl.substring(0, 20)}...` : 'MISSING');
+      console.log('[Step1Service] Supabase Key:', supabaseKey ? `${supabaseKey.substring(0, 20)}...` : 'MISSING');
+      console.log('[Step1Service] Supabase client exists:', !!supabase);
+      
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error('Supabase configuration is missing. Please check environment variables.');
+      }
+      
       console.log('[Step1Service] Executing query...');
       
       const { data, error } = await supabase
