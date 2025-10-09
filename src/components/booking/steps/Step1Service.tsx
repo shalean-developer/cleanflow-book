@@ -35,24 +35,26 @@ export const Step1Service = ({
       setLoading(true);
       setError(null);
       
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-      
       console.log('[Step1Service] Starting to fetch services...');
-      console.log('[Step1Service] Supabase URL:', supabaseUrl ? `${supabaseUrl.substring(0, 20)}...` : 'MISSING');
-      console.log('[Step1Service] Supabase Key:', supabaseKey ? `${supabaseKey.substring(0, 20)}...` : 'MISSING');
-      console.log('[Step1Service] Supabase client exists:', !!supabase);
       
-      if (!supabaseUrl || !supabaseKey) {
-        throw new Error('Supabase configuration is missing. Please check environment variables.');
-      }
+      // Create a timeout promise
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Query timed out after 8 seconds'));
+        }, 8000);
+      });
       
-      console.log('[Step1Service] Executing query...');
-      
-      const { data, error } = await supabase
+      // Execute the query with a race against timeout
+      const queryPromise = supabase
         .from('services')
         .select('*')
-        .eq('active', true);
+        .eq('active', true)
+        .abortSignal(abortController?.signal);
+      
+      const { data, error } = await Promise.race([
+        queryPromise,
+        timeoutPromise
+      ]) as any;
       
       console.log('[Step1Service] Query completed');
       console.log('[Step1Service] Data:', data);
