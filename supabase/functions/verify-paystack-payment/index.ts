@@ -58,7 +58,6 @@ serve(async (req) => {
       .from('bookings')
       .update({
         status: 'confirmed',
-        updated_at: new Date().toISOString(),
       })
       .eq('payment_reference', reference)
       .select()
