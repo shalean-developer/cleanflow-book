@@ -23,7 +23,7 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
   // Check authentication on mount
   useEffect(() => {
     if (!user) {
-      const returnUrl = `/booking/service/${serviceName || 'select'}`;
+      const returnUrl = `/booking/service/${serviceName || 'select'}/review`;
       navigate(`/auth?returnTo=${encodeURIComponent(returnUrl)}`);
     }
   }, [user, navigate, serviceName]);

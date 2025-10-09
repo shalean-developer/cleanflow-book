@@ -41,8 +41,7 @@ export const Step1Service = ({
       .replace(/^-+|-+$/g, '');
     
     // Navigate to the property step with service name in URL
-    navigate(`/booking/service/${serviceSlug}`);
-    onNext();
+    navigate(`/booking/service/${serviceSlug}/property`);
   };
   const canProceed = bookingData.serviceId;
   if (loading) {

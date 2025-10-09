@@ -33,6 +33,22 @@ const App = () => (
               element={<Booking />} 
             />
             <Route 
+              path="/booking/service/:serviceName/property" 
+              element={<Booking />} 
+            />
+            <Route 
+              path="/booking/service/:serviceName/schedule" 
+              element={<Booking />} 
+            />
+            <Route 
+              path="/booking/service/:serviceName/cleaner" 
+              element={<Booking />} 
+            />
+            <Route 
+              path="/booking/service/:serviceName/review" 
+              element={<Booking />} 
+            />
+            <Route 
               path="/booking/confirmation" 
               element={
                 <ProtectedRoute>
