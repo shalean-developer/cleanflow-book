@@ -14,7 +14,168 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          bathrooms: number
+          bedrooms: number
+          cleaner_id: string | null
+          created_at: string | null
+          customer_email: string
+          date: string
+          extras: string[] | null
+          frequency: string
+          id: string
+          location: string
+          payment_reference: string | null
+          pricing: Json
+          reference: string
+          service_id: string
+          special_instructions: string | null
+          status: string | null
+          time: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bathrooms?: number
+          bedrooms?: number
+          cleaner_id?: string | null
+          created_at?: string | null
+          customer_email: string
+          date: string
+          extras?: string[] | null
+          frequency: string
+          id?: string
+          location: string
+          payment_reference?: string | null
+          pricing: Json
+          reference: string
+          service_id: string
+          special_instructions?: string | null
+          status?: string | null
+          time: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bathrooms?: number
+          bedrooms?: number
+          cleaner_id?: string | null
+          created_at?: string | null
+          customer_email?: string
+          date?: string
+          extras?: string[] | null
+          frequency?: string
+          id?: string
+          location?: string
+          payment_reference?: string | null
+          pricing?: Json
+          reference?: string
+          service_id?: string
+          special_instructions?: string | null
+          status?: string | null
+          time?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_cleaner_id_fkey"
+            columns: ["cleaner_id"]
+            isOneToOne: false
+            referencedRelation: "cleaners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cleaners: {
+        Row: {
+          availability: Json
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          name: string
+          rating: number | null
+          service_areas: string[]
+        }
+        Insert: {
+          availability: Json
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          rating?: number | null
+          service_areas: string[]
+        }
+        Update: {
+          availability?: Json
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          rating?: number | null
+          service_areas?: string[]
+        }
+        Relationships: []
+      }
+      extras: {
+        Row: {
+          created_at: string | null
+          icon: string | null
+          id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          base_price: number
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          base_price: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          base_price?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
