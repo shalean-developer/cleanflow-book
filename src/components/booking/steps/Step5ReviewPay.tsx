@@ -136,24 +136,17 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
       const amountInCents = Math.round(bookingData.totalAmount * 100);
 
       // Initialize Paystack popup
-      const paystack = initializePaystackPayment({
-        key: PAYSTACK_PUBLIC_KEY,
-        email: userEmail,
-        amount: amountInCents,
-        currency: 'ZAR',
-        ref: reference,
-        metadata: {
-          booking_id: booking.id,
-          user_id: currentUser.id,
-          service_name: bookingData.serviceName,
-        },
-        callback: async (response) => {
-          console.log('Payment successful:', response);
-          
+      const handlePaymentSuccess = async (response: { reference: string }) => {
+        console.log('Payment successful:', response);
+        
+        try {
           // Update booking status to confirmed
           const { error: updateError } = await supabase
             .from('bookings')
-            .update({ status: 'confirmed' })
+            .update({ 
+              status: 'confirmed',
+              payment_reference: response.reference,
+            })
             .eq('id', booking.id);
 
           if (updateError) {
@@ -175,12 +168,33 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
           
           toast.success('Payment successful! Your booking is confirmed.');
           navigate(`/booking/confirmation?reference=${response.reference}`);
+        } catch (error) {
+          console.error('Error processing payment:', error);
+          toast.error('Payment successful but booking update failed. Please contact support.');
+        }
+      };
+
+      const handlePaymentClose = () => {
+        console.log('Payment popup closed');
+        toast.info('Payment cancelled. Your booking is saved as pending.');
+        setProcessing(false);
+      };
+
+      const paystack = initializePaystackPayment({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: userEmail,
+        amount: amountInCents,
+        currency: 'ZAR',
+        ref: reference,
+        metadata: {
+          booking_id: booking.id,
+          user_id: currentUser.id,
+          service_name: bookingData.serviceName,
         },
-        onClose: () => {
-          console.log('Payment popup closed');
-          toast.info('Payment cancelled. Your booking is saved as pending.');
-          setProcessing(false);
+        callback: (response) => {
+          handlePaymentSuccess(response);
         },
+        onClose: handlePaymentClose,
       });
 
       // Open payment popup
