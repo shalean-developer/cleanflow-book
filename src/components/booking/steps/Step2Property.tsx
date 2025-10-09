@@ -6,6 +6,7 @@ import { useBooking } from '@/contexts/BookingContext';
 import { supabase } from '@/integrations/supabase/client';
 import { ExtraCard } from '../ExtraCard';
 import { Minus, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 interface Step2PropertyProps {
   onNext: () => void;
   onBack: () => void;
@@ -49,11 +50,23 @@ export const Step2Property = ({
   const updateCount = (field: 'bedrooms' | 'bathrooms', delta: number) => {
     const current = bookingData[field];
     const min = field === 'bathrooms' ? 1 : 0;
-    const max = field === 'bedrooms' ? 8 : 6;
+    const max = field === 'bedrooms' ? 10 : 8;
     const newValue = Math.max(min, Math.min(max, current + delta));
     updateBooking({
       [field]: newValue
     });
+  };
+
+  const handleContinue = () => {
+    try {
+      if (bookingData.specialInstructions && bookingData.specialInstructions.length > 1000) {
+        toast.error('Special instructions must be less than 1000 characters');
+        return;
+      }
+      onNext();
+    } catch (error: any) {
+      toast.error(error.message || 'Validation error');
+    }
   };
   return <div className="space-y-8 max-w-5xl mx-auto">
       <div className="text-center space-y-2">
@@ -72,7 +85,7 @@ export const Step2Property = ({
                 <Minus className="w-4 h-4" />
               </Button>
               <span className="text-2xl font-bold w-12 text-center">{bookingData.bedrooms}</span>
-              <Button variant="outline" size="icon" onClick={() => updateCount('bedrooms', 1)} disabled={bookingData.bedrooms === 8}>
+              <Button variant="outline" size="icon" onClick={() => updateCount('bedrooms', 1)} disabled={bookingData.bedrooms === 10}>
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
@@ -85,7 +98,7 @@ export const Step2Property = ({
                 <Minus className="w-4 h-4" />
               </Button>
               <span className="text-2xl font-bold w-12 text-center">{bookingData.bathrooms}</span>
-              <Button variant="outline" size="icon" onClick={() => updateCount('bathrooms', 1)} disabled={bookingData.bathrooms === 6}>
+              <Button variant="outline" size="icon" onClick={() => updateCount('bathrooms', 1)} disabled={bookingData.bathrooms === 8}>
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
@@ -101,9 +114,12 @@ export const Step2Property = ({
 
         <div>
           <Label htmlFor="specialInstructions">Special Instructions (Optional)</Label>
-          <Textarea id="specialInstructions" placeholder="Any special requests or instructions..." value={bookingData.specialInstructions || ''} onChange={e => updateBooking({
+          <Textarea id="specialInstructions" placeholder="Any special requests or instructions... (max 1000 characters)" value={bookingData.specialInstructions || ''} onChange={e => updateBooking({
           specialInstructions: e.target.value
-        })} className="mt-2" rows={3} />
+        })} className="mt-2" rows={3} maxLength={1000} />
+          <p className="text-xs text-muted-foreground mt-1">
+            {bookingData.specialInstructions?.length || 0}/1000 characters
+          </p>
         </div>
       </div>
 
@@ -111,7 +127,7 @@ export const Step2Property = ({
         <Button variant="outline" onClick={onBack}>
           Back
         </Button>
-        <Button onClick={onNext} className="min-w-[200px]">
+        <Button onClick={handleContinue} className="min-w-[200px]">
           Continue
         </Button>
       </div>

@@ -1,4 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { z } from 'zod';
+
+// Validation schemas
+export const bookingValidationSchema = z.object({
+  bedrooms: z.number().min(0).max(10),
+  bathrooms: z.number().min(1).max(8),
+  houseDetails: z.string().max(500).optional(),
+  specialInstructions: z.string().max(1000).optional(),
+  date: z.date().min(new Date()).max(new Date(Date.now() + 180 * 24 * 60 * 60 * 1000)).optional(), // 6 months ahead
+  frequency: z.enum(['once-off', 'weekly', 'bi-weekly', 'monthly']),
+});
 
 export interface BookingData {
   serviceId?: string;
@@ -62,12 +73,32 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateBooking = (data: Partial<BookingData>) => {
-    setBookingData(prev => {
-      const updated = { ...prev, ...data };
-      // Recalculate total whenever booking changes
-      const newTotal = calculateTotal();
-      return { ...updated, totalAmount: newTotal };
-    });
+    // Validate input before updating
+    try {
+      const validationData = {
+        bedrooms: data.bedrooms ?? bookingData.bedrooms,
+        bathrooms: data.bathrooms ?? bookingData.bathrooms,
+        houseDetails: data.houseDetails ?? bookingData.houseDetails,
+        specialInstructions: data.specialInstructions ?? bookingData.specialInstructions,
+        date: data.date ?? bookingData.date,
+        frequency: data.frequency ?? bookingData.frequency,
+      };
+      
+      bookingValidationSchema.parse(validationData);
+      
+      setBookingData(prev => {
+        const updated = { ...prev, ...data };
+        // Recalculate total whenever booking changes
+        const newTotal = calculateTotal();
+        return { ...updated, totalAmount: newTotal };
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error('Validation error:', error.errors);
+        throw new Error(`Invalid booking data: ${error.errors[0].message}`);
+      }
+      throw error;
+    }
   };
 
   const resetBooking = () => {

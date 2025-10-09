@@ -27,6 +27,23 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
       if (!user) {
         throw new Error('You must be logged in to create a booking');
       }
+
+      // Server-side price validation
+      const extraIds = bookingData.extras.map(e => e.id);
+      const { data: serverPrice, error: priceError } = await supabase
+        .rpc('calculate_booking_price', {
+          p_bedrooms: bookingData.bedrooms,
+          p_bathrooms: bookingData.bathrooms,
+          p_extra_ids: extraIds.length > 0 ? extraIds : null,
+        });
+
+      if (priceError) throw priceError;
+
+      // Validate client price matches server price
+      const priceDifference = Math.abs(Number(serverPrice) - bookingData.totalAmount);
+      if (priceDifference > 0.01) {
+        throw new Error(`Price mismatch detected. Expected: R${Number(serverPrice).toFixed(2)}, Got: R${bookingData.totalAmount.toFixed(2)}`);
+      }
       
       // Create booking with user_id
       const { data: booking, error: bookingError } = await supabase
@@ -63,16 +80,24 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
         await supabase.from('booking_extras').insert(extrasToInsert);
       }
 
+      // Clear localStorage after successful booking
       resetBooking();
+      localStorage.removeItem('booking-data');
+      
+      toast.success('Booking created successfully!');
       
       // In production, integrate with Paystack here
       // For now, redirect to success page
       navigate('/booking/confirmation?status=success');
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Booking error:', error);
-      toast.error('Failed to create booking. Please try again.');
-      navigate('/booking/confirmation?status=declined');
+      const errorMessage = error?.message || 'Failed to create booking. Please try again.';
+      toast.error(errorMessage);
+      
+      if (!error?.message?.includes('Price mismatch')) {
+        navigate('/booking/confirmation?status=declined');
+      }
     } finally {
       setProcessing(false);
     }

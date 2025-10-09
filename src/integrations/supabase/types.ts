@@ -64,7 +64,7 @@ export type Database = {
           status: string | null
           time: string
           total_amount: number | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           area_id?: string | null
@@ -82,7 +82,7 @@ export type Database = {
           status?: string | null
           time: string
           total_amount?: number | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           area_id?: string | null
@@ -100,7 +100,7 @@ export type Database = {
           status?: string | null
           time?: string
           total_amount?: number | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -295,6 +295,36 @@ export type Database = {
           },
         ]
       }
+      pricing_config: {
+        Row: {
+          active: boolean | null
+          base_price: number
+          bathroom_price: number
+          bedroom_price: number
+          created_at: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          base_price?: number
+          bathroom_price?: number
+          bedroom_price?: number
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          base_price?: number
+          bathroom_price?: number
+          bedroom_price?: number
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -369,7 +399,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_booking_price: {
+        Args: { p_bathrooms: number; p_bedrooms: number; p_extra_ids: string[] }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
