@@ -79,7 +79,9 @@ export default function Confirmation() {
                   </div>
                   <div>
                     <div className="text-sm text-muted-foreground">Cleaner</div>
-                    <div className="font-medium">{booking.cleaners?.name}</div>
+                    <div className="font-medium">
+                      {booking.cleaners?.name || 'Auto-matched by Shalean'}
+                    </div>
                   </div>
                   <div>
                     <div className="text-sm text-muted-foreground">Frequency</div>
@@ -88,7 +90,7 @@ export default function Confirmation() {
                   <div>
                     <div className="text-sm text-muted-foreground">Total Paid</div>
                     <div className="font-bold text-primary">
-                      {bookingWithAmount.total_amount ? formatCurrencyZAR(Number(bookingWithAmount.total_amount)) : ''}
+                      {pricing?.total ? formatCurrencyZAR(Number(pricing.total)) : ''}
                     </div>
                   </div>
                 </div>
