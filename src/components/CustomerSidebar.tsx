@@ -1,4 +1,4 @@
-import { Home, Calendar, Plus, User, Settings, History, LogOut } from "lucide-react"
+import { Home, Calendar, User, Settings, HelpCircle, LogOut } from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
 import {
   Sidebar,
@@ -19,13 +19,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard/customer", icon: Home },
-  { title: "My Bookings", url: "/dashboard/customer/bookings", icon: Calendar },
-  { title: "New Booking", url: "/booking/service/select", icon: Plus },
-  { title: "Booking History", url: "/dashboard/customer/history", icon: History },
-]
-
-const accountItems = [
+  { title: "Bookings", url: "/dashboard/customer/bookings", icon: Calendar },
   { title: "Profile", url: "/dashboard/customer/profile", icon: User },
+  { title: "Support", url: "/dashboard/customer/support", icon: HelpCircle },
   { title: "Settings", url: "/dashboard/customer/settings", icon: Settings },
 ]
 
@@ -52,9 +48,11 @@ export function CustomerSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
-        <div className="flex items-center gap-2 px-2 py-4">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-primary text-primary-foreground">{getUserInitials()}</AvatarFallback>
+        <div className="flex items-center gap-3 px-3 py-4">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+              {getUserInitials()}
+            </AvatarFallback>
           </Avatar>
           {!isCollapsed && (
             <div className="flex flex-col flex-1 min-w-0">
@@ -71,7 +69,6 @@ export function CustomerSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-muted-foreground">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
@@ -82,36 +79,11 @@ export function CustomerSidebar() {
                       end={item.url === "/dashboard/customer"}
                       className={({ isActive }) => 
                         isActive 
-                          ? "bg-primary text-primary-foreground font-medium flex items-center gap-2" 
-                          : "text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2"
+                          ? "bg-primary text-primary-foreground font-medium flex items-center gap-3 relative before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-primary-foreground" 
+                          : "text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-3"
                       }
                     >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-muted-foreground">Account</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {accountItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <NavLink 
-                      to={item.url}
-                      className={({ isActive }) => 
-                        isActive 
-                          ? "bg-primary text-primary-foreground font-medium flex items-center gap-2" 
-                          : "text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2"
-                      }
-                    >
-                      <item.icon className="h-4 w-4" />
+                      <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
