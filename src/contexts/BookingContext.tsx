@@ -49,7 +49,15 @@ const initialBooking: BookingData = {
 export const BookingProvider = ({ children }: { children: ReactNode }) => {
   const [bookingData, setBookingData] = useState<BookingData>(() => {
     const saved = localStorage.getItem('booking-data');
-    return saved ? JSON.parse(saved) : initialBooking;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Convert date string back to Date object
+      if (parsed.date) {
+        parsed.date = new Date(parsed.date);
+      }
+      return parsed;
+    }
+    return initialBooking;
   });
 
   useEffect(() => {
@@ -73,18 +81,22 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateBooking = (data: Partial<BookingData>) => {
-    // Validate input before updating
+    // Only validate fields that are being updated
     try {
-      const validationData = {
-        bedrooms: data.bedrooms ?? bookingData.bedrooms,
-        bathrooms: data.bathrooms ?? bookingData.bathrooms,
-        houseDetails: data.houseDetails ?? bookingData.houseDetails,
-        specialInstructions: data.specialInstructions ?? bookingData.specialInstructions,
-        date: data.date ?? bookingData.date,
-        frequency: data.frequency ?? bookingData.frequency,
-      };
+      // Build validation object with only the fields being updated
+      const fieldsToValidate: any = {};
       
-      bookingValidationSchema.parse(validationData);
+      if (data.bedrooms !== undefined) fieldsToValidate.bedrooms = data.bedrooms;
+      if (data.bathrooms !== undefined) fieldsToValidate.bathrooms = data.bathrooms;
+      if (data.houseDetails !== undefined) fieldsToValidate.houseDetails = data.houseDetails;
+      if (data.specialInstructions !== undefined) fieldsToValidate.specialInstructions = data.specialInstructions;
+      if (data.date !== undefined) fieldsToValidate.date = data.date;
+      if (data.frequency !== undefined) fieldsToValidate.frequency = data.frequency;
+      
+      // If we have fields to validate, use partial validation
+      if (Object.keys(fieldsToValidate).length > 0) {
+        bookingValidationSchema.partial().parse(fieldsToValidate);
+      }
       
       setBookingData(prev => {
         const updated = { ...prev, ...data };
