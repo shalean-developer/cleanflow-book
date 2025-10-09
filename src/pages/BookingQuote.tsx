@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ interface Extra {
 }
 
 export default function BookingQuote() {
+  const navigate = useNavigate();
   const [bedrooms, setBedrooms] = useState('2');
   const [bathrooms, setBathrooms] = useState('1');
   const [extras, setExtras] = useState<Extra[]>([]);
@@ -81,7 +83,9 @@ export default function BookingQuote() {
       specialInstructions
     };
     console.log('Quote:', quote);
-    toast.success('Quote request submitted! We will contact you shortly.');
+    
+    // Navigate to confirmation page
+    navigate('/booking/quote/confirmation');
   };
 
   return (
