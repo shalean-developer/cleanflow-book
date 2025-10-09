@@ -70,20 +70,20 @@ serve(async (req) => {
     const locationName = booking.location || 'Cape Town';
     const cleanerName = booking.cleaners?.name || 'To be assigned';
     
-    // Fetch booking extras
-    const { data: bookingExtras } = await supabase
-      .from('booking_extras')
-      .select(`
-        quantity,
-        extras(name, base_price)
-      `)
-      .eq('booking_id', bookingId);
-    
-    const extrasHtml = bookingExtras && bookingExtras.length > 0
-      ? bookingExtras.map(extra => 
-          `<li>${extra.extras.name} x${extra.quantity} - ${booking.currency} ${extra.extras.base_price * extra.quantity}</li>`
-        ).join('')
-      : '<li>None</li>';
+    // Fetch booking extras details
+    let extrasHtml = '<li>None</li>';
+    if (booking.extras && booking.extras.length > 0) {
+      const { data: extrasData } = await supabase
+        .from('extras')
+        .select('name, price')
+        .in('id', booking.extras);
+      
+      if (extrasData && extrasData.length > 0) {
+        extrasHtml = extrasData.map(extra => 
+          `<li>${extra.name} - ZAR ${extra.price}</li>`
+        ).join('');
+      }
+    }
 
     // Format date and time
     const bookingDate = new Date(booking.date).toLocaleDateString('en-ZA', {
@@ -113,7 +113,14 @@ serve(async (req) => {
           <ul style="margin: 5px 0; padding-left: 20px;">
             ${extrasHtml}
           </ul>
-          <p><strong>Total Amount:</strong> ZAR ${booking.total_amount}</p>
+          <p><strong>Pricing:</strong></p>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            <li>Subtotal: ZAR ${booking.pricing?.subtotal || 0}</li>
+            ${booking.pricing?.discount ? `<li>Discount: -ZAR ${booking.pricing.discount}</li>` : ''}
+            ${booking.pricing?.promoDiscount ? `<li>Promo Discount: -ZAR ${booking.pricing.promoDiscount}</li>` : ''}
+            ${booking.pricing?.fees ? `<li>Service Fee: ZAR ${booking.pricing.fees}</li>` : ''}
+            <li><strong>Total: ZAR ${booking.pricing?.total || booking.total_amount}</strong></li>
+          </ul>
           ${booking.special_instructions ? `<p><strong>Special Instructions:</strong> ${booking.special_instructions}</p>` : ''}
         </div>
         
@@ -152,7 +159,15 @@ serve(async (req) => {
           <ul style="margin: 5px 0; padding-left: 20px;">
             ${extrasHtml}
           </ul>
-          <p><strong>Total Amount:</strong> ZAR ${booking.total_amount}</p>
+          <p><strong>Pricing:</strong></p>
+          <ul style="margin: 5px 0; padding-left: 20px;">
+            <li>Subtotal: ZAR ${booking.pricing?.subtotal || 0}</li>
+            ${booking.pricing?.discount ? `<li>Discount: -ZAR ${booking.pricing.discount}</li>` : ''}
+            ${booking.pricing?.promoDiscount ? `<li>Promo Discount: -ZAR ${booking.pricing.promoDiscount}</li>` : ''}
+            ${booking.pricing?.fees ? `<li>Service Fee: ZAR ${booking.pricing.fees}</li>` : ''}
+            <li><strong>Total: ZAR ${booking.pricing?.total || booking.total_amount}</strong></li>
+          </ul>
+          <p><strong>Payment Reference:</strong> ${booking.payment_reference || 'N/A'}</p>
           <p><strong>Payment Status:</strong> ${booking.status}</p>
           ${booking.special_instructions ? `<p><strong>Special Instructions:</strong> ${booking.special_instructions}</p>` : ''}
         </div>
