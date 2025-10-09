@@ -47,8 +47,7 @@ serve(async (req) => {
       .select(`
         *,
         services(name),
-        service_areas(name),
-        cleaners(full_name)
+        cleaners(name)
       `)
       .eq('id', bookingId)
       .single();
@@ -68,8 +67,8 @@ serve(async (req) => {
 
     const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Customer';
     const serviceName = booking.services?.name || 'Cleaning Service';
-    const areaName = booking.service_areas?.name || 'Cape Town';
-    const cleanerName = booking.cleaners?.full_name || 'To be assigned';
+    const locationName = booking.location || 'Cape Town';
+    const cleanerName = booking.cleaners?.name || 'To be assigned';
     
     // Fetch booking extras
     const { data: bookingExtras } = await supabase
@@ -107,8 +106,7 @@ serve(async (req) => {
           <p><strong>Frequency:</strong> ${booking.frequency || 'Once-off'}</p>
           <p><strong>Date:</strong> ${bookingDate}</p>
           <p><strong>Time:</strong> ${booking.time}</p>
-          <p><strong>Service Area:</strong> ${areaName}</p>
-          ${booking.house_details ? `<p><strong>Location Address:</strong> ${booking.house_details}</p>` : ''}
+          <p><strong>Location:</strong> ${locationName}</p>
           <p><strong>Property:</strong> ${booking.bedrooms} bedroom(s), ${booking.bathrooms} bathroom(s)</p>
           <p><strong>Assigned Cleaner:</strong> ${cleanerName}</p>
           <p><strong>Selected Extras:</strong></p>
@@ -147,8 +145,7 @@ serve(async (req) => {
           <p><strong>Frequency:</strong> ${booking.frequency || 'Once-off'}</p>
           <p><strong>Date:</strong> ${bookingDate}</p>
           <p><strong>Time:</strong> ${booking.time}</p>
-          <p><strong>Service Area:</strong> ${areaName}</p>
-          ${booking.house_details ? `<p><strong>Customer Location:</strong> ${booking.house_details}</p>` : ''}
+          <p><strong>Location:</strong> ${locationName}</p>
           <p><strong>Property:</strong> ${booking.bedrooms} bedroom(s), ${booking.bathrooms} bathroom(s)</p>
           <p><strong>Assigned Cleaner:</strong> ${cleanerName}</p>
           <p><strong>Selected Extras:</strong></p>
