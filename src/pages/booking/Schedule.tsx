@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar } from '@/components/ui/calendar';
 import { StickySummary } from '@/components/booking/StickySummary';
+import { HorizontalDatePicker } from '@/components/booking/HorizontalDatePicker';
 import { generateTimeSlots, filterPastSlots } from '@/utils/timeSlots';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { format } from 'date-fns';
@@ -65,13 +65,11 @@ export default function Schedule() {
                   <CardTitle>Select Date</CardTitle>
                   <CardDescription>Choose a date for your cleaning service</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Calendar
-                    mode="single"
+                <CardContent className="py-6">
+                  <HorizontalDatePicker
                     selected={date}
                     onSelect={setDate}
                     disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                    className="rounded-md border w-full"
                   />
                 </CardContent>
               </Card>
