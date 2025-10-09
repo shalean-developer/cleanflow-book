@@ -150,33 +150,41 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       console.log('[AuthContext] Signing out...');
       
-      // Clear state immediately
+      // Sign out from Supabase with global scope
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
+      
+      if (error) {
+        console.error('[AuthContext] Error signing out:', error);
+      }
+      
+      // Clear state
       setUser(null);
       setSession(null);
       setUserRole(null);
       
-      // Sign out from Supabase
-      const { error } = await supabase.auth.signOut();
+      // Clear all Supabase-related localStorage keys
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sb-')) {
+          localStorage.removeItem(key);
+        }
+      });
       
-      if (error) {
-        console.error('[AuthContext] Error signing out:', error);
-        toast.error('Error signing out');
-      } else {
-        console.log('[AuthContext] Signed out successfully');
-        
-        // Clear localStorage
-        localStorage.clear();
-        
-        toast.success('Signed out successfully');
-        
-        // Force reload to clear all state
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 100);
-      }
+      console.log('[AuthContext] Cleared localStorage and state');
+      
+      toast.success('Signed out successfully');
+      
+      // Force reload
+      window.location.href = '/';
     } catch (error) {
       console.error('[AuthContext] Caught error signing out:', error);
-      toast.error('Error signing out');
+      
+      // Force clear everything even on error
+      setUser(null);
+      setSession(null);
+      setUserRole(null);
+      localStorage.clear();
+      
+      window.location.href = '/';
     }
   };
 
