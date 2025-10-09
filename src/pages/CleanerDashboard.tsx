@@ -36,7 +36,7 @@ interface Assignment {
 
 const CleanerDashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, userRole, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [cleanerProfile, setCleanerProfile] = useState<any>(null);
@@ -49,18 +49,16 @@ const CleanerDashboard = () => {
 
   useEffect(() => {
     const checkCleanerAccess = async () => {
+      // Wait for auth to complete
+      if (authLoading) return;
+      
       if (!user) {
         navigate('/auth');
         return;
       }
 
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-
-      if (roleData?.role !== 'cleaner') {
+      // Check role from AuthContext instead of querying again
+      if (userRole !== 'cleaner') {
         toast.error('Access denied. Cleaner privileges required.');
         navigate('/dashboard');
         return;
@@ -70,20 +68,30 @@ const CleanerDashboard = () => {
     };
 
     checkCleanerAccess();
-  }, [user, navigate]);
+  }, [user, userRole, authLoading, navigate]);
 
   const loadCleanerData = async () => {
     try {
-      // Get cleaner profile
-      const { data: cleaner } = await supabase
+      // Get cleaner profile using user_id
+      const { data: cleaner, error: cleanerError } = await supabase
         .from('cleaners')
         .select('*')
-        .eq('id', user?.id)
-        .single();
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (cleanerError) {
+        console.error('Error fetching cleaner profile:', cleanerError);
+      }
+
+      if (!cleaner) {
+        toast.error('No cleaner profile found. Please contact administrator.');
+        setLoading(false);
+        return;
+      }
 
       setCleanerProfile(cleaner);
 
-      // Get assignments
+      // Get assignments using the cleaner's id
       const { data: bookings, error } = await supabase
         .from('bookings')
         .select(`
@@ -91,7 +99,7 @@ const CleanerDashboard = () => {
           services (name),
           service_areas (name)
         `)
-        .eq('cleaner_id', user?.id)
+        .eq('cleaner_id', cleaner.id)
         .order('date', { ascending: false });
 
       if (error) throw error;
@@ -169,7 +177,7 @@ const CleanerDashboard = () => {
     </Card>
   );
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Header />

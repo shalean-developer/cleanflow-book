@@ -206,6 +206,7 @@ export type Database = {
           id: string
           photo_url: string | null
           rating: number | null
+          user_id: string | null
         }
         Insert: {
           active?: boolean | null
@@ -215,6 +216,7 @@ export type Database = {
           id?: string
           photo_url?: string | null
           rating?: number | null
+          user_id?: string | null
         }
         Update: {
           active?: boolean | null
@@ -224,6 +226,7 @@ export type Database = {
           id?: string
           photo_url?: string | null
           rating?: number | null
+          user_id?: string | null
         }
         Relationships: []
       }

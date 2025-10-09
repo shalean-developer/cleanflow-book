@@ -61,7 +61,7 @@ const normalizeStatus = (status: string): 'pending' | 'confirmed' | 'cancelled' 
 
 const CustomerDashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [upcomingBookings, setUpcomingBookings] = useState<Booking[]>([]);
@@ -79,6 +79,9 @@ const CustomerDashboard = () => {
   const itemsPerPage = 6;
 
   useEffect(() => {
+    // Wait for auth to complete
+    if (authLoading) return;
+    
     if (!user) {
       navigate('/auth');
       return;
@@ -87,7 +90,7 @@ const CustomerDashboard = () => {
     loadBookings();
     loadServices();
     loadMemberSince();
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   const loadMemberSince = async () => {
     try {
@@ -294,7 +297,7 @@ const CustomerDashboard = () => {
     </div>
   );
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
