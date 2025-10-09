@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
+import ShaleanCalendar from '@/components/ui/shalean-calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useBooking } from '@/contexts/BookingContext';
@@ -84,12 +84,10 @@ export const Step3Schedule = ({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <Calendar 
-                  mode="single" 
-                  selected={date} 
-                  onSelect={handleDateSelect} 
-                  disabled={date => date < new Date(new Date().setHours(0, 0, 0, 0))} 
-                  initialFocus
+                <ShaleanCalendar 
+                  value={date} 
+                  onChange={handleDateSelect} 
+                  minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                 />
               </PopoverContent>
             </Popover>
