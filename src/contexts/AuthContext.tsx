@@ -148,10 +148,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
-      toast.success('Signed out successfully');
+      console.log('[AuthContext] Signing out...');
+      
+      // Clear state immediately
+      setUser(null);
+      setSession(null);
+      setUserRole(null);
+      
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('[AuthContext] Error signing out:', error);
+        toast.error('Error signing out');
+      } else {
+        console.log('[AuthContext] Signed out successfully');
+        
+        // Clear localStorage
+        localStorage.clear();
+        
+        toast.success('Signed out successfully');
+        
+        // Force reload to clear all state
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 100);
+      }
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error('[AuthContext] Caught error signing out:', error);
       toast.error('Error signing out');
     }
   };
