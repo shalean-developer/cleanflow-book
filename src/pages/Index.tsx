@@ -2,9 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Sparkles, CheckCircle, Star, Calendar, LogIn, User, Home, Building2, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
+import normatterImage from '@/assets/normatter-mazhinji.webp';
+import nyashaImage from '@/assets/nyasha-mudani.webp';
 const Index = () => {
   const navigate = useNavigate();
   const {
@@ -50,29 +54,23 @@ const Index = () => {
     description: 'Relax while we handle the rest'
   }];
   const team = [{
-    name: 'Sarah Johnson',
+    name: 'Lucia Pazvakavambwa',
     role: 'Lead Cleaner',
-    image: '',
-    initials: 'SJ',
+    image: luciaImage,
+    initials: 'LP',
     experience: '8 years'
   }, {
-    name: 'Michael Chen',
+    name: 'Normatter Mazhinji',
     role: 'Deep Clean Specialist',
-    image: '',
-    initials: 'MC',
+    image: normatterImage,
+    initials: 'NM',
     experience: '6 years'
   }, {
-    name: 'Emma Davis',
+    name: 'Nyasha Mudani',
     role: 'Senior Cleaner',
-    image: '',
-    initials: 'ED',
+    image: nyashaImage,
+    initials: 'NM',
     experience: '5 years'
-  }, {
-    name: 'James Wilson',
-    role: 'Team Supervisor',
-    image: '',
-    initials: 'JW',
-    experience: '10 years'
   }];
   const benefits = [{
     icon: Shield,
@@ -125,33 +123,52 @@ const Index = () => {
   }];
   return <div className="min-h-screen">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 border-b bg-background backdrop-blur supports-[backdrop-filter]:bg-background">
         <nav className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2 font-bold text-xl">
-              <Sparkles className="w-6 h-6 text-primary" />
+              <img src="/favicon.png" alt="Shalean Logo" className="w-6 h-6" />
               <span>Shalean</span>
             </div>
             <div className="hidden md:flex items-center gap-6">
+              <a href="#" className="text-sm font-medium hover:text-primary transition-colors">Home</a>
               <a href="#services" className="text-sm font-medium hover:text-primary transition-colors">Services</a>
               <a href="#how-it-works" className="text-sm font-medium hover:text-primary transition-colors">How It Works</a>
-              <a href="#team" className="text-sm font-medium hover:text-primary transition-colors">Team</a>
-              <a href="#reviews" className="text-sm font-medium hover:text-primary transition-colors">Reviews</a>
+              <a href="#locations" className="text-sm font-medium hover:text-primary transition-colors">Locations</a>
+              <a href="#contact" className="text-sm font-medium hover:text-primary transition-colors">Contact Us</a>
               <a href="#blog" className="text-sm font-medium hover:text-primary transition-colors">Blog</a>
             </div>
             <div className="flex items-center gap-3">
-              {user ? <>
-                  <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
-                    <User className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={signOut}>
-                    Sign Out
-                  </Button>
-                </> : <Button size="sm" onClick={() => navigate('/auth')}>
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Sign In
-                </Button>}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="cursor-pointer hover:opacity-80 transition-opacity">
+                    <AvatarImage src={user?.user_metadata?.avatar_url} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {user ? user.email?.charAt(0).toUpperCase() : <User className="w-4 h-4" />}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 bg-background z-50" align="end">
+                  {user ? (
+                    <>
+                      <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer">
+                        <User className="w-4 h-4 mr-2" />
+                        Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive">
+                        <LogIn className="w-4 h-4 mr-2" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <DropdownMenuItem onClick={() => navigate('/auth')} className="cursor-pointer">
+                      <LogIn className="w-4 h-4 mr-2" />
+                      Sign In
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </nav>
@@ -278,7 +295,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {team.map((member, i) => <Card key={i} className="text-center hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-primary/10">
@@ -288,7 +305,12 @@ const Index = () => {
                     </AvatarFallback>
                   </Avatar>
                   <CardTitle>{member.name}</CardTitle>
-                  <CardDescription className="text-base">{member.role}</CardDescription>
+                  <div className="flex justify-center gap-1 mt-2">
+                    {[...Array(5)].map((_, idx) => (
+                      <Star key={idx} className="w-4 h-4 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <CardDescription className="text-sm mt-1">{member.role}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge variant="secondary">{member.experience} experience</Badge>
@@ -310,7 +332,13 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-            {benefits.map((benefit, i) => {})}
+            {benefits.map((benefit, i) => <div key={i} className="text-center space-y-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary">
+                  <benefit.icon className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-semibold">{benefit.title}</h3>
+                <p className="text-muted-foreground">{benefit.description}</p>
+              </div>)}
           </div>
         </div>
       </section>
@@ -444,8 +472,8 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 font-bold text-lg mb-4">
-                <Sparkles className="w-5 h-5 text-primary" />
-                <span>Shalean Cleaning</span>
+                <img src="/favicon.png" alt="Shalean Logo" className="w-5 h-5" />
+                <span>Shalean</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Professional cleaning services across Cape Town. Quality you can trust.
