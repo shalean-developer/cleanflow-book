@@ -469,6 +469,7 @@ const Index = () => {
       </section>
 
       <Footer />
+      <NewCustomerPromoModal />
     </div>;
 };
 export default Index;
