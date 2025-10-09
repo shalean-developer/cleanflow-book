@@ -122,7 +122,6 @@ const CustomerDashboard = () => {
   };
 
   const loadBookings = async () => {
-    console.log('[CustomerDashboard] Loading bookings for user:', user?.id);
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -135,7 +134,6 @@ const CustomerDashboard = () => {
         .eq('user_id', user?.id)
         .order('date', { ascending: false });
 
-      console.log('[CustomerDashboard] Bookings data:', data, 'Error:', error);
       if (error) throw error;
 
       const now = new Date();

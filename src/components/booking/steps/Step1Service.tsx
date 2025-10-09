@@ -22,9 +22,9 @@ export const Step1Service = ({
     fetchServices();
   }, []);
   const fetchServices = async () => {
-    console.log('[Step1Service] Fetching services...');
-    const { data, error } = await supabase.from('services').select('*').eq('active', true);
-    console.log('[Step1Service] Services data:', data, 'Error:', error);
+    const {
+      data
+    } = await supabase.from('services').select('*').eq('active', true);
     if (data) setServices(data);
     setLoading(false);
   };
