@@ -22,9 +22,15 @@ export const Step1Service = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    fetchServices();
+    const abortController = new AbortController();
+    fetchServices(abortController);
+    
+    return () => {
+      abortController.abort();
+    };
   }, []);
-  const fetchServices = async () => {
+  
+  const fetchServices = async (abortController?: AbortController) => {
     try {
       setLoading(true);
       setError(null);
@@ -32,10 +38,22 @@ export const Step1Service = ({
       console.log('[Step1Service] Starting to fetch services...');
       console.log('[Step1Service] Supabase client initialized:', !!supabase);
       
-      const { data, error } = await supabase
+      // Create a timeout promise
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000);
+      });
+      
+      // Race between the query and timeout
+      const queryPromise = supabase
         .from('services')
         .select('*')
-        .eq('active', true);
+        .eq('active', true)
+        .abortSignal(abortController?.signal);
+      
+      const { data, error } = await Promise.race([
+        queryPromise,
+        timeoutPromise
+      ]) as any;
       
       console.log('[Step1Service] Query completed successfully');
       console.log('[Step1Service] Data received:', data);
@@ -55,13 +73,24 @@ export const Step1Service = ({
       
       console.log('[Step1Service] Successfully loaded', data.length, 'services');
       setServices(data);
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.name === 'AbortError' || abortController?.signal.aborted) {
+        console.log('[Step1Service] Request cancelled');
+        return;
+      }
       console.error('[Step1Service] Unexpected error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      setError(err?.message || 'An unexpected error occurred. Please try again.');
     } finally {
-      setLoading(false);
+      if (!abortController?.signal.aborted) {
+        setLoading(false);
+      }
     }
   };
+  const handleRetry = () => {
+    const abortController = new AbortController();
+    fetchServices(abortController);
+  };
+
   const handleServiceSelect = (service: any) => {
     updateBooking({
       serviceId: service.id,
@@ -95,7 +124,7 @@ export const Step1Service = ({
           <AlertDescription>{error}</AlertDescription>
         </Alert>
         <div className="flex justify-center">
-          <Button onClick={fetchServices} variant="outline">
+          <Button onClick={handleRetry} variant="outline">
             <RefreshCw className="mr-2 h-4 w-4" />
             Retry
           </Button>
@@ -108,7 +137,7 @@ export const Step1Service = ({
     return (
       <div className="max-w-2xl mx-auto py-12 text-center space-y-4">
         <p className="text-muted-foreground">No services available at the moment.</p>
-        <Button onClick={fetchServices} variant="outline">
+        <Button onClick={handleRetry} variant="outline">
           <RefreshCw className="mr-2 h-4 w-4" />
           Refresh
         </Button>
