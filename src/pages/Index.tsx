@@ -1,12 +1,45 @@
 import { Button } from '@/components/ui/button';
-import { Sparkles, CheckCircle, Star, Calendar } from 'lucide-react';
+import { Sparkles, CheckCircle, Star, Calendar, LogIn, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   return (
     <div className="min-h-screen">
+      {/* Navigation */}
+      <nav className="border-b">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2 font-semibold text-lg">
+            <Sparkles className="w-5 h-5 text-primary" />
+            CleanCape
+          </div>
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Dashboard
+                </Button>
+                <Button variant="outline" onClick={signOut}>
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <Button onClick={() => navigate('/auth')}>
+                <LogIn className="w-4 h-4 mr-2" />
+                Sign In
+              </Button>
+            )}
+          </div>
+        </div>
+      </nav>
+      
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10">
         <div className="container mx-auto px-4 py-20 md:py-32">

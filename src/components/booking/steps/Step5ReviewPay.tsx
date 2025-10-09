@@ -21,10 +21,18 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
     setProcessing(true);
     
     try {
-      // Create booking
+      // Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('You must be logged in to create a booking');
+      }
+      
+      // Create booking with user_id
       const { data: booking, error: bookingError } = await supabase
         .from('bookings')
         .insert({
+          user_id: user.id,
           service_id: bookingData.serviceId,
           bedrooms: bookingData.bedrooms,
           bathrooms: bookingData.bathrooms,
