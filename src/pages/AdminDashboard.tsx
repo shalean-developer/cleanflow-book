@@ -19,7 +19,7 @@ import { toast } from 'sonner';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, userRole, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalBookings: 0,
@@ -29,29 +29,25 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    const checkAdminAccess = async () => {
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
+    // Wait for auth to finish loading
+    if (authLoading) return;
 
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
+    // Check if user is authenticated
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
 
-      if (roleData?.role !== 'admin') {
-        toast.error('Access denied. Admin privileges required.');
-        navigate('/dashboard');
-        return;
-      }
+    // Check if user has admin role
+    if (userRole !== 'admin') {
+      toast.error('Access denied. Admin privileges required.');
+      navigate('/dashboard/customer');
+      return;
+    }
 
-      loadDashboardStats();
-    };
-
-    checkAdminAccess();
-  }, [user, navigate]);
+    // Load dashboard data
+    loadDashboardStats();
+  }, [user, userRole, authLoading, navigate]);
 
   const loadDashboardStats = async () => {
     try {
@@ -153,7 +149,7 @@ const AdminDashboard = () => {
     },
   ];
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
