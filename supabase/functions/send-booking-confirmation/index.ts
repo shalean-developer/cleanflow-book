@@ -47,8 +47,7 @@ serve(async (req) => {
       .select(`
         *,
         services(name),
-        service_areas(name),
-        profiles(full_name)
+        service_areas(name)
       `)
       .eq('id', bookingId)
       .single();
@@ -66,7 +65,7 @@ serve(async (req) => {
       throw new Error('Failed to fetch user details');
     }
 
-    const userName = booking.profiles?.full_name || user.email?.split('@')[0] || 'Customer';
+    const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Customer';
     const serviceName = booking.services?.name || 'Cleaning Service';
     const areaName = booking.service_areas?.name || 'Cape Town';
 
