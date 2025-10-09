@@ -471,7 +471,7 @@ const Index = () => {
             <div>
               <div className="flex items-center gap-2 font-bold text-lg mb-4">
                 <img src="/favicon.png" alt="Shalean Logo" className="w-5 h-5" />
-                <span>Shalean Cleaning</span>
+                <span>Shalean</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Professional cleaning services across Cape Town. Quality you can trust.
