@@ -6,6 +6,7 @@ import { Sparkles, CheckCircle, Star, Calendar, Home, Building2, Droplets, Clipb
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
 import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';
@@ -19,6 +20,12 @@ import serviceSpecializedImage from '@/assets/service-specialized.jpg';
 import cleaningTeamHero from '@/assets/cleaning-team-hero.jpg';
 const Index = () => {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  
+  const handleQuickLogout = async () => {
+    await signOut();
+    window.location.reload();
+  };
   const services = [{
     icon: Home,
     image: serviceStandardImage,
@@ -134,6 +141,15 @@ const Index = () => {
   }];
   return <div className="min-h-screen">
       <Header />
+      
+      {/* Temporary Quick Logout Button */}
+      {user && (
+        <div className="bg-yellow-100 border-b border-yellow-200 p-2 text-center">
+          <Button onClick={handleQuickLogout} variant="destructive" size="sm">
+            Emergency Logout ({user.email})
+          </Button>
+        </div>
+      )}
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
