@@ -6,6 +6,7 @@ import { Sparkles, CheckCircle, Star, Calendar, Home, Building2, Droplets, Clipb
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
 import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';

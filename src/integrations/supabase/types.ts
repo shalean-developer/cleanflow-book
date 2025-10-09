@@ -149,6 +149,98 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_claims: {
+        Row: {
+          applies_to: string
+          claimed_at: string
+          code: string
+          created_at: string | null
+          email: string | null
+          expires_at: string
+          id: string
+          revoke_reason: string | null
+          service_slug: string
+          session_id: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          applies_to: string
+          claimed_at?: string
+          code: string
+          created_at?: string | null
+          email?: string | null
+          expires_at: string
+          id?: string
+          revoke_reason?: string | null
+          service_slug: string
+          session_id: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          applies_to?: string
+          claimed_at?: string
+          code?: string
+          created_at?: string | null
+          email?: string | null
+          expires_at?: string
+          id?: string
+          revoke_reason?: string | null
+          service_slug?: string
+          session_id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      promo_redemptions: {
+        Row: {
+          applies_to: string
+          booking_id: string
+          claimed_id: string | null
+          code: string
+          created_at: string | null
+          discount_type: string
+          discount_value: number
+          id: string
+          redeemed_at: string
+          user_id: string
+        }
+        Insert: {
+          applies_to: string
+          booking_id: string
+          claimed_id?: string | null
+          code: string
+          created_at?: string | null
+          discount_type: string
+          discount_value: number
+          id?: string
+          redeemed_at?: string
+          user_id: string
+        }
+        Update: {
+          applies_to?: string
+          booking_id?: string
+          claimed_id?: string | null
+          code?: string
+          created_at?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          redeemed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_redemptions_claimed_id_fkey"
+            columns: ["claimed_id"]
+            isOneToOne: false
+            referencedRelation: "promo_claims"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       services: {
         Row: {
           base_price: number

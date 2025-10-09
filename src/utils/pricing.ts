@@ -1,6 +1,7 @@
 export interface PricingResult {
   subtotal: number;
   discount: number;
+  promoDiscount: number;
   fees: number;
   total: number;
 }
@@ -11,6 +12,10 @@ interface PricingInput {
   bathrooms: number;
   extrasTotal: number;
   frequency: string;
+  promo?: {
+    type: 'percent' | 'fixed';
+    value: number;
+  };
 }
 
 const BEDROOM_MULTIPLIER = 50;
@@ -30,6 +35,7 @@ export function calculatePricing({
   bathrooms,
   extrasTotal,
   frequency,
+  promo,
 }: PricingInput): PricingResult {
   // Calculate room costs
   const bedroomsCost = bedrooms * BEDROOM_MULTIPLIER;
@@ -38,20 +44,36 @@ export function calculatePricing({
   // Calculate subtotal
   const subtotal = basePrice + bedroomsCost + bathroomsCost + extrasTotal;
   
-  // Calculate discount
+  // Calculate frequency discount
   const discountRate = FREQUENCY_DISCOUNTS[frequency] || 0;
   const discount = subtotal * discountRate;
   
-  // Calculate service fee on discounted amount
-  const afterDiscount = subtotal - discount;
-  const fees = afterDiscount * SERVICE_FEE_RATE;
+  // Apply frequency discount first
+  let afterFrequencyDiscount = subtotal - discount;
+  
+  // Calculate promo discount (applied after frequency discount)
+  let promoDiscount = 0;
+  if (promo) {
+    if (promo.type === 'percent') {
+      promoDiscount = afterFrequencyDiscount * (promo.value / 100);
+    } else {
+      promoDiscount = promo.value;
+    }
+  }
+  
+  // Calculate final amount after both discounts
+  const afterAllDiscounts = afterFrequencyDiscount - promoDiscount;
+  
+  // Calculate service fee on final discounted amount
+  const fees = afterAllDiscounts * SERVICE_FEE_RATE;
   
   // Calculate total
-  const total = afterDiscount + fees;
+  const total = afterAllDiscounts + fees;
   
   return {
     subtotal: Math.round(subtotal * 100) / 100,
     discount: Math.round(discount * 100) / 100,
+    promoDiscount: Math.round(promoDiscount * 100) / 100,
     fees: Math.round(fees * 100) / 100,
     total: Math.round(total * 100) / 100,
   };

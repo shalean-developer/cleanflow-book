@@ -1,6 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export interface PromoData {
+  code: string;
+  type: 'percent' | 'fixed';
+  value: number;
+  appliesTo: string;
+  expiresAt: string;
+  claimId?: string;
+}
+
 export interface BookingData {
   serviceId?: string;
   serviceName?: string;
@@ -15,6 +24,7 @@ export interface BookingData {
   specialInstructions?: string;
   cleanerId?: string;
   cleanerName?: string;
+  promo?: PromoData;
 }
 
 interface BookingStore {
@@ -23,6 +33,9 @@ interface BookingStore {
   setDetails: (bedrooms: number, bathrooms: number, extras: string[], specialInstructions?: string) => void;
   setSchedule: (date: string, time: string, frequency: string, location: string) => void;
   setCleaner: (id: string, name: string) => void;
+  setPromo: (promo: PromoData) => void;
+  clearPromo: () => void;
+  isPromoValidForService: (serviceSlug?: string) => boolean;
   reset: () => void;
 }
 
@@ -35,7 +48,7 @@ const initialState: BookingData = {
 
 export const useBookingStore = create<BookingStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       booking: initialState,
       setService: (id, name, slug) =>
         set((state) => ({
@@ -53,6 +66,20 @@ export const useBookingStore = create<BookingStore>()(
         set((state) => ({
           booking: { ...state.booking, cleanerId: id, cleanerName: name },
         })),
+      setPromo: (promo) =>
+        set((state) => ({
+          booking: { ...state.booking, promo },
+        })),
+      clearPromo: () =>
+        set((state) => ({
+          booking: { ...state.booking, promo: undefined },
+        })),
+      isPromoValidForService: (serviceSlug) => {
+        const promo = get().booking.promo;
+        if (!promo) return true;
+        if (!serviceSlug) return true;
+        return promo.appliesTo === serviceSlug;
+      },
       reset: () => set({ booking: initialState }),
     }),
     {

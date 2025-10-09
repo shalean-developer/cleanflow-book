@@ -13,6 +13,8 @@ import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { format } from 'date-fns';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
+import { ServiceChangeValidator } from '@/components/booking/ServiceChangeValidator';
 
 export default function Schedule() {
   const navigate = useNavigate();
@@ -148,6 +150,8 @@ export default function Schedule() {
         </div>
       </main>
       <Footer />
+      <ServiceChangeValidator />
+      <NewCustomerPromoModal />
     </div>
   );
 }

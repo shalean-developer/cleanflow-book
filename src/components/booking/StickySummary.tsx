@@ -45,6 +45,7 @@ export function StickySummary() {
         bathrooms: booking.bathrooms,
         extrasTotal,
         frequency: booking.frequency,
+        promo: booking.promo,
       })
     : null;
 
@@ -145,32 +146,49 @@ export function StickySummary() {
           </div>
         )}
 
-        {pricing && (
-          <>
-            <Separator />
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span className="font-medium">{formatCurrencyZAR(pricing.subtotal)}</span>
-              </div>
-              {pricing.discount > 0 && (
-                <div className="flex justify-between text-green-600">
-                  <span>Discount</span>
-                  <span className="font-medium">-{formatCurrencyZAR(pricing.discount)}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Service Fee</span>
-                <span className="font-medium">{formatCurrencyZAR(pricing.fees)}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between text-lg font-bold text-primary">
-                <span>Total</span>
-                <span>{formatCurrencyZAR(pricing.total)}</span>
-              </div>
-            </div>
-          </>
-        )}
+         {pricing && (
+           <>
+             <Separator />
+             {booking.promo && (
+               <div className="p-3 bg-primary/10 rounded-lg border border-primary/20 mb-3">
+                 <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                   <Sparkles className="h-4 w-4" />
+                   <span>{booking.promo.code} - {booking.promo.value}% off</span>
+                 </div>
+                 <div className="text-xs text-muted-foreground mt-1">
+                   {booking.serviceName} only
+                 </div>
+               </div>
+             )}
+             <div className="space-y-2 text-sm">
+               <div className="flex justify-between">
+                 <span className="text-muted-foreground">Subtotal</span>
+                 <span className="font-medium">{formatCurrencyZAR(pricing.subtotal)}</span>
+               </div>
+               {pricing.discount > 0 && (
+                 <div className="flex justify-between text-green-600">
+                   <span>Frequency Discount</span>
+                   <span className="font-medium">-{formatCurrencyZAR(pricing.discount)}</span>
+                 </div>
+               )}
+               {pricing.promoDiscount > 0 && (
+                 <div className="flex justify-between text-primary font-medium">
+                   <span>Promo ({booking.promo?.code})</span>
+                   <span>-{formatCurrencyZAR(pricing.promoDiscount)}</span>
+                 </div>
+               )}
+               <div className="flex justify-between">
+                 <span className="text-muted-foreground">Service Fee</span>
+                 <span className="font-medium">{formatCurrencyZAR(pricing.fees)}</span>
+               </div>
+               <Separator />
+               <div className="flex justify-between text-lg font-bold text-primary">
+                 <span>Total</span>
+                 <span>{formatCurrencyZAR(pricing.total)}</span>
+               </div>
+             </div>
+           </>
+         )}
       </CardContent>
     </Card>
   );

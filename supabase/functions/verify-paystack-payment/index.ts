@@ -94,6 +94,40 @@ serve(async (req) => {
 
     console.log('Booking created:', booking.id);
 
+    // Handle promo redemption if promo was used
+    if (metadata.promo && metadata.promo.claimId) {
+      const promoData = metadata.promo;
+      
+      // Create redemption record
+      const { error: redemptionError } = await supabase
+        .from('promo_redemptions')
+        .insert({
+          code: promoData.code,
+          user_id: user.id,
+          booking_id: booking.id,
+          claimed_id: promoData.claimId,
+          discount_type: promoData.type,
+          discount_value: promoData.value,
+          applies_to: promoData.appliesTo,
+        });
+
+      if (redemptionError) {
+        console.error('Failed to create redemption record:', redemptionError);
+      } else {
+        // Update claim status to redeemed
+        const { error: updateError } = await supabase
+          .from('promo_claims')
+          .update({ status: 'redeemed' })
+          .eq('id', promoData.claimId);
+
+        if (updateError) {
+          console.error('Failed to update claim status:', updateError);
+        } else {
+          console.log('Promo redeemed successfully:', promoData.code);
+        }
+      }
+    }
+
     supabase.functions.invoke('send-booking-confirmation', {
       body: { bookingId: booking.id }
     }).then(({ error: emailError }) => {

@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
+import { ServiceChangeValidator } from '@/components/booking/ServiceChangeValidator';
 
 export default function Review() {
   const navigate = useNavigate();
@@ -74,6 +76,7 @@ export default function Review() {
         bathrooms: booking.bathrooms,
         extrasTotal,
         frequency: booking.frequency,
+        promo: booking.promo,
       })
     : null;
 
@@ -287,6 +290,8 @@ export default function Review() {
         </div>
       </main>
       <Footer />
+      <ServiceChangeValidator />
+      <NewCustomerPromoModal />
     </div>
   );
 }

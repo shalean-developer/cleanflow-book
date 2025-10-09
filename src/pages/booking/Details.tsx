@@ -14,6 +14,8 @@ import { ArrowRight, ArrowLeft } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
+import { ServiceChangeValidator } from '@/components/booking/ServiceChangeValidator';
 
 export default function Details() {
   const navigate = useNavigate();
@@ -172,6 +174,8 @@ export default function Details() {
         </div>
       </main>
       <Footer />
+      <ServiceChangeValidator />
+      <NewCustomerPromoModal />
     </div>
   );
 }
