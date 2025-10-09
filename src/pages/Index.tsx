@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Sparkles, CheckCircle, Star, Calendar, LogIn, User, Home, Building2, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -140,18 +141,36 @@ const Index = () => {
               <a href="#blog" className="text-sm font-medium hover:text-primary transition-colors">Blog</a>
             </div>
             <div className="flex items-center gap-3">
-              {user ? <>
-                  <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
-                    <User className="w-4 h-4 mr-2" />
-                    Dashboard
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={signOut}>
-                    Sign Out
-                  </Button>
-                </> : <Button size="sm" onClick={() => navigate('/auth')}>
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Sign In
-                </Button>}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="cursor-pointer hover:opacity-80 transition-opacity">
+                    <AvatarImage src={user?.user_metadata?.avatar_url} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {user ? user.email?.charAt(0).toUpperCase() : <User className="w-4 h-4" />}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 bg-background z-50" align="end">
+                  {user ? (
+                    <>
+                      <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer">
+                        <User className="w-4 h-4 mr-2" />
+                        Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive">
+                        <LogIn className="w-4 h-4 mr-2" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <DropdownMenuItem onClick={() => navigate('/auth')} className="cursor-pointer">
+                      <LogIn className="w-4 h-4 mr-2" />
+                      Sign In
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </nav>
