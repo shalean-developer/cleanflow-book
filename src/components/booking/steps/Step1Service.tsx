@@ -37,26 +37,16 @@ export const Step1Service = ({
       
       console.log('[Step1Service] Starting to fetch services...');
       console.log('[Step1Service] Supabase client initialized:', !!supabase);
+      console.log('[Step1Service] Supabase URL exists:', !!import.meta.env.VITE_SUPABASE_URL);
+      console.log('[Step1Service] Executing query...');
       
-      // Create a timeout promise
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000);
-      });
-      
-      // Race between the query and timeout
-      const queryPromise = supabase
+      const { data, error } = await supabase
         .from('services')
         .select('*')
-        .eq('active', true)
-        .abortSignal(abortController?.signal);
+        .eq('active', true);
       
-      const { data, error } = await Promise.race([
-        queryPromise,
-        timeoutPromise
-      ]) as any;
-      
-      console.log('[Step1Service] Query completed successfully');
-      console.log('[Step1Service] Data received:', data);
+      console.log('[Step1Service] Query completed');
+      console.log('[Step1Service] Data:', data);
       console.log('[Step1Service] Error:', error);
       
       if (error) {
@@ -66,7 +56,7 @@ export const Step1Service = ({
       }
       
       if (!data || data.length === 0) {
-        console.warn('[Step1Service] No active services found in database');
+        console.warn('[Step1Service] No active services found');
         setError('No services available at the moment. Please try again later.');
         return;
       }
