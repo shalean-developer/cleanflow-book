@@ -3,10 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useBooking } from '@/contexts/BookingContext';
 import { supabase } from '@/integrations/supabase/client';
 import { TimeSlotGrid } from '../TimeSlotGrid';
 import { Card } from '@/components/ui/card';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 interface Step3ScheduleProps {
   onNext: () => void;
   onBack: () => void;
@@ -63,10 +67,34 @@ export const Step3Schedule = ({
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        <Card className="p-6">
-          <Label className="text-lg mb-4 block">Select Date</Label>
-          <Calendar mode="single" selected={date} onSelect={handleDateSelect} disabled={date => date < new Date(new Date().setHours(0, 0, 0, 0))} className="rounded-md border w-full my-[8px]" />
-        </Card>
+        <div className="space-y-4">
+          <div>
+            <Label className="text-lg mb-2 block">Select Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal h-12",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar 
+                  mode="single" 
+                  selected={date} 
+                  onSelect={handleDateSelect} 
+                  disabled={date => date < new Date(new Date().setHours(0, 0, 0, 0))} 
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
 
         <div className="space-y-6">
           <div>
