@@ -16,27 +16,39 @@ const BookingConfirmation = () => {
   useEffect(() => {
     const verifyPayment = async () => {
       if (!reference) {
-        setStatus('failed');
+        // If no reference, check for old status parameter for backwards compatibility
+        const status = searchParams.get('status');
+        if (status) {
+          setStatus(status === 'success' ? 'success' : 'failed');
+        } else {
+          setStatus('failed');
+        }
         return;
       }
 
       setVerifying(true);
       
       try {
-        const { data, error } = await supabase.functions.invoke('verify-paystack-payment', {
-          body: { reference },
-        });
+        // Verify the payment was successful by checking the payments table
+        const { data: payment, error: paymentError } = await supabase
+          .from('payments')
+          .select('*, bookings(*)')
+          .eq('reference', reference)
+          .single();
 
-        if (error || !data?.success) {
-          console.error('Payment verification error:', error || data);
+        if (paymentError || !payment) {
+          console.error('Payment verification error:', paymentError);
           setStatus('failed');
           toast.error('Payment verification failed');
-        } else {
+        } else if (payment.status === 'success') {
           setStatus('success');
           localStorage.removeItem('booking-data');
           localStorage.removeItem('paystack_reference');
           localStorage.removeItem('booking_id');
           toast.success('Payment verified successfully!');
+        } else {
+          setStatus('failed');
+          toast.error('Payment not completed');
         }
       } catch (error) {
         console.error('Error verifying payment:', error);

@@ -59,6 +59,7 @@ export type Database = {
           frequency: string | null
           house_details: string | null
           id: string
+          payment_reference: string | null
           service_id: string | null
           special_instructions: string | null
           status: string | null
@@ -77,6 +78,7 @@ export type Database = {
           frequency?: string | null
           house_details?: string | null
           id?: string
+          payment_reference?: string | null
           service_id?: string | null
           special_instructions?: string | null
           status?: string | null
@@ -95,6 +97,7 @@ export type Database = {
           frequency?: string | null
           house_details?: string | null
           id?: string
+          payment_reference?: string | null
           service_id?: string | null
           special_instructions?: string | null
           status?: string | null

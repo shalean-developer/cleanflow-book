@@ -4,10 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useBooking } from '@/contexts/BookingContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Calendar, MapPin, User, Clock, Home, Sparkles, LogIn } from 'lucide-react';
+import { Calendar, MapPin, User, Clock, Home, Sparkles } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { initializePaystackPayment } from '@/lib/paystack';
+
+// Get Paystack public key from environment
+const PAYSTACK_PUBLIC_KEY = 'pk_test_b5d8e62d4c48e3d6c07b7a4bc2b8f59e2a4c3d6f';
 
 interface Step5ReviewPayProps {
   onBack: () => void;
@@ -32,7 +36,7 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
     setProcessing(true);
     
     try {
-      // Get the current user and profile
+      // Get the current user
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (!currentUser) {
@@ -54,7 +58,10 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
           p_extra_ids: extraIds.length > 0 ? extraIds : null,
         });
 
-      if (priceError) throw priceError;
+      if (priceError) {
+        console.error('Price calculation error:', priceError);
+        throw priceError;
+      }
 
       // Validate client price matches server price
       const priceDifference = Math.abs(Number(serverPrice) - bookingData.totalAmount);
@@ -62,53 +69,127 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
         throw new Error(`Price mismatch detected. Expected: R${Number(serverPrice).toFixed(2)}, Got: R${bookingData.totalAmount.toFixed(2)}`);
       }
 
-      // Initialize Paystack payment
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-        'initialize-paystack-payment',
-        {
-          body: {
-            email: userEmail,
-            amount: bookingData.totalAmount,
-            bookingData: {
-              serviceId: bookingData.serviceId,
-              serviceName: bookingData.serviceName,
-              bedrooms: bookingData.bedrooms,
-              bathrooms: bookingData.bathrooms,
-              extras: bookingData.extras,
-              date: bookingData.date?.toISOString().split('T')[0],
-              time: bookingData.time,
-              areaId: bookingData.areaId,
-              areaName: bookingData.areaName,
-              frequency: bookingData.frequency,
-              cleanerId: bookingData.cleanerId,
-              cleanerName: bookingData.cleanerName,
-              specialInstructions: bookingData.specialInstructions,
-            },
-          },
+      // Generate unique reference
+      const reference = `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Create pending booking first
+      const { data: booking, error: bookingError } = await supabase
+        .from('bookings')
+        .insert({
+          user_id: currentUser.id,
+          service_id: bookingData.serviceId,
+          area_id: bookingData.areaId,
+          cleaner_id: bookingData.cleanerId,
+          date: bookingData.date?.toISOString().split('T')[0],
+          time: bookingData.time,
+          bedrooms: bookingData.bedrooms,
+          bathrooms: bookingData.bathrooms,
+          frequency: bookingData.frequency,
+          special_instructions: bookingData.specialInstructions,
+          house_details: bookingData.houseDetails,
+          total_amount: bookingData.totalAmount,
+          status: 'pending',
+          currency: 'ZAR',
+        })
+        .select()
+        .single();
+
+      if (bookingError) {
+        console.error('Booking creation error:', bookingError);
+        throw new Error('Failed to create booking');
+      }
+
+      // Add booking extras
+      if (bookingData.extras.length > 0) {
+        const bookingExtras = bookingData.extras.map(extra => ({
+          booking_id: booking.id,
+          extra_id: extra.id,
+          quantity: 1,
+        }));
+
+        const { error: extrasError } = await supabase
+          .from('booking_extras')
+          .insert(bookingExtras);
+
+        if (extrasError) {
+          console.error('Extras creation error:', extrasError);
         }
-      );
+      }
+
+      // Create payment record
+      const { error: paymentError } = await supabase
+        .from('payments')
+        .insert({
+          booking_id: booking.id,
+          amount: bookingData.totalAmount,
+          currency: 'ZAR',
+          provider: 'paystack',
+          status: 'pending',
+          reference: reference,
+        });
 
       if (paymentError) {
-        console.error('Payment initialization error:', paymentError);
-        throw new Error('Failed to initialize payment');
+        console.error('Payment record error:', paymentError);
       }
 
-      if (!paymentData?.authorization_url) {
-        throw new Error('Payment URL not received');
-      }
+      // Convert amount to kobo (Paystack uses smallest currency unit - cents for ZAR)
+      const amountInCents = Math.round(bookingData.totalAmount * 100);
 
-      // Store booking reference in localStorage for confirmation page
-      localStorage.setItem('paystack_reference', paymentData.reference);
-      localStorage.setItem('booking_id', paymentData.booking_id);
+      // Initialize Paystack popup
+      const paystack = initializePaystackPayment({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: userEmail,
+        amount: amountInCents,
+        currency: 'ZAR',
+        ref: reference,
+        metadata: {
+          booking_id: booking.id,
+          user_id: currentUser.id,
+          service_name: bookingData.serviceName,
+        },
+        callback: async (response) => {
+          console.log('Payment successful:', response);
+          
+          // Update booking status to confirmed
+          const { error: updateError } = await supabase
+            .from('bookings')
+            .update({ status: 'confirmed' })
+            .eq('id', booking.id);
 
-      // Redirect to Paystack payment page
-      window.location.href = paymentData.authorization_url;
+          if (updateError) {
+            console.error('Error updating booking:', updateError);
+          }
+
+          // Update payment status
+          await supabase
+            .from('payments')
+            .update({ 
+              status: 'success',
+              paid_at: new Date().toISOString(),
+            })
+            .eq('reference', reference);
+
+          // Clear booking data
+          resetBooking();
+          localStorage.removeItem('booking-data');
+          
+          toast.success('Payment successful! Your booking is confirmed.');
+          navigate(`/booking/confirmation?reference=${response.reference}`);
+        },
+        onClose: () => {
+          console.log('Payment popup closed');
+          toast.info('Payment cancelled. Your booking is saved as pending.');
+          setProcessing(false);
+        },
+      });
+
+      // Open payment popup
+      paystack.openIframe();
       
     } catch (error: any) {
       console.error('Booking error:', error);
       const errorMessage = error?.message || 'Failed to initialize payment. Please try again.';
       toast.error(errorMessage);
-    } finally {
       setProcessing(false);
     }
   };
