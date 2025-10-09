@@ -32,11 +32,17 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
     setProcessing(true);
     
     try {
-      // Get the current user
-      const { data: { user } } = await supabase.auth.getUser();
+      // Get the current user and profile
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
       
-      if (!user) {
+      if (!currentUser) {
         throw new Error('You must be logged in to create a booking');
+      }
+
+      // Get user email
+      const userEmail = currentUser.email || currentUser.user_metadata?.email;
+      if (!userEmail) {
+        throw new Error('User email not found');
       }
 
       // Server-side price validation
@@ -55,60 +61,53 @@ export const Step5ReviewPay = ({ onBack }: Step5ReviewPayProps) => {
       if (priceDifference > 0.01) {
         throw new Error(`Price mismatch detected. Expected: R${Number(serverPrice).toFixed(2)}, Got: R${bookingData.totalAmount.toFixed(2)}`);
       }
-      
-      // Create booking with user_id
-      const { data: booking, error: bookingError } = await supabase
-        .from('bookings')
-        .insert({
-          user_id: user.id,
-          service_id: bookingData.serviceId,
-          bedrooms: bookingData.bedrooms,
-          bathrooms: bookingData.bathrooms,
-          house_details: bookingData.houseDetails,
-          special_instructions: bookingData.specialInstructions,
-          date: bookingData.date?.toISOString().split('T')[0],
-          time: bookingData.time,
-          frequency: bookingData.frequency,
-          area_id: bookingData.areaId,
-          cleaner_id: bookingData.cleanerId,
-          status: 'confirmed',
-          total_amount: bookingData.totalAmount,
-          currency: 'ZAR',
-        })
-        .select()
-        .single();
 
-      if (bookingError) throw bookingError;
+      // Initialize Paystack payment
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+        'initialize-paystack-payment',
+        {
+          body: {
+            email: userEmail,
+            amount: bookingData.totalAmount,
+            bookingData: {
+              serviceId: bookingData.serviceId,
+              serviceName: bookingData.serviceName,
+              bedrooms: bookingData.bedrooms,
+              bathrooms: bookingData.bathrooms,
+              extras: bookingData.extras,
+              date: bookingData.date?.toISOString().split('T')[0],
+              time: bookingData.time,
+              areaId: bookingData.areaId,
+              areaName: bookingData.areaName,
+              frequency: bookingData.frequency,
+              cleanerId: bookingData.cleanerId,
+              cleanerName: bookingData.cleanerName,
+              specialInstructions: bookingData.specialInstructions,
+            },
+          },
+        }
+      );
 
-      // Add extras
-      if (bookingData.extras.length > 0 && booking) {
-        const extrasToInsert = bookingData.extras.map(extra => ({
-          booking_id: booking.id,
-          extra_id: extra.id,
-          quantity: 1,
-        }));
-
-        await supabase.from('booking_extras').insert(extrasToInsert);
+      if (paymentError) {
+        console.error('Payment initialization error:', paymentError);
+        throw new Error('Failed to initialize payment');
       }
 
-      // Clear localStorage after successful booking
-      resetBooking();
-      localStorage.removeItem('booking-data');
-      
-      toast.success('Booking created successfully!');
-      
-      // In production, integrate with Paystack here
-      // For now, redirect to success page
-      navigate('/booking/confirmation?status=success');
+      if (!paymentData?.authorization_url) {
+        throw new Error('Payment URL not received');
+      }
+
+      // Store booking reference in localStorage for confirmation page
+      localStorage.setItem('paystack_reference', paymentData.reference);
+      localStorage.setItem('booking_id', paymentData.booking_id);
+
+      // Redirect to Paystack payment page
+      window.location.href = paymentData.authorization_url;
       
     } catch (error: any) {
       console.error('Booking error:', error);
-      const errorMessage = error?.message || 'Failed to create booking. Please try again.';
+      const errorMessage = error?.message || 'Failed to initialize payment. Please try again.';
       toast.error(errorMessage);
-      
-      if (!error?.message?.includes('Price mismatch')) {
-        navigate('/booking/confirmation?status=declined');
-      }
     } finally {
       setProcessing(false);
     }
