@@ -12,6 +12,10 @@ import nyashaImage from '@/assets/nyasha-mudani.webp';
 import blogCleaningTipsImage from '@/assets/blog-cleaning-tips.jpg';
 import blogSpringCleaningImage from '@/assets/blog-spring-cleaning.jpg';
 import blogEcoProductsImage from '@/assets/blog-eco-products.jpg';
+import serviceStandardImage from '@/assets/service-standard-cleaning.jpg';
+import serviceDeepImage from '@/assets/service-deep-cleaning.jpg';
+import serviceMoveImage from '@/assets/service-move-inout.jpg';
+import serviceSpecializedImage from '@/assets/service-specialized.jpg';
 const Index = () => {
   const navigate = useNavigate();
   const {
@@ -20,21 +24,25 @@ const Index = () => {
   } = useAuth();
   const services = [{
     icon: Home,
+    image: serviceStandardImage,
     title: 'Standard Cleaning',
     description: 'Regular home maintenance to keep your space fresh and tidy',
     features: ['Dusting & vacuuming', 'Kitchen & bathroom', 'Floor cleaning']
   }, {
     icon: Droplets,
+    image: serviceDeepImage,
     title: 'Deep Cleaning',
     description: 'Thorough top-to-bottom cleaning for a spotless home',
     features: ['Behind appliances', 'Inside cabinets', 'Window cleaning']
   }, {
     icon: Building2,
+    image: serviceMoveImage,
     title: 'Move In/Out',
     description: 'Complete cleaning for seamless transitions',
     features: ['Empty property focus', 'All surfaces sanitized', 'Ready for occupancy']
   }, {
     icon: Sparkles,
+    image: serviceSpecializedImage,
     title: 'Specialized Services',
     description: 'Carpet, upholstery, and post-construction cleaning',
     features: ['Carpet shampooing', 'Furniture deep clean', 'Dust removal']
@@ -243,11 +251,13 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {services.map((service, i) => <Card key={i} className="hover:shadow-lg transition-shadow border-2 hover:border-primary/20">
+            {services.map((service, i) => <Card key={i} className="hover:shadow-lg transition-shadow border-2 hover:border-primary/20 overflow-hidden">
+                <img 
+                  src={service.image} 
+                  alt={service.title}
+                  className="w-full h-40 object-cover"
+                />
                 <CardHeader>
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                    <service.icon className="w-7 h-7 text-primary" />
-                  </div>
                   <CardTitle className="text-xl">{service.title}</CardTitle>
                   <CardDescription className="text-base">{service.description}</CardDescription>
                 </CardHeader>
