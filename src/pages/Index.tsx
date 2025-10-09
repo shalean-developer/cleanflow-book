@@ -336,7 +336,7 @@ const Index = () => {
               passionate, reliable cleaners to join the Shalean family.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-6 h-auto shadow-xl">
+              <Button size="lg" variant="secondary" className="text-lg px-8 h-auto shadow-xl py-[12px]">
                 Apply Now
                 <ClipboardCheck className="w-5 h-5 ml-2" />
               </Button>
