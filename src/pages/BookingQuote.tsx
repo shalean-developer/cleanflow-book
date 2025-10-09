@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -22,6 +23,11 @@ export default function BookingQuote() {
   const [extras, setExtras] = useState<Extra[]>([]);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [specialInstructions, setSpecialInstructions] = useState('');
+  
+  // Contact information
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
   useEffect(() => {
     fetchExtras();
@@ -51,14 +57,31 @@ export default function BookingQuote() {
   };
 
   const handleSubmit = () => {
+    // Validate contact information
+    if (!fullName.trim()) {
+      toast.error('Please enter your full name');
+      return;
+    }
+    if (!email.trim() || !email.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    if (!phone.trim()) {
+      toast.error('Please enter your phone number');
+      return;
+    }
+
     const quote = {
+      fullName,
+      email,
+      phone,
       bedrooms: Number(bedrooms),
       bathrooms: Number(bathrooms),
       extras: selectedExtras,
       specialInstructions
     };
     console.log('Quote:', quote);
-    toast.success('Quote request submitted!');
+    toast.success('Quote request submitted! We will contact you shortly.');
   };
 
   return (
@@ -71,6 +94,54 @@ export default function BookingQuote() {
 
         <Card className="p-8 shadow-large">
           <div className="space-y-8">
+            {/* Contact Information */}
+            <div>
+              <h2 className="text-2xl font-semibold mb-6">Your Contact Information</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <Label htmlFor="fullName" className="text-base mb-2 block">
+                    Full Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="email" className="text-base mb-2 block">
+                    Email Address <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="your.email@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="phone" className="text-base mb-2 block">
+                    Phone Number <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="+27 XX XXX XXXX"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Property Details */}
             <div>
               <h2 className="text-2xl font-semibold mb-6">Property Details</h2>
