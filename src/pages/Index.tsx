@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sparkles, CheckCircle, Star, Calendar, Home, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote, Building2 } from 'lucide-react';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useNavigate } from 'react-router-dom';
 import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
 import { HeroApiIntegration } from '@/components/HeroApiIntegration';
@@ -19,20 +20,28 @@ import serviceMoveImage from '@/assets/service-move-inout.jpg';
 import serviceSpecializedImage from '@/assets/service-specialized.jpg';
 const Index = () => {
   const navigate = useNavigate();
+  const { elementRef: howItWorksRef, isIntersecting } = useIntersectionObserver({
+    threshold: 0.2,
+    rootMargin: '-50px'
+  });
   const steps = [{
     number: '01',
+    icon: ClipboardCheck,
     title: 'Choose Your Service',
     description: 'Select the cleaning package that fits your needs'
   }, {
     number: '02',
+    icon: Calendar,
     title: 'Pick Date & Time',
     description: 'Book a slot that works with your schedule'
   }, {
     number: '03',
+    icon: Users,
     title: 'Meet Your Cleaner',
     description: 'Get matched with a vetted professional'
   }, {
     number: '04',
+    icon: Home,
     title: 'Enjoy Your Clean Home',
     description: 'Relax while we handle the rest'
   }];
@@ -200,121 +209,257 @@ const Index = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-24">
+      <section id="how-it-works" ref={howItWorksRef} className="py-24 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <Badge className="mb-4" variant="outline">Simple Process</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">How It Works</h2>
+            <Badge className="mb-4 px-4 py-2 bg-[#EAF2FF] text-primary border-primary/20 rounded-full font-medium">
+              Simple Process
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+              How It Works
+              <div className="w-24 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
+            </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Get your home professionally cleaned in four easy steps
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-            {steps.map((step, i) => <div key={i} className="relative">
-                {i < steps.length - 1 && <div className="hidden lg:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />}
-                <div className="text-center space-y-4">
-                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-glow text-primary-foreground text-2xl font-bold shadow-lg">
-                    {step.number}
+            {steps.map((step, i) => (
+              <div key={i} className="relative group">
+                {/* Connecting line for desktop */}
+                {i < steps.length - 1 && (
+                  <div className="hidden lg:block absolute top-20 left-[calc(50%+40px)] w-[calc(100%-80px)] h-0.5 bg-gradient-to-r from-primary/30 via-primary/50 to-primary/30 z-0" />
+                )}
+                
+                {/* Step Card */}
+                <div className={`
+                  relative z-10 bg-white rounded-2xl p-6 shadow-medium hover:shadow-large 
+                  transition-all duration-500 group-hover:scale-105 group-hover:-translate-y-2
+                  ${isIntersecting ? 'animate-fade-up' : 'opacity-0 translate-y-8'}
+                  ${i % 2 === 0 && isIntersecting ? 'lg:animate-slide-in-left' : i % 2 === 1 && isIntersecting ? 'lg:animate-slide-in-right' : ''}
+                `}
+                style={{
+                  animationDelay: `${i * 0.2}s`
+                }}>
+                  {/* Icon Circle with Gradient */}
+                  <div className="relative mb-6">
+                    <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-300">
+                      <div className="text-white text-xl font-bold">{step.number}</div>
+                    </div>
+                    {/* Step Icon */}
+                    <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md border-2 border-primary/10">
+                      <step.icon className="w-4 h-4 text-primary" />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.description}</p>
+                  
+                  {/* Content */}
+                  <div className="text-center space-y-3">
+                    <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                      {step.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
+                  
+                  {/* Hover effect overlay */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </div>
-              </div>)}
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Our Team Section */}
-      <section id="team" className="py-24 bg-muted/30">
+      <section id="team" className="py-24 bg-[#F8FAFC]">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <Badge className="mb-4" variant="outline">Meet The Team</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Cleaning Experts</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <div className="text-center mb-16 animate-fade-up">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#180D39] relative inline-block">
+              Our Cleaning Experts
+              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-[#0C53ED] to-[#2A869E] rounded-full"></div>
+            </h2>
+            <p className="text-[#64748B] text-lg max-w-2xl mx-auto">
               Experienced professionals dedicated to making your home shine
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {team.map((member, i) => <Card key={i} className="text-center hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-primary/10">
-                    <AvatarImage src={member.image} />
-                    <AvatarFallback className="text-lg font-semibold bg-primary/10 text-primary">
-                      {member.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <CardTitle>{member.name}</CardTitle>
-                  <div className="flex justify-center gap-1 mt-2">
-                    {[...Array(5)].map((_, idx) => <Star key={idx} className="w-4 h-4 fill-primary text-primary" />)}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {team.map((member, i) => (
+              <Card 
+                key={i} 
+                className={`text-center bg-white shadow-lg hover:shadow-xl hover:-translate-y-2 hover:border-[#0C53ED]/30 border-2 border-transparent rounded-xl transition-all duration-300 ease-out group ${
+                  i === 0 ? 'animate-fade-up-delay-1' : 
+                  i === 1 ? 'animate-fade-up-delay-2' : 
+                  'animate-fade-up-delay-3'
+                }`}
+              >
+                <CardHeader className="pb-4">
+                  {/* Profile Photo with Gradient Ring */}
+                  <div className="relative w-32 h-32 mx-auto mb-6">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#0C53ED] to-[#2A869E] p-1 group-hover:p-1.5 transition-all duration-300">
+                      <Avatar className="w-full h-full border-4 border-white shadow-lg">
+                        <AvatarImage src={member.image} className="object-cover" />
+                        <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-[#0C53ED]/10 to-[#2A869E]/10 text-[#0C53ED]">
+                          {member.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
                   </div>
-                  <CardDescription className="text-sm mt-1">{member.role}</CardDescription>
+                  
+                  {/* Name with improved hierarchy */}
+                  <CardTitle className="text-xl font-bold text-[#180D39] mb-3">
+                    {member.name}
+                  </CardTitle>
+                  
+                  {/* Star Rating */}
+                  <div className="flex justify-center gap-1 mb-3">
+                    {[...Array(5)].map((_, idx) => (
+                      <Star key={idx} className="w-5 h-5 fill-[#0C53ED] text-[#0C53ED]" />
+                    ))}
+                  </div>
+                  
+                  {/* Divider Line */}
+                  <div className="w-16 h-px bg-gradient-to-r from-transparent via-[#0C53ED]/30 to-transparent mx-auto mb-3"></div>
+                  
+                  {/* Role */}
+                  <CardDescription className="text-[#64748B] font-medium text-base">
+                    {member.role}
+                  </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Badge variant="secondary">{member.comment}</Badge>
+                
+                <CardContent className="pt-0">
+                  {/* Pill-style tagline */}
+                  <Badge 
+                    variant="secondary" 
+                    className="bg-[#EAF2FF] text-[#0C53ED] border-[#0C53ED]/20 hover:bg-[#D1E7FF] transition-colors duration-200 px-4 py-2 text-sm font-medium rounded-full"
+                  >
+                    {member.comment}
+                  </Badge>
                 </CardContent>
-              </Card>)}
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
-      <section id="why-choose-us" className="py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <Badge className="mb-4" variant="outline">Our Promise</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Why Choose Us?</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+      <section id="why-choose-us" className="py-32 bg-[#F8FAFC] dark:bg-[#0B1220]">
+        <div className="container mx-auto px-4 max-w-7xl">
+          {/* Header Block */}
+          <div className="text-center mb-20">
+            <Badge className="mb-6 px-4 py-2 text-sm font-medium bg-white/80 text-[#4B5563] border-gray-200 dark:bg-white/10 dark:text-white/70 dark:border-white/20">
+              Our Promise
+            </Badge>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-[#180D39] dark:text-white relative inline-block">
+              Why Choose Us?
+              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-[#0C53ED] rounded-full"></div>
+            </h2>
+            <p className="text-[#4B5563] dark:text-white/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
               Quality service backed by trust and reliability
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-            {benefits.map((benefit, i) => <div key={i} className="text-center space-y-4">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary">
-                  <benefit.icon className="w-8 h-8" />
+          {/* Benefits Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            {benefits.map((benefit, i) => (
+              <article 
+                key={i} 
+                role="article"
+                className="group bg-white dark:bg-[#0B1220] rounded-2xl border border-gray-100 dark:border-white/10 shadow-md hover:shadow-lg hover:-translate-y-[2px] hover:border-[#0C53ED]/20 hover:ring-2 hover:ring-[#0C53ED]/10 transition-all duration-300 ease-out p-8 text-center h-full focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0C53ED] animate-fade-up-scale"
+                style={{
+                  animationDelay: `${i * 0.1}s`,
+                  animationFillMode: 'both'
+                }}
+              >
+                {/* Icon Badge */}
+                <div className="relative w-14 h-14 mx-auto mb-6">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#0C53ED] to-[#2A869E] opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                  <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[#0C53ED] to-[#2A869E] flex items-center justify-center shadow-sm">
+                    <benefit.icon 
+                      className="w-7 h-7 text-white" 
+                      style={{ strokeWidth: '1.75' }}
+                      aria-hidden="true"
+                    />
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold">{benefit.title}</h3>
-                <p className="text-muted-foreground">{benefit.description}</p>
-              </div>)}
+                
+                {/* Title */}
+                <h3 className="text-xl font-semibold text-[#180D39] dark:text-white mb-4">
+                  {benefit.title}
+                </h3>
+                
+                {/* Divider */}
+                <div className="w-10 h-[2px] bg-[#0C53ED]/30 mx-auto mb-4"></div>
+                
+                {/* Description */}
+                <p className="text-sm md:text-base text-gray-600 dark:text-white/70 leading-relaxed max-w-[28ch] mx-auto">
+                  {benefit.description}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Apply to Work Section */}
-      <section id="careers" className="py-24 bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm mb-4">
-              <Briefcase className="w-10 h-10" />
+      <section id="careers" className="relative py-20 md:py-28 overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0C53ED] to-[#2A869E]" />
+        
+        {/* Grain/Noise Overlay */}
+        <div className="absolute inset-0 opacity-[0.06] bg-[radial-gradient(circle_at_20%_80%,rgba(255,255,255,0.3),transparent_50%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.2),transparent_50%)]" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-5xl mx-auto text-center space-y-12">
+            {/* Icon Badge */}
+            <div className="inline-flex items-center justify-center w-18 h-18 rounded-full bg-white/20 backdrop-blur-sm border border-white/20 shadow-lg animate-float">
+              <Briefcase className="w-9 h-9 text-white" aria-hidden="true" />
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold">Join Our Team</h2>
-            <p className="text-xl opacity-90 max-w-2xl mx-auto">
-              Looking for rewarding work with flexible hours? We're always looking for 
-              passionate, reliable cleaners to join the Shalean family.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" variant="secondary" className="text-lg px-8 h-auto shadow-xl py-[12px]">
+            
+            {/* Heading & Subheading */}
+            <div className="space-y-6 animate-fade-up">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+                Join Our Team
+              </h2>
+              <p className="text-lg md:text-xl text-white/80 max-w-[70ch] mx-auto leading-relaxed">
+                Looking for rewarding work with flexible hours? We're always looking for 
+                passionate, reliable cleaners to join the Shalean family.
+              </p>
+            </div>
+            
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-up-delay-1">
+              <Button 
+                size="lg" 
+                className="bg-white text-[#0C53ED] hover:bg-white/95 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70 text-lg px-8 py-3 h-auto transition-all duration-300"
+              >
                 Apply Now
                 <ClipboardCheck className="w-5 h-5 ml-2" />
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 h-auto bg-white/10 border-white/20 hover:bg-white/20 text-white hover:text-white py-[12px]">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="bg-white/15 border-white/30 text-white hover:bg-white/25 hover:border-white/50 rounded-full backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70 text-lg px-8 py-3 h-auto transition-all duration-300"
+              >
                 Learn More
               </Button>
             </div>
-            <div className="grid grid-cols-3 gap-8 pt-8 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-2xl font-bold">Flexible</div>
-                <div className="text-sm opacity-80">Schedule</div>
+            
+            {/* Benefits Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-4xl mx-auto animate-fade-up-delay-2">
+              <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/15 text-white p-6 text-center hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                <div className="text-xl font-bold mb-1">Flexible</div>
+                <div className="text-sm text-white/80">Schedule</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">Competitive</div>
-                <div className="text-sm opacity-80">Pay</div>
+              <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/15 text-white p-6 text-center hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                <div className="text-xl font-bold mb-1">Competitive</div>
+                <div className="text-sm text-white/80">Pay</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">Supportive</div>
-                <div className="text-sm opacity-80">Environment</div>
+              <div className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/15 text-white p-6 text-center hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                <div className="text-xl font-bold mb-1">Supportive</div>
+                <div className="text-sm text-white/80">Environment</div>
               </div>
             </div>
           </div>
@@ -322,38 +467,81 @@ const Index = () => {
       </section>
 
       {/* Blog Section */}
-      <section id="blog" className="py-24 bg-muted/30">
+      <section id="blog" className="py-24 bg-[#F8FAFC] dark:bg-[#0B1220]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <Badge className="mb-4" variant="outline">
-              <BookOpen className="w-3 h-3 mr-1" />
+            {/* Latest Posts Badge */}
+            <Badge className="mb-6 inline-flex items-center px-3 py-1.5 text-xs font-medium border border-gray-200 dark:border-white/20 bg-white/80 dark:bg-white/10 backdrop-blur-sm text-[#475569] dark:text-white/70 rounded-full">
+              <BookOpen className="w-3 h-3 mr-1.5" />
               Latest Posts
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Cleaning Tips & News</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            
+            {/* Main Title with Accent Underline */}
+            <div className="relative mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0F172A] dark:text-white">
+                Cleaning Tips & News
+              </h2>
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-[#0C53ED] rounded-full"></div>
+            </div>
+            
+            {/* Subheading */}
+            <p className="text-[#475569] dark:text-white/70 text-lg max-w-[68ch] mx-auto leading-relaxed">
               Expert advice and insights from our cleaning professionals
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {blogPosts.map((post, i) => <Card key={i} className="hover:shadow-lg transition-shadow overflow-hidden group cursor-pointer">
-                <img src={post.image} alt={post.title} className="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                <CardHeader>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="secondary">{post.category}</Badge>
-                    <span className="text-xs text-muted-foreground">{post.date}</span>
+          {/* Responsive Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {blogPosts.map((post, i) => (
+              <article 
+                key={i} 
+                className="group cursor-pointer focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[#0C53ED] rounded-2xl"
+              >
+                <a 
+                  href="#" 
+                  className="block h-full bg-white dark:bg-[#0B1220] border border-gray-100 dark:border-white/10 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:border-[#0C53ED]/20 dark:hover:border-white/20 transition-all duration-300 overflow-hidden"
+                >
+                  {/* Image Container with Category Chip */}
+                  <div className="relative aspect-video overflow-hidden rounded-t-2xl">
+                    <img 
+                      src={post.image} 
+                      alt={post.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    {/* Category Chip Overlay */}
+                    <div className="absolute top-4 left-4">
+                      <Badge className="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-white/90 dark:bg-white/10 backdrop-blur-sm text-[#475569] dark:text-white/70 border border-white/20 dark:border-white/10 rounded-full shadow-sm">
+                        {post.icon && <post.icon className="w-3 h-3 mr-1.5" />}
+                        {post.category}
+                      </Badge>
+                    </div>
                   </div>
-                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                    {post.title}
-                  </CardTitle>
-                  <CardDescription className="text-base">{post.excerpt}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="ghost" size="sm" className="group-hover:text-primary">
-                    Read More →
-                  </Button>
-                </CardContent>
-              </Card>)}
+                  
+                  {/* Content Area */}
+                  <div className="p-6 flex flex-col h-full">
+                    {/* Title */}
+                    <h3 className="text-xl font-semibold text-[#0F172A] dark:text-white line-clamp-2 mb-3 group-hover:text-[#0C53ED] transition-colors duration-200">
+                      {post.title}
+                    </h3>
+                    
+                    {/* Excerpt */}
+                    <p className="text-sm text-[#475569] dark:text-white/70 line-clamp-3 mb-6 flex-grow">
+                      {post.excerpt}
+                    </p>
+                    
+                    {/* Divider and Read More */}
+                    <div className="mt-auto">
+                      <div className="border-t border-gray-100 dark:border-white/10 mb-4"></div>
+                      <span className="text-sm font-medium text-[#0C53ED] hover:underline transition-all duration-200 inline-flex items-center">
+                        Read More →
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -363,73 +551,183 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <Badge className="mb-4" variant="outline">Testimonials</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">What Our Clients Say</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">What Our Clients Say</h2>
+            <div className="w-16 h-1 bg-[#0C53ED] mx-auto mt-2 rounded-full"></div>
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto mt-6">
               Real feedback from real customers across Cape Town
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {reviews.map((review, i) => <Card key={i} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex gap-1">
-                      {[...Array(review.rating)].map((_, idx) => <Star key={idx} className="w-5 h-5 fill-primary text-primary" />)}
-                    </div>
-                    <Quote className="w-8 h-8 text-primary/20" />
+          {/* Desktop/Tablet Grid */}
+          <div className="hidden md:grid xl:grid-cols-3 md:grid-cols-2 gap-6 max-w-7xl mx-auto">
+            {reviews.map((review, i) => (
+              <blockquote 
+                key={i} 
+                className="group rounded-2xl border border-gray-100 dark:border-white/10 bg-white dark:bg-[#0B1220] p-6 md:p-7 shadow-md hover:translate-y-[-2px] hover:shadow-lg hover:border-[#0C53ED]/20 dark:hover:border-[#0C53ED]/30 transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0C53ED]"
+                style={{ 
+                  animationDelay: `${i * 100}ms`,
+                  animation: 'fadeInUp 0.6s ease-out forwards'
+                }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-1" aria-label={`${review.rating} star rating`}>
+                    {[...Array(review.rating)].map((_, idx) => (
+                      <Star key={idx} className="w-5 h-5 fill-[#0C53ED] text-[#0C53ED]" />
+                    ))}
                   </div>
-                  <CardDescription className="text-base text-foreground leading-relaxed">
+                  <Quote className="w-8 h-8 bg-gradient-to-r from-[#0C53ED] to-[#2A869E] bg-clip-text text-transparent opacity-40" />
+                </div>
+                
+                <div className="mb-6">
+                  <p className="text-gray-700 dark:text-white/90 leading-relaxed text-lg">
                     "{review.comment}"
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-3">
-                    <Avatar className="w-10 h-10 border-2 border-primary/10">
-                      <AvatarFallback className="text-sm bg-primary/10 text-primary">
-                        {review.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-semibold">{review.name}</div>
-                      <div className="text-xs text-muted-foreground">{review.date}</div>
-                    </div>
+                  </p>
+                </div>
+                
+                <div className="w-10 h-[2px] bg-[#0C53ED]/20 mb-4"></div>
+                
+                <footer className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#0C53ED] to-[#2A869E] flex items-center justify-center text-white font-semibold text-sm ring-2 ring-[#0C53ED]/20 ring-offset-2">
+                    {review.name.split(' ').map(n => n[0]).join('')}
                   </div>
-                </CardContent>
-              </Card>)}
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-white">{review.name}</div>
+                    <div className="text-sm text-gray-500 dark:text-white/70">{review.date}</div>
+                  </div>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {reviews.map((review, i) => (
+                <blockquote 
+                  key={i} 
+                  className="flex-none w-[calc(100vw-2rem)] max-w-sm rounded-2xl border border-gray-100 dark:border-white/10 bg-white dark:bg-[#0B1220] p-6 shadow-md snap-center focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0C53ED]"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex gap-1" aria-label={`${review.rating} star rating`}>
+                      {[...Array(review.rating)].map((_, idx) => (
+                        <Star key={idx} className="w-5 h-5 fill-[#0C53ED] text-[#0C53ED]" />
+                      ))}
+                    </div>
+                    <Quote className="w-8 h-8 bg-gradient-to-r from-[#0C53ED] to-[#2A869E] bg-clip-text text-transparent opacity-40" />
+                  </div>
+                  
+                  <div className="mb-6">
+                    <p className="text-gray-700 dark:text-white/90 leading-relaxed text-lg line-clamp-5">
+                      "{review.comment}"
+                    </p>
+                  </div>
+                  
+                  <div className="w-10 h-[2px] bg-[#0C53ED]/20 mb-4"></div>
+                  
+                  <footer className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#0C53ED] to-[#2A869E] flex items-center justify-center text-white font-semibold text-sm ring-2 ring-[#0C53ED]/20 ring-offset-2">
+                      {review.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900 dark:text-white">{review.name}</div>
+                      <div className="text-sm text-gray-500 dark:text-white/70">{review.date}</div>
+                    </div>
+                  </footer>
+                </blockquote>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Team in Action Section */}
-      <section className="py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
-            <div className="space-y-6">
-              <Badge className="mb-2" variant="outline">Our Team in Action</Badge>
-              <h2 className="text-4xl md:text-5xl font-bold">
-                Professional Service,
-                <br />
-                <span className="bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
-                  Delivered Every Time
-                </span>
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
+      <section 
+        className="relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #F8FAFC 0%, transparent 100%)'
+        }}
+        aria-label="Hero"
+      >
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left Column - Text Content */}
+            <div className="space-y-8 order-2 lg:order-1">
+              {/* Badge */}
+              <Badge 
+                className="inline-flex items-center rounded-full border border-gray-200 bg-white text-sm px-3 py-1 text-[#4B5563] shadow-xs dark:border-white/20 dark:bg-white/10 dark:text-white/70"
+                variant="outline"
+              >
+                Our Team in Action
+              </Badge>
+
+              {/* Heading */}
+              <div className="space-y-4">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-[#180D39] dark:text-white">
+                  Professional Service,
+                  <br />
+                  <span className="bg-gradient-to-r from-[#0C53ED] to-[#2A869E] bg-clip-text text-transparent">
+                    Delivered Every Time
+                  </span>
+                </h1>
+                {/* Decorative underline - visible on md+ */}
+                <div className="hidden md:block w-16 h-[3px] bg-[#0C53ED] rounded-full"></div>
+              </div>
+
+              {/* Body Text */}
+              <p className="text-gray-600 md:text-lg leading-relaxed max-w-[65ch] dark:text-white/80">
                 Our experienced cleaning professionals take pride in delivering exceptional results. 
                 With attention to detail and a commitment to excellence, we transform spaces into 
                 spotless environments you'll love coming home to.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button size="lg" onClick={() => navigate('/booking/service/select')}>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate('/booking/service/select')}
+                  className="bg-[#0C53ED] hover:brightness-110 text-white rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0C53ED]"
+                >
                   Book Our Team
                   <Calendar className="w-5 h-5 ml-2" />
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => navigate('/booking/quote')}>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  onClick={() => navigate('/booking/quote')}
+                  className="bg-white border-gray-200 text-[#180D39] hover:border-[#0C53ED]/30 rounded-full transition-all duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0C53ED] dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:border-white/30"
+                >
                   Get a Quote
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <img src={cleaningTeamHero} alt="Professional cleaning team at work" className="rounded-2xl shadow-2xl w-full h-auto object-cover" />
+
+            {/* Right Column - Image */}
+            <div className="relative order-1 lg:order-2">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-black/5 dark:border-white/10">
+                {/* Image with aspect ratios */}
+                <img 
+                  src={cleaningTeamHero} 
+                  alt="Professional cleaning team at work" 
+                  className="w-full aspect-[4/3] md:aspect-[16/10] object-cover transition-transform duration-700 hover:scale-[1.02] group-hover:scale-105"
+                  style={{
+                    animation: 'fadeInScale 0.8s ease-out forwards'
+                  }}
+                />
+                
+                {/* Subtle overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+                
+                {/* Optional caption chip */}
+                <div className="absolute top-4 left-4">
+                  <div className="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-white/90 backdrop-blur-sm text-[#4B5563] border border-white/20 rounded-full shadow-sm dark:bg-white/10 dark:text-white/70 dark:border-white/20">
+                    Shalean crew on site
+                  </div>
+                </div>
+              </div>
+              
+              {/* Decorative corner glows */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-radial from-[#0C53ED]/10 to-transparent rounded-full pointer-events-none"></div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-radial from-[#2A869E]/8 to-transparent rounded-full pointer-events-none"></div>
             </div>
           </div>
         </div>

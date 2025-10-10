@@ -221,56 +221,64 @@ export function NewCustomerPromoModal() {
       </Dialog>
       
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="h-6 w-6 text-primary" />
-              <DialogTitle className="text-2xl">Welcome! 20% Off Your First Standard Clean</DialogTitle>
+        <DialogContent className="sm:max-w-md backdrop-blur-sm bg-white/95 border-0 shadow-2xl">
+          <div className="relative">
+            <DialogHeader className="text-center space-y-4 pb-6">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="p-2 rounded-full bg-primary/10">
+                  <Sparkles className="h-6 w-6 text-[#0C53ED]" />
+                </div>
+              </div>
+              <DialogTitle className="text-2xl font-bold text-[#0C53ED] leading-tight">
+                Welcome! 20% Off Your First Standard Clean
+              </DialogTitle>
+              <DialogDescription className="text-[#555] text-base leading-relaxed">
+                New to Shalean? Enjoy <strong className="text-[#0C53ED]">20% off</strong> your first <strong className="text-[#0C53ED]">Standard Cleaning</strong>. Limited time offer.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 py-4">
+              <div className="flex flex-col gap-4">
+                <Button
+                  onClick={handleClaimClick}
+                  disabled={isLoading}
+                  size="lg"
+                  className="w-full rounded-full bg-[#0C53ED] hover:bg-[#0A47D1] text-white font-semibold py-4 px-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                >
+                  {isLoading ? 'Applying...' : 'Claim 20% Off'}
+                </Button>
+                <button
+                  onClick={handleDismiss}
+                  className="text-[#888] hover:text-[#555] hover:underline transition-colors duration-200 text-center py-2 font-medium"
+                >
+                  Not now
+                </button>
+              </div>
+
+              <div className="border-t border-gray-200 pt-4">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="terms" className="border-none">
+                    <AccordionTrigger className="text-sm font-medium text-[#555] hover:text-[#0C53ED] transition-colors duration-200 py-2 px-0 [&[data-state=open]]:text-[#0C53ED]">
+                      Terms & Conditions
+                    </AccordionTrigger>
+                    <AccordionContent className="text-sm text-[#555] space-y-2 pt-2">
+                      <ul className="list-disc pl-4 space-y-1">
+                        <li>Valid for new customers only (first booking)</li>
+                        <li>Applies to Standard Cleaning service only</li>
+                        <li>Cannot be combined with other promotions</li>
+                        <li>Valid in all service areas</li>
+                        <li>24-48 hour cancellation window required</li>
+                        <li>Expires on {formatExpiryDate()}</li>
+                        <li>Subject to cleaner availability</li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
             </div>
-            <DialogDescription className="text-base">
-              New to Shalean? Enjoy <strong>20% off</strong> your first <strong>Standard Cleaning</strong>. Limited time offer.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="flex flex-col gap-3">
-              <Button
-                onClick={handleClaimClick}
-                disabled={isLoading}
-                size="lg"
-                className="w-full"
-              >
-                {isLoading ? 'Applying...' : 'Claim 20% Off'}
-              </Button>
-            <Button
-              onClick={handleDismiss}
-              variant="ghost"
-              size="lg"
-              className="w-full"
-            >
-              Not now
-            </Button>
           </div>
-
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="terms">
-              <AccordionTrigger className="text-sm">Terms & Conditions</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground space-y-2">
-                <ul className="list-disc pl-4 space-y-1">
-                  <li>Valid for new customers only (first booking)</li>
-                  <li>Applies to Standard Cleaning service only</li>
-                  <li>Cannot be combined with other promotions</li>
-                  <li>Valid in all service areas</li>
-                  <li>24-48 hour cancellation window required</li>
-                  <li>Expires on {formatExpiryDate()}</li>
-                  <li>Subject to cleaner availability</li>
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

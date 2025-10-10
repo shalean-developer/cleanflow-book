@@ -9,23 +9,23 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 210 12% 16%;
+    --foreground: 260 13% 15%; /* #180D39 */
 
     --card: 0 0% 100%;
-    --card-foreground: 210 12% 16%;
+    --card-foreground: 260 13% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 12% 16%;
+    --popover-foreground: 260 13% 15%;
 
-    --primary: 215 100% 49%;
+    --primary: 215 100% 49%; /* #0C53ED */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 221 80% 60%;
+    --primary-glow: 191 60% 39%; /* #2A869E */
 
-    --secondary: 210 14% 96%;
-    --secondary-foreground: 210 12% 16%;
+    --secondary: 210 40% 98%; /* #F8FAFC */
+    --secondary-foreground: 260 13% 15%;
 
-    --muted: 210 14% 96%;
-    --muted-foreground: 210 8% 46%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 0 0% 33%; /* #555 */
 
     --accent: 14 88% 62%;
     --accent-foreground: 0 0% 100%;
@@ -35,28 +35,28 @@ All colors MUST be HSL.
 
     --border: 210 14% 89%;
     --input: 210 14% 89%;
-    --ring: 221 90% 49%;
+    --ring: 215 100% 49%;
 
     --radius: 0.75rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(221 90% 49%), hsl(221 80% 60%));
+    --gradient-primary: linear-gradient(135deg, hsl(215 100% 49%), hsl(191 60% 39%));
     --gradient-accent: linear-gradient(135deg, hsl(14 88% 62%), hsl(24 88% 72%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 14% 98%));
+    --gradient-subtle: linear-gradient(180deg, hsl(210 40% 98%), hsl(210 40% 98%));
 
-    --shadow-soft: 0 2px 8px hsla(210, 12%, 16%, 0.04);
-    --shadow-medium: 0 4px 16px hsla(210, 12%, 16%, 0.08);
-    --shadow-large: 0 8px 32px hsla(210, 12%, 16%, 0.12);
-    --shadow-glow: 0 0 24px hsla(221, 90%, 49%, 0.25);
+    --shadow-soft: 0 2px 8px hsla(260, 13%, 15%, 0.04);
+    --shadow-medium: 0 4px 16px hsla(260, 13%, 15%, 0.08);
+    --shadow-large: 0 8px 32px hsla(260, 13%, 15%, 0.12);
+    --shadow-glow: 0 0 24px hsla(215, 100%, 49%, 0.25);
 
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    --sidebar-background: 210 14% 98%;
-    --sidebar-foreground: 210 12% 16%;
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 260 13% 15%;
     --sidebar-border: 210 14% 89%;
     --sidebar-accent: 210 14% 94%;
-    --sidebar-accent-foreground: 210 12% 16%;
-    --sidebar-primary: 221 90% 49%;
+    --sidebar-accent-foreground: 260 13% 15%;
+    --sidebar-primary: 215 100% 49%;
     --sidebar-primary-foreground: 0 0% 100%;
   }
 
@@ -116,5 +116,261 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Animation utilities for scroll-triggered effects */
+  .animate-fade-up {
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enhanced fade-up with scale for Why Choose Us cards */
+  .animate-fade-up-scale {
+    animation: fadeUpScale 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+
+  @keyframes fadeUpScale {
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up,
+    .animate-fade-up-delay-1,
+    .animate-fade-up-delay-2,
+    .animate-fade-up-delay-3,
+    .animate-fade-up-scale {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Staggered animation for team cards */
+  .animate-fade-up-delay-1 {
+    animation: fadeUp 0.8s ease-out 0.1s forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .animate-fade-up-delay-2 {
+    animation: fadeUp 0.8s ease-out 0.2s forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .animate-fade-up-delay-3 {
+    animation: fadeUp 0.8s ease-out 0.3s forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  /* How It Works section animations */
+  .animate-slide-in-left {
+    animation: slideInLeft 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateX(50px);
+  }
+
+  @keyframes slideInLeft {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Staggered delays for How It Works steps */
+  .animate-delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  .animate-delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .animate-delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  .animate-delay-400 {
+    animation-delay: 0.4s;
+  }
+
+  /* Float animation for icon badge */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Respect reduced motion for float animation */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float {
+      animation: none;
+    }
+  }
+
+  /* Line clamp utilities for text truncation */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .line-clamp-4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  .line-clamp-5 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+  }
+
+  .line-clamp-6 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+  }
+
+  /* Testimonials fadeInUp animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Hide scrollbar for mobile carousel */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Dark mode testimonials styles */
+  .dark blockquote {
+    @apply bg-[#0B1220] border-white/10 text-white;
+  }
+
+  .dark blockquote p {
+    @apply text-white/90;
+  }
+
+  .dark blockquote .text-gray-500 {
+    @apply text-white/70;
+  }
+
+  .dark blockquote .text-gray-900 {
+    @apply text-white;
+  }
+
+  /* Dark mode quote icon gradient */
+  .dark .bg-gradient-to-r.from-\[#0C53ED\].to-\[#2A869E\] {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.7), hsl(215 100% 49%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Hero section animations */
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Radial gradient utility for corner glows */
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
+
+  /* Shadow utilities */
+  .shadow-xs {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  /* Respect reduced motion for hero animations */
+  @media (prefers-reduced-motion: reduce) {
+    .hover\:scale-\[1\.02\]:hover,
+    .group-hover\:scale-105:has(.group:hover) {
+      transform: none;
+    }
+    
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
   }
 }
