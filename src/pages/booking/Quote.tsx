@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -117,16 +115,14 @@ export default function Quote() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Request a Quote</h1>
-            <p className="text-muted-foreground">
-              Fill in your details and we'll get back to you with a customized quote within 24 hours.
-            </p>
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Request a Quote</h1>
+          <p className="text-muted-foreground">
+            Fill in your details and we'll get back to you with a customized quote within 24 hours.
+          </p>
+        </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* Personal Details */}
@@ -324,8 +320,6 @@ export default function Quote() {
             </Button>
           </form>
         </div>
-      </main>
-      <Footer />
     </div>
   );
 }

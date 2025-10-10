@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { SiteLayout } from "@/layouts/SiteLayout";
 import Index from "./pages/Index";
 import Services from "./pages/Services";
 import HowItWorks from "./pages/HowItWorks";
@@ -30,24 +31,26 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/locations" element={<Locations />} />
-            <Route path="/contact" element={<ContactUs />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/booking/service/select" element={<ServiceSelect />} />
-            <Route path="/booking/service/:slug" element={<ServiceDetail />} />
-            <Route path="/booking/details" element={<Details />} />
-            <Route path="/booking/schedule" element={<Schedule />} />
-            <Route path="/booking/cleaner" element={<Cleaner />} />
-            <Route path="/booking/review" element={<Review />} />
-            <Route path="/booking/confirmation" element={<Confirmation />} />
-            <Route path="/booking/quote" element={<Quote />} />
-            <Route path="/quote/confirmation" element={<QuoteConfirmation />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <SiteLayout>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/locations" element={<Locations />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/booking/service/select" element={<ServiceSelect />} />
+              <Route path="/booking/service/:slug" element={<ServiceDetail />} />
+              <Route path="/booking/details" element={<Details />} />
+              <Route path="/booking/schedule" element={<Schedule />} />
+              <Route path="/booking/cleaner" element={<Cleaner />} />
+              <Route path="/booking/review" element={<Review />} />
+              <Route path="/booking/confirmation" element={<Confirmation />} />
+              <Route path="/booking/quote" element={<Quote />} />
+              <Route path="/quote/confirmation" element={<QuoteConfirmation />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </SiteLayout>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>

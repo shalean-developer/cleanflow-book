@@ -3,8 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { MapPin, CheckCircle, Calendar, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 
 const Locations = () => {
   const navigate = useNavigate();
@@ -79,8 +77,7 @@ const Locations = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <div className="bg-background">
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-20">
@@ -194,7 +191,6 @@ const Locations = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </div>
   );
 };

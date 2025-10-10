@@ -2,49 +2,23 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Sparkles, CheckCircle, Star, Calendar, Home, Building2, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote } from 'lucide-react';
+import { Sparkles, CheckCircle, Star, Calendar, Home, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote, Building2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
+import { HeroApiIntegration } from '@/components/HeroApiIntegration';
 import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';
 import blogCleaningTipsImage from '@/assets/blog-cleaning-tips.jpg';
 import blogSpringCleaningImage from '@/assets/blog-spring-cleaning.jpg';
 import blogEcoProductsImage from '@/assets/blog-eco-products.jpg';
+import cleaningTeamHero from '@/assets/cleaning-team-hero.jpg';
 import serviceStandardImage from '@/assets/service-standard-cleaning.jpg';
 import serviceDeepImage from '@/assets/service-deep-cleaning.jpg';
 import serviceMoveImage from '@/assets/service-move-inout.jpg';
 import serviceSpecializedImage from '@/assets/service-specialized.jpg';
-import cleaningTeamHero from '@/assets/cleaning-team-hero.jpg';
 const Index = () => {
   const navigate = useNavigate();
-  const services = [{
-    icon: Home,
-    image: serviceStandardImage,
-    title: 'Standard Cleaning',
-    description: 'Regular home maintenance to keep your space fresh and tidy',
-    features: ['Dusting & vacuuming', 'Kitchen & bathroom', 'Floor cleaning']
-  }, {
-    icon: Droplets,
-    image: serviceDeepImage,
-    title: 'Deep Cleaning',
-    description: 'Thorough top-to-bottom cleaning for a spotless home',
-    features: ['Behind appliances', 'Inside cabinets', 'Window cleaning']
-  }, {
-    icon: Building2,
-    image: serviceMoveImage,
-    title: 'Move In/Out',
-    description: 'Complete cleaning for seamless transitions',
-    features: ['Empty property focus', 'All surfaces sanitized', 'Ready for occupancy']
-  }, {
-    icon: Sparkles,
-    image: serviceSpecializedImage,
-    title: 'Specialized Services',
-    description: 'Carpet, upholstery, and post-construction cleaning',
-    features: ['Carpet shampooing', 'Furniture deep clean', 'Dust removal']
-  }];
   const steps = [{
     number: '01',
     title: 'Choose Your Service',
@@ -99,23 +73,48 @@ const Index = () => {
     description: 'Our cleaners average 7+ years of professional experience'
   }];
   const blogPosts = [{
-    title: '10 Tips for Maintaining a Clean Home',
-    excerpt: 'Simple daily habits that make a big difference in keeping your home spotless',
-    date: 'March 15, 2025',
-    category: 'Tips & Tricks',
+    title: '6 Cleaning Mistakes That Can Frustrate Your Cleaning Efforts',
+    excerpt: 'One-time cleaning services understand the frustration that comes with dust invading the tranquility of a pristine home. This unwelcome guest finds its way into every corner, making your cleaning efforts feel futile.',
+    category: 'Cleaning Tips',
+    icon: Sparkles,
     image: blogCleaningTipsImage
   }, {
-    title: 'Spring Cleaning Checklist',
-    excerpt: 'Your complete guide to refreshing every corner of your home this season',
-    date: 'March 10, 2025',
-    category: 'Guides',
+    title: 'How Often Should You Get Your House Cleaned?',
+    excerpt: 'Whether it\'s to give your home a fresh, clean feeling or enjoy great company during any given moment of the day, there are plenty of reasons to get your house professionally cleaned.',
+    category: 'Home Care',
+    icon: Home,
     image: blogSpringCleaningImage
   }, {
-    title: 'Eco-Friendly Cleaning Products We Love',
-    excerpt: 'Discover our favorite green cleaning solutions that are safe and effective',
-    date: 'March 5, 2025',
-    category: 'Products',
+    title: 'Professional Mopping Tips',
+    excerpt: 'Mopping is a common chore for many people in the home or office. It is an effortless house cleaning task that can remove dirt, grime, and germs from surfaces. However, it can be frustrating to get the best results.',
+    category: 'Professional Tips',
+    icon: Droplets,
     image: blogEcoProductsImage
+  }];
+  const services = [{
+    icon: Home,
+    image: serviceStandardImage,
+    title: 'Standard Cleaning',
+    description: 'Regular home maintenance to keep your space fresh and tidy',
+    price: 'From R350'
+  }, {
+    icon: Droplets,
+    image: serviceDeepImage,
+    title: 'Deep Cleaning',
+    description: 'Thorough top-to-bottom cleaning for a spotless home',
+    price: 'From R550'
+  }, {
+    icon: Building2,
+    image: serviceMoveImage,
+    title: 'Move In/Out Cleaning',
+    description: 'Complete cleaning for seamless transitions',
+    price: 'From R650'
+  }, {
+    icon: Sparkles,
+    image: serviceSpecializedImage,
+    title: 'Specialized Services',
+    description: 'Carpet, upholstery, and post-construction cleaning',
+    price: 'Custom Quote'
   }];
   const reviews = [{
     name: 'Jessica Miller',
@@ -133,87 +132,69 @@ const Index = () => {
     comment: 'The deep cleaning service exceeded my expectations. Every corner sparkles! Highly recommend.',
     date: 'February 2025'
   }];
-  return <div className="min-h-screen">
-      <Header />
-      
+  return <div>
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/10" />
-        <div className="container mx-auto md:py-32 relative px-0 py-[12px]">
-          <div className="max-w-4xl mx-auto text-center space-y-8 my-0 py-[12px]">
-            <Badge className="inline-flex items-center gap-2 px-4 py-2" variant="outline">
-              <Sparkles className="w-4 h-4" />
-              Cape Town's Trusted Cleaning Experts
-            </Badge>
-            
-            <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-              Sparkling Clean Homes,
-              <br />
-              <span className="bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
-                Every Time
-              </span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Professional cleaning services you can trust. Book vetted cleaners in minutes and 
-              enjoy a spotless home without the hassle.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-              <Button size="lg" onClick={() => navigate('/booking/service/select')} className="text-lg px-8 h-auto shadow-lg hover:shadow-xl transition-shadow py-[12px]">
-                Book Now
-                <Calendar className="w-5 h-5 ml-2" />
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate('/booking/quote')} className="text-lg px-8 h-auto py-[12px]">
-                Get Free Quote
-              </Button>
-            </div>
+      <HeroApiIntegration />
 
-            <div className="grid grid-cols-3 gap-8 pt-12 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary">500+</div>
-                <div className="text-sm text-muted-foreground">Happy Clients</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary">4.9★</div>
-                <div className="text-sm text-muted-foreground">Average Rating</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary">3+</div>
-                <div className="text-sm text-muted-foreground">Years Experience</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* What We Offer Section */}
-      <section id="services" className="py-24 bg-muted/30">
+      {/* Our Services Section */}
+      <section className="py-24" style={{ backgroundColor: '#F9FAFB' }}>
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <Badge className="mb-4" variant="outline">Our Services</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">What We Offer</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Comprehensive cleaning solutions tailored to your needs
+          <div className="text-center mb-16 animate-fade-up">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-black">
+              Our Services
+            </h2>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: '#6B7280' }}>
+              Choose from our comprehensive range of professional cleaning solutions designed to meet your specific needs and keep your space spotless.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {services.map((service, i) => <Card key={i} className="hover:shadow-lg transition-shadow border-2 hover:border-primary/20 overflow-hidden">
-                <img src={service.image} alt={service.title} className="w-full h-40 object-cover" />
-                <CardHeader>
-                  <CardTitle className="text-xl">{service.title}</CardTitle>
-                  <CardDescription className="text-base">{service.description}</CardDescription>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {services.map((service, i) => (
+              <Card 
+                key={i} 
+                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] border-0 shadow-lg animate-fade-up"
+                style={{ 
+                  animationDelay: `${i * 0.2}s`,
+                  animationFillMode: 'both'
+                }}
+              >
+                <div className="relative overflow-hidden">
+                  <img 
+                    src={service.image} 
+                    alt={service.title} 
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
+                  />
+                  <div className="absolute top-4 left-4">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full text-white" style={{ backgroundColor: '#0C53ED' }}>
+                      <service.icon className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+                
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <CardTitle className="text-xl font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">
+                      {service.title}
+                    </CardTitle>
+                    <Badge variant="secondary" className="text-xs">{service.price}</Badge>
+                  </div>
+                  <CardDescription className="text-gray-600 leading-relaxed mt-3">
+                    {service.description}
+                  </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {service.features.map((feature, idx) => <li key={idx} className="flex items-center gap-2 text-sm">
-                        <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>)}
-                  </ul>
+                
+                <CardContent className="pt-0">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full group-hover:text-blue-600 transition-colors"
+                    onClick={() => navigate('/booking/service/select')}
+                  >
+                    Book Now →
+                  </Button>
                 </CardContent>
-              </Card>)}
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -454,7 +435,6 @@ const Index = () => {
         </div>
       </section>
 
-      <Footer />
       <NewCustomerPromoModal />
     </div>;
 };
