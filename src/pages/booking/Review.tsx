@@ -107,6 +107,15 @@ export default function Review() {
             cleaner_id: booking.cleanerId,
             pricing: pricing,
           },
+          ...(booking.promo && {
+            promo: {
+              code: booking.promo.code,
+              type: booking.promo.type,
+              value: booking.promo.value,
+              appliesTo: booking.promo.appliesTo,
+              claimId: booking.promo.claimId,
+            }
+          }),
         },
         callback: (response: any) => {
           // Handle verification in a separate async function

@@ -71,7 +71,6 @@ serve(async (req) => {
       body: JSON.stringify({
         email: requestData.email,
         amount: amountInKobo,
-        callback_url: `${req.headers.get('origin')}/booking/confirmation`,
         metadata: {
           user_id: user.id,
           booking_data: requestData.bookingData,
