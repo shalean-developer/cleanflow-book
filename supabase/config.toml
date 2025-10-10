@@ -1,5 +1,8 @@
 project_id = "vpbdcqzlvwtkumbtnxhe"
 
+[functions.claim-promo]
+verify_jwt = true
+
 [functions.initialize-paystack-payment]
 verify_jwt = true
 
