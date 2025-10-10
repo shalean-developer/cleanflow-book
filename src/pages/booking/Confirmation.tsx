@@ -12,7 +12,7 @@ import { Footer } from '@/components/Footer';
 export default function Confirmation() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const reference = searchParams.get('ref');
+  const reference = searchParams.get('reference');
 
   const { data: booking } = useQuery({
     queryKey: ['booking', reference],
