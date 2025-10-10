@@ -7,6 +7,7 @@ import { useBookingStore } from '@/store/bookingStore';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Sparkles } from 'lucide-react';
+import { AuthModal } from '@/components/booking/AuthModal';
 
 const PROMO_CONFIG = {
   code: 'NEW20SC',
@@ -24,9 +25,31 @@ const ELIGIBLE_ROUTES = [
 export function NewCustomerPromoModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { setService, setPromo } = useBookingStore();
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+      if (session && showAuthModal) {
+        // User just logged in, close auth modal and claim promo
+        setShowAuthModal(false);
+        handleClaim();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [showAuthModal]);
 
   useEffect(() => {
     // Check if we should show the modal
@@ -68,6 +91,20 @@ export function NewCustomerPromoModal() {
     return sessionId;
   };
 
+  const handleClaimClick = async () => {
+    // Check if user is authenticated
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      // Show auth modal
+      setShowAuthModal(true);
+      return;
+    }
+
+    // User is authenticated, proceed with claim
+    await handleClaim();
+  };
+
   const handleClaim = async () => {
     setIsLoading(true);
 
@@ -77,16 +114,30 @@ export function NewCustomerPromoModal() {
       
       const sessionId = generateSessionId();
 
-      // Get user email if logged in
+      // Get authenticated user
       const { data: { user } } = await supabase.auth.getUser();
       
-      // Claim promo in database
+      if (!user) {
+        throw new Error("Authentication required to claim promo");
+      }
+      
+      // Get session for auth token
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error("Authentication required");
+      }
+      
+      // Claim promo in database with auth token
       const { data, error } = await supabase.functions.invoke('claim-promo', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
         body: {
           code: PROMO_CONFIG.code,
           serviceSlug: PROMO_CONFIG.appliesTo,
           sessionId,
-          email: user?.email,
+          email: user.email,
           expiresAt: expiresAt.toISOString(),
         },
       });
@@ -156,28 +207,41 @@ export function NewCustomerPromoModal() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="h-6 w-6 text-primary" />
-            <DialogTitle className="text-2xl">Welcome! 20% Off Your First Standard Clean</DialogTitle>
-          </div>
-          <DialogDescription className="text-base">
-            New to Shalean? Enjoy <strong>20% off</strong> your first <strong>Standard Cleaning</strong>. Limited time offer.
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Sign in to claim your discount</DialogTitle>
+            <DialogDescription>
+              Please sign in to claim your 20% off discount
+            </DialogDescription>
+          </DialogHeader>
+          <AuthModal />
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-6 w-6 text-primary" />
+              <DialogTitle className="text-2xl">Welcome! 20% Off Your First Standard Clean</DialogTitle>
+            </div>
+            <DialogDescription className="text-base">
+              New to Shalean? Enjoy <strong>20% off</strong> your first <strong>Standard Cleaning</strong>. Limited time offer.
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="flex flex-col gap-3">
-            <Button
-              onClick={handleClaim}
-              disabled={isLoading}
-              size="lg"
-              className="w-full"
-            >
-              {isLoading ? 'Applying...' : 'Claim 20% Off'}
-            </Button>
+          <div className="space-y-4 py-4">
+            <div className="flex flex-col gap-3">
+              <Button
+                onClick={handleClaimClick}
+                disabled={isLoading}
+                size="lg"
+                className="w-full"
+              >
+                {isLoading ? 'Applying...' : 'Claim 20% Off'}
+              </Button>
             <Button
               onClick={handleDismiss}
               variant="ghost"
@@ -207,5 +271,6 @@ export function NewCustomerPromoModal() {
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 }

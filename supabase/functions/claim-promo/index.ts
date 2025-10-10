@@ -33,14 +33,31 @@ const handler = async (req: Request): Promise<Response> => {
     );
 
     const authHeader = req.headers.get("Authorization");
-    let userId: string | null = null;
-
-    if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data: { user } } = await supabase.auth.getUser(token);
-      userId = user?.id || null;
+    
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authentication required to claim promo codes" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
     }
 
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication token" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    const userId = user.id;
     const { code, serviceSlug, sessionId, email, expiresAt }: ClaimRequest = await req.json();
 
     console.log("Claiming promo:", { code, serviceSlug, sessionId, userId });
