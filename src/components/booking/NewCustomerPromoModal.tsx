@@ -19,11 +19,6 @@ const PROMO_CONFIG = {
 
 const ELIGIBLE_ROUTES = [
   '/',
-  '/booking/service/select',
-  '/booking/details',
-  '/booking/schedule',
-  '/booking/cleaner',
-  '/booking/review',
 ];
 
 export function NewCustomerPromoModal() {
