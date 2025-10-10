@@ -43,15 +43,19 @@ export default function Cleaner() {
     const area = extractArea(booking.location);
     const selectedDate = new Date(booking.date);
     const dayOfWeek = selectedDate.getDay();
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const dayName = dayNames[dayOfWeek];
 
     return cleaners.filter((cleaner) => {
       const serviceAreas = cleaner.service_areas || [];
       const matchesArea = serviceAreas.some((sa: string) =>
-        sa.toLowerCase().includes(area.toLowerCase()) || area.toLowerCase().includes(sa.toLowerCase())
+        sa.toLowerCase().includes(area.toLowerCase()) || 
+        area.toLowerCase().includes(sa.toLowerCase()) ||
+        sa.toLowerCase() === 'any'
       );
 
       const availability = cleaner.availability as Record<string, string[]>;
-      const daySlots = availability[dayOfWeek.toString()] || [];
+      const daySlots = availability[dayName] || [];
       const isAvailable = daySlots.includes(booking.time || '');
 
       return matchesArea && isAvailable;
