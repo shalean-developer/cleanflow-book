@@ -12,7 +12,12 @@ serve(async (req) => {
   }
 
   try {
-    const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY');
+    // Use live keys for production, test keys for development/preview
+    const isProduction = Deno.env.get('DENO_DEPLOYMENT_ID') !== undefined;
+    const paystackSecretKey = isProduction
+      ? Deno.env.get('PAYSTACK_SECRET_KEY_LIVE')
+      : Deno.env.get('PAYSTACK_SECRET_KEY');
+    
     if (!paystackSecretKey) {
       throw new Error('Paystack secret key not configured');
     }
