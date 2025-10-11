@@ -7,8 +7,6 @@ import { StickySummary } from '@/components/booking/StickySummary';
 import { useBookingStore } from '@/store/bookingStore';
 import { formatCurrencyZAR } from '@/utils/pricing';
 import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 
 export default function ServiceDetail() {
   const { slug } = useParams();
@@ -58,7 +56,6 @@ export default function ServiceDetail() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <Button variant="ghost" onClick={() => navigate('/booking/service/select')} className="mb-6">
@@ -105,7 +102,6 @@ export default function ServiceDetail() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

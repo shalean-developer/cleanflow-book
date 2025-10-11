@@ -8,8 +8,6 @@ import { CleanerCard } from '@/components/booking/CleanerCard';
 import { ChooseForMeCard } from '@/components/booking/ChooseForMeCard';
 import { StickySummary } from '@/components/booking/StickySummary';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
 import { ServiceChangeValidator } from '@/components/booking/ServiceChangeValidator';
 
@@ -81,7 +79,6 @@ export default function Cleaner() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
@@ -140,7 +137,6 @@ export default function Cleaner() {
           </div>
         </div>
       </main>
-      <Footer />
       <ServiceChangeValidator />
       <NewCustomerPromoModal />
     </div>
