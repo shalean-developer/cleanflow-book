@@ -25,6 +25,7 @@ export interface BookingData {
   cleanerId?: string;
   cleanerName?: string;
   promo?: PromoData;
+  phoneNumber?: string;
 }
 
 interface BookingStore {
@@ -36,6 +37,7 @@ interface BookingStore {
   setPromo: (promo: PromoData) => void;
   clearPromo: () => void;
   isPromoValidForService: (serviceSlug?: string) => boolean;
+  setPhoneNumber: (phoneNumber: string) => void;
   reset: () => void;
 }
 
@@ -80,6 +82,10 @@ export const useBookingStore = create<BookingStore>()(
         if (!serviceSlug) return true;
         return promo.appliesTo === serviceSlug;
       },
+      setPhoneNumber: (phoneNumber) =>
+        set((state) => ({
+          booking: { ...state.booking, phoneNumber },
+        })),
       reset: () => set({ booking: initialState }),
     }),
     {

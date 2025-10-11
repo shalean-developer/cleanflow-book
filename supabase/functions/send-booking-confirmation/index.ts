@@ -107,6 +107,7 @@ serve(async (req) => {
           <p><strong>Date:</strong> ${bookingDate}</p>
           <p><strong>Time:</strong> ${booking.time}</p>
           <p><strong>Location:</strong> ${locationName}</p>
+          ${booking.phone_number ? `<p><strong>Phone Number:</strong> ${booking.phone_number}</p>` : ''}
           <p><strong>Property:</strong> ${booking.bedrooms} bedroom(s), ${booking.bathrooms} bathroom(s)</p>
           <p><strong>Assigned Cleaner:</strong> ${cleanerName}</p>
           <p><strong>Selected Extras:</strong></p>
@@ -152,6 +153,7 @@ serve(async (req) => {
           <p><strong>Frequency:</strong> ${booking.frequency || 'Once-off'}</p>
           <p><strong>Date:</strong> ${bookingDate}</p>
           <p><strong>Time:</strong> ${booking.time}</p>
+          <p><strong>Customer Phone:</strong> ${booking.phone_number || 'Not provided'}</p>
           <p><strong>Location:</strong> ${locationName}</p>
           <p><strong>Property:</strong> ${booking.bedrooms} bedroom(s), ${booking.bathrooms} bathroom(s)</p>
           <p><strong>Assigned Cleaner:</strong> ${cleanerName}</p>

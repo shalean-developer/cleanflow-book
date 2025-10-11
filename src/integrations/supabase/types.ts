@@ -27,6 +27,7 @@ export type Database = {
           id: string
           location: string
           payment_reference: string | null
+          phone_number: string | null
           pricing: Json
           reference: string
           service_id: string
@@ -48,6 +49,7 @@ export type Database = {
           id?: string
           location: string
           payment_reference?: string | null
+          phone_number?: string | null
           pricing: Json
           reference: string
           service_id: string
@@ -69,6 +71,7 @@ export type Database = {
           id?: string
           location?: string
           payment_reference?: string | null
+          phone_number?: string | null
           pricing?: Json
           reference?: string
           service_id?: string

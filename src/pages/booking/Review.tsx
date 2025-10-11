@@ -9,6 +9,8 @@ import { initializePaystackPayment } from '@/lib/paystack';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { AuthModal } from '@/components/booking/AuthModal';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -20,9 +22,10 @@ import { ServiceChangeValidator } from '@/components/booking/ServiceChangeValida
 export default function Review() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { booking, reset } = useBookingStore();
+  const { booking, reset, setPhoneNumber } = useBookingStore();
   const { toast } = useToast();
   const [paying, setPaying] = useState(false);
+  const [phoneNumber, setPhoneNumberLocal] = useState(booking.phoneNumber || '');
 
   const { data: service } = useQuery({
     queryKey: ['service', booking.serviceId],
@@ -83,6 +86,16 @@ export default function Review() {
   const handlePayment = async () => {
     if (!user || !pricing || !paystackKey) return;
 
+    if (!phoneNumber.trim()) {
+      toast({
+        title: 'Phone Number Required',
+        description: 'Please enter your phone number',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setPhoneNumber(phoneNumber);
     setPaying(true);
     try {
       const reference = `BK-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -105,6 +118,7 @@ export default function Review() {
             location: booking.location,
             special_instructions: booking.specialInstructions,
             cleaner_id: booking.cleanerId,
+            phone_number: phoneNumber,
             pricing: pricing,
           },
           ...(booking.promo && {
@@ -195,6 +209,24 @@ export default function Review() {
               <AuthModal />
             ) : (
               <>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="phoneNumber">Phone Number *</Label>
+                      <Input
+                        id="phoneNumber"
+                        type="tel"
+                        placeholder="Enter your phone number"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumberLocal(e.target.value)}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
                 <Card>
                   <CardHeader>
                     <CardTitle>Booking Summary</CardTitle>

@@ -84,6 +84,7 @@ serve(async (req) => {
         location: bookingData.location,
         special_instructions: bookingData.special_instructions,
         cleaner_id: bookingData.cleaner_id === 'auto-match' ? null : bookingData.cleaner_id,
+        phone_number: bookingData.phone_number,
         pricing: bookingData.pricing,
         customer_email: user.email,
         status: 'confirmed',
