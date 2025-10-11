@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 serve(async (req) => {
@@ -59,7 +60,13 @@ serve(async (req) => {
     const metadata = paystackData.data.metadata;
     const bookingData = metadata.booking_data;
 
-    const authHeader = req.headers.get('Authorization')!;
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Unauthorized' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
 
@@ -84,7 +91,6 @@ serve(async (req) => {
         location: bookingData.location,
         special_instructions: bookingData.special_instructions,
         cleaner_id: bookingData.cleaner_id === 'auto-match' ? null : bookingData.cleaner_id,
-        phone_number: bookingData.phone_number,
         pricing: bookingData.pricing,
         customer_email: user.email,
         status: 'confirmed',

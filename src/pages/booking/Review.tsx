@@ -133,9 +133,15 @@ export default function Review() {
           // Handle verification in a separate async function
           const verifyPayment = async () => {
             try {
+              const { data: { session } } = await supabase.auth.getSession();
               const { data: verifyData, error: verifyError } = await supabase.functions.invoke(
                 'verify-paystack-payment',
-                { body: { reference: response.reference } }
+                {
+                  headers: session?.access_token
+                    ? { Authorization: `Bearer ${session.access_token}` }
+                    : undefined,
+                  body: { reference: response.reference },
+                }
               );
 
               if (verifyError) throw verifyError;

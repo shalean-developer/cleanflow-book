@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 interface PaymentRequest {
@@ -92,56 +93,12 @@ serve(async (req) => {
     const paystackData = await paystackResponse.json();
     console.log('Paystack response:', paystackData);
 
-    // Create a pending booking record
-    const { data: booking, error: bookingError } = await supabase
-      .from('bookings')
-      .insert({
-        user_id: user.id,
-        service_id: requestData.bookingData.serviceId,
-        area_id: requestData.bookingData.areaId,
-        cleaner_id: requestData.bookingData.cleanerId,
-        booking_date: requestData.bookingData.date,
-        booking_time: requestData.bookingData.time,
-        bedrooms: requestData.bookingData.bedrooms,
-        bathrooms: requestData.bookingData.bathrooms,
-        frequency: requestData.bookingData.frequency,
-        special_instructions: requestData.bookingData.specialInstructions,
-        total_amount: requestData.amount,
-        status: 'pending',
-        payment_reference: paystackData.data.reference,
-      })
-      .select()
-      .single();
-
-    if (bookingError) {
-      console.error('Booking creation error:', bookingError);
-      throw new Error('Failed to create booking');
-    }
-
-    // Store booking extras
-    if (requestData.bookingData.extras.length > 0) {
-      const bookingExtras = requestData.bookingData.extras.map(extra => ({
-        booking_id: booking.id,
-        extra_id: extra.id,
-        price: extra.price,
-      }));
-
-      const { error: extrasError } = await supabase
-        .from('booking_extras')
-        .insert(bookingExtras);
-
-      if (extrasError) {
-        console.error('Extras creation error:', extrasError);
-      }
-    }
-
     return new Response(
       JSON.stringify({
         success: true,
         authorization_url: paystackData.data.authorization_url,
         access_code: paystackData.data.access_code,
         reference: paystackData.data.reference,
-        booking_id: booking.id,
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
