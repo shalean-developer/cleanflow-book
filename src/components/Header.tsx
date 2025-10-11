@@ -131,8 +131,8 @@ export const Header: React.FC<HeaderProps> = ({
       className={cn(
         'sticky top-0 z-50 w-full transition-all duration-300',
         isScrolled
-          ? 'shadow-md border-b border-gray-200/70 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 dark:border-gray-700/70'
-          : 'backdrop-blur-sm bg-white/95 dark:bg-gray-900/95'
+          ? 'shadow-md border-b border-gray-200/70 bg-white dark:bg-gray-900 dark:border-gray-700/70'
+          : 'bg-white dark:bg-gray-900'
       )}
     >
       <div className="max-w-screen-xl mx-auto px-4 py-3">
