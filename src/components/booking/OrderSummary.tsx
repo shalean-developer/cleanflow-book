@@ -21,11 +21,11 @@ interface OrderSummaryProps {
   booking: {
     bedrooms: number;
     bathrooms: number;
-    date: string;
-    time: string;
-    location: string;
+    date?: string;
+    time?: string;
+    location?: string;
     frequency: string;
-    cleanerId: string;
+    cleanerId?: string;
     specialInstructions?: string;
   };
   pricing?: {
@@ -94,7 +94,7 @@ export function OrderSummary({ service, extras, cleaner, booking, pricing }: Ord
             <div className="min-w-0 flex-1">
               <div className="text-sm text-[#475569]">Date & Time</div>
               <div className="font-medium text-[#0F172A]">
-                {booking.date ? new Date(booking.date).toLocaleDateString() : ''} at {booking.time}
+                {booking.date ? new Date(booking.date).toLocaleDateString() : '—'} at {booking.time || '—'}
               </div>
             </div>
           </div>
@@ -105,10 +105,10 @@ export function OrderSummary({ service, extras, cleaner, booking, pricing }: Ord
             </div>
             <div className="min-w-0 flex-1">
               <div className="text-sm text-[#475569]">Location</div>
-              <div className="font-medium text-[#0F172A] text-sm" title={booking.location}>
-                {booking.location.length > 30 
+              <div className="font-medium text-[#0F172A] text-sm" title={booking.location || ''}>
+                {booking.location && booking.location.length > 30 
                   ? `${booking.location.substring(0, 30)}...` 
-                  : booking.location}
+                  : booking.location || '—'}
               </div>
             </div>
           </div>
