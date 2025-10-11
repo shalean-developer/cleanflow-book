@@ -8,10 +8,10 @@ import { calculatePricing, formatCurrencyZAR } from '@/utils/pricing';
 import { initializePaystackPayment } from '@/lib/paystack';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AuthModal } from '@/components/booking/AuthModal';
+import { OrderSummary } from '@/components/booking/OrderSummary';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
@@ -189,141 +189,86 @@ export default function Review() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
+          {/* Back Button */}
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(-1)} 
+            className="mb-8 text-[#475569] hover:text-[#0F172A] hover:bg-gray-50"
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
 
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Review & Pay</h1>
-              <p className="text-muted-foreground">Review your booking and complete payment</p>
-            </div>
+          {/* Section Header */}
+          <div className="mb-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
+            <h1 className="text-4xl font-bold text-[#0F172A] tracking-tight mb-3">Review & Pay</h1>
+            <p className="text-[#475569] text-lg">Review your booking and complete payment</p>
+            <div className="w-16 h-[3px] bg-[#0C53ED] mt-4 rounded-full"></div>
+          </div>
 
-            {!user ? (
-              <AuthModal />
-            ) : (
-              <>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Contact Information</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="phoneNumber">Phone Number *</Label>
-                      <Input
-                        id="phoneNumber"
-                        type="tel"
-                        placeholder="Enter your phone number"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumberLocal(e.target.value)}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Booking Summary</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <div className="text-sm text-muted-foreground">Service</div>
-                        <div className="font-medium">{service?.name}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Date & Time</div>
-                        <div className="font-medium">
-                          {booking.date ? new Date(booking.date).toLocaleDateString() : ''} at {booking.time}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Location</div>
-                        <div className="font-medium text-sm">{booking.location}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Frequency</div>
-                        <div className="font-medium capitalize">{booking.frequency.replace('-', ' ')}</div>
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Rooms</div>
-                        <div className="font-medium">{booking.bedrooms} bed, {booking.bathrooms} bath</div>
-                      </div>
-                      {booking.cleanerId && (
-                        <div>
-                          <div className="text-sm text-muted-foreground">Cleaner</div>
-                          <div className="font-medium">
-                            {booking.cleanerId === 'auto-match' ? 'Auto-matched by Shalean' : cleaner?.name}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {extras && extras.length > 0 && (
-                      <>
-                        <Separator />
-                        <div>
-                          <div className="text-sm text-muted-foreground mb-2">Extras</div>
-                          {extras.map((extra) => (
-                            <div key={extra.id} className="flex justify-between text-sm">
-                              <span>{extra.name}</span>
-                              <span>{formatCurrencyZAR(Number(extra.price))}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    )}
-
-                    {booking.specialInstructions && (
-                      <>
-                        <Separator />
-                        <div>
-                          <div className="text-sm text-muted-foreground mb-1">Special Instructions</div>
-                          <div className="text-sm">{booking.specialInstructions}</div>
-                        </div>
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
-
-                {pricing && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Price Breakdown</CardTitle>
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            {/* Left Column - Auth/Contact */}
+            <div className="space-y-6">
+              {!user ? (
+                <AuthModal />
+              ) : (
+                <div className="space-y-6">
+                  <Card className="bg-white rounded-2xl border border-gray-100 shadow-md p-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-300 delay-160">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-lg font-semibold text-[#0F172A]">Contact Information</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Subtotal</span>
-                        <span className="font-medium">{formatCurrencyZAR(pricing.subtotal)}</span>
-                      </div>
-                      {pricing.discount > 0 && (
-                        <div className="flex justify-between text-green-600">
-                          <span>Discount ({booking.frequency})</span>
-                          <span className="font-medium">-{formatCurrencyZAR(pricing.discount)}</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Service Fee</span>
-                        <span className="font-medium">{formatCurrencyZAR(pricing.fees)}</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between text-xl font-bold text-primary">
-                        <span>Total</span>
-                        <span>{formatCurrencyZAR(pricing.total)}</span>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="phoneNumber" className="text-sm font-medium text-[#0F172A]">Phone Number *</Label>
+                        <Input
+                          id="phoneNumber"
+                          type="tel"
+                          placeholder="Enter your phone number"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumberLocal(e.target.value)}
+                          className="rounded-xl border-gray-200 bg-white placeholder-gray-400 focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2 focus:shadow-md transition-all"
+                        />
                       </div>
                     </CardContent>
                   </Card>
-                )}
 
-                <Button onClick={handlePayment} size="lg" className="w-full" disabled={paying || !paystackKey}>
-                  {paying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Pay {pricing ? formatCurrencyZAR(pricing.total) : ''}
-                </Button>
-              </>
-            )}
+                  {/* Payment Button */}
+                  <Button 
+                    onClick={handlePayment} 
+                    size="lg" 
+                    className="w-full rounded-full bg-[#0C53ED] text-white py-3.5 shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5" 
+                    disabled={paying || !paystackKey}
+                  >
+                    {paying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Continue to Payment {pricing ? `• ${formatCurrencyZAR(pricing.total)}` : ''}
+                  </Button>
+
+                  {/* Back Link */}
+                  <Button
+                    variant="ghost"
+                    onClick={() => navigate(-1)}
+                    className="w-full text-[#475569] hover:text-[#0F172A] hover:bg-gray-50"
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Right Column - Order Summary */}
+            <div className="lg:block">
+              <OrderSummary
+                service={service}
+                extras={extras}
+                cleaner={cleaner}
+                booking={booking}
+                pricing={pricing}
+              />
+            </div>
           </div>
         </div>
       </main>

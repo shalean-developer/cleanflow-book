@@ -42,52 +42,57 @@ export function HorizontalDatePicker({ selected, onSelect, disabled }: Horizonta
   };
 
   return (
-    <div className="flex items-center gap-2 w-full max-w-3xl mx-auto">
+    <div className="flex items-center gap-2 w-full">
       <Button
         variant="outline"
         size="icon"
         onClick={handlePrevious}
         disabled={isPastDate(addDays(startDate, -1))}
-        className="shrink-0"
+        className="shrink-0 rounded-xl border-gray-200 hover:border-[#0C53ED]/30 focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2"
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <div className="flex-1 grid grid-cols-5 gap-2">
-        {visibleDates.map((date) => {
-          const isDateSelected = isSelected(date);
-          const isDateDisabled = isDisabled(date) || isPastDate(date);
-          
-          return (
-            <button
-              key={format(date, 'yyyy-MM-dd')}
-              onClick={() => !isDateDisabled && onSelect(date)}
-              disabled={isDateDisabled}
-              className={`
-                relative flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all
-                ${isDateSelected 
-                  ? 'bg-[#0C53ED] border-[#0C53ED] text-white' 
-                  : 'bg-card border-border hover:border-[#0C53ED]/30 hover:bg-accent'
-                }
-                ${isDateDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-              `}
-            >
-              <span className="text-xs font-medium">
-                {format(date, 'EEE')}
-              </span>
-              <span className="text-sm font-semibold mt-1">
-                {format(date, 'MMM d')}
-              </span>
-            </button>
-          );
-        })}
+      <div className="flex-1 overflow-x-auto scroll-snap-x scroll-snap-mandatory">
+        <div className="flex gap-3 pb-2 min-w-max">
+          {visibleDates.map((date) => {
+            const isDateSelected = isSelected(date);
+            const isDateDisabled = isDisabled(date) || isPastDate(date);
+            
+            return (
+              <button
+                key={format(date, 'yyyy-MM-dd')}
+                onClick={() => !isDateDisabled && onSelect(date)}
+                disabled={isDateDisabled}
+                aria-pressed={isDateSelected}
+                aria-label={`Select ${format(date, 'EEEE, MMMM d')}`}
+                className={`
+                  relative flex flex-col items-center justify-center p-3 rounded-xl border transition-all duration-200 min-w-[80px] scroll-snap-start
+                  ${isDateSelected 
+                    ? 'bg-[#EAF2FF] border-[#0C53ED]/30 text-[#0C53ED] shadow-sm' 
+                    : 'bg-white border-gray-200 hover:border-[#0C53ED]/30 hover:shadow-sm motion-safe:hover:scale-105'
+                  }
+                  ${isDateDisabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
+                  focus:outline-none focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2
+                `}
+              >
+                <span className="text-xs font-medium uppercase tracking-wide">
+                  {format(date, 'EEE')}
+                </span>
+                <span className="text-sm font-semibold mt-1 tabular-nums">
+                  {format(date, 'MMM d')}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <Button
         variant="outline"
         size="icon"
         onClick={handleNext}
-        className="shrink-0"
+        className="shrink-0 rounded-xl border-gray-200 hover:border-[#0C53ED]/30 focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>

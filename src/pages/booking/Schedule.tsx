@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { StickySummary } from '@/components/booking/StickySummary';
 import { HorizontalDatePicker } from '@/components/booking/HorizontalDatePicker';
 import { generateTimeSlots, filterPastSlots } from '@/utils/timeSlots';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, MapPin, Lock } from 'lucide-react';
 import { format } from 'date-fns';
 import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
 import { ServiceChangeValidator } from '@/components/booking/ServiceChangeValidator';
@@ -45,103 +45,171 @@ export default function Schedule() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* LEFT COLUMN - SCHEDULING FORM */}
             <div className="lg:col-span-2 space-y-6">
-              <div>
-                <h1 className="text-3xl font-bold mb-2">Schedule Your Cleaning</h1>
-                <p className="text-muted-foreground">Choose your preferred date, time, and location</p>
+              {/* Section Heading */}
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold text-[#0F172A] tracking-tight">
+                  Schedule Your Cleaning
+                </h1>
+                <div className="w-16 h-[3px] bg-[#0C53ED] rounded-full"></div>
+                <p className="text-[#475569]">Choose your preferred date, time, and location</p>
               </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Select Date</CardTitle>
-                  <CardDescription>Choose a date for your cleaning service</CardDescription>
-                </CardHeader>
-                <CardContent className="py-6">
+              {/* CARD 1 - Select Date */}
+              <fieldset className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-500">
+                <legend className="sr-only">Select Date</legend>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-[#0F172A]">Select Date</h3>
+                    <p className="text-sm text-[#475569]">Choose a date for your cleaning service</p>
+                  </div>
                   <HorizontalDatePicker
                     selected={date}
                     onSelect={setDate}
                     disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                   />
-                </CardContent>
-              </Card>
+                </div>
+              </fieldset>
 
+              {/* CARD 2 - Time Slots */}
               {date && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Select Time</CardTitle>
-                    <CardDescription>Available times between 07:00 - 13:00</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                      {availableSlots.map((slot) => (
-                        <Button
-                          key={slot}
-                          variant={time === slot ? 'default' : 'outline'}
-                          onClick={() => setTime(slot)}
-                          className="w-full"
-                        >
-                          {slot}
-                        </Button>
-                      ))}
+                <fieldset className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 motion-safe:delay-100">
+                  <legend className="sr-only">Select Time</legend>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-[#0F172A]">Select Time</h3>
+                      <p className="text-sm text-[#475569]">Available times between 07:00 - 13:00</p>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {availableSlots.map((slot, index) => {
+                        const isSelected = time === slot;
+                        const isUnavailable = false; // Add your availability logic here if needed
+                        
+                        return (
+                          <button
+                            key={slot}
+                            onClick={() => !isUnavailable && setTime(slot)}
+                            disabled={isUnavailable}
+                            aria-pressed={isSelected}
+                            aria-label={`Select ${slot}`}
+                            className={`
+                              relative flex items-center justify-center px-4 py-2 rounded-full border transition-all duration-200 min-h-[44px]
+                              ${isSelected 
+                                ? 'bg-[#0C53ED] text-white border-[#0C53ED] shadow-md' 
+                                : isUnavailable
+                                ? 'bg-[#F8FAFC] text-[#94A3B8] border-gray-200 cursor-not-allowed opacity-60'
+                                : 'bg-white text-[#0F172A] border-gray-200 hover:border-[#0C53ED]/30 hover:shadow-sm hover:scale-105'
+                              }
+                              focus:outline-none focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2
+                              disabled:cursor-not-allowed
+                              motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-300
+                            `}
+                            style={{
+                              animationDelay: `motion-safe:${index * 50}ms`
+                            }}
+                          >
+                            {isUnavailable && <Lock className="w-4 h-4 mr-2" />}
+                            <span className="font-medium tabular-nums">{slot}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </fieldset>
               )}
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Frequency</CardTitle>
-                  <CardDescription>How often would you like cleaning service?</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+              {/* CARD 3 - Frequency */}
+              <fieldset className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 motion-safe:delay-200">
+                <legend className="sr-only">Frequency</legend>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-[#0F172A]">Frequency</h3>
+                    <p className="text-sm text-[#475569]">How often would you like cleaning service?</p>
+                  </div>
                   <Select value={frequency} onValueChange={setFrequency}>
-                    <SelectTrigger>
+                    <SelectTrigger className="rounded-xl border-gray-200 bg-white focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="one-time">One-time</SelectItem>
-                      <SelectItem value="weekly">Weekly (15% discount)</SelectItem>
-                      <SelectItem value="bi-weekly">Bi-weekly (10% discount)</SelectItem>
-                      <SelectItem value="monthly">Monthly (5% discount)</SelectItem>
+                    <SelectContent className="rounded-xl shadow-lg">
+                      <SelectItem 
+                        value="one-time" 
+                        className="focus:bg-[#EAF2FF] focus:text-[#0C53ED]"
+                      >
+                        One-time
+                      </SelectItem>
+                      <SelectItem 
+                        value="weekly" 
+                        className="focus:bg-[#EAF2FF] focus:text-[#0C53ED]"
+                      >
+                        Weekly (15% discount)
+                      </SelectItem>
+                      <SelectItem 
+                        value="bi-weekly" 
+                        className="focus:bg-[#EAF2FF] focus:text-[#0C53ED]"
+                      >
+                        Bi-weekly (10% discount)
+                      </SelectItem>
+                      <SelectItem 
+                        value="monthly" 
+                        className="focus:bg-[#EAF2FF] focus:text-[#0C53ED]"
+                      >
+                        Monthly (5% discount)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
-                </CardContent>
-              </Card>
+                </div>
+              </fieldset>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Location</CardTitle>
-                  <CardDescription>Enter your service address</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <Label htmlFor="location">Address</Label>
+              {/* CARD 4 - Location */}
+              <fieldset className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 motion-safe:delay-300">
+                <legend className="sr-only">Location</legend>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-[#0F172A]">Location</h3>
+                    <p className="text-sm text-[#475569]">Enter your service address</p>
+                  </div>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
                     <Input
                       id="location"
                       placeholder="Enter your full address (e.g., 123 Main St, Sandton, Johannesburg)"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
+                      className="pl-10 rounded-xl border-gray-200 bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2"
                     />
                   </div>
-                </CardContent>
-              </Card>
+                  {/* Optional map preview container - visual only */}
+                  <div className="mt-4 h-32 bg-[#F8FAFC] rounded-xl border border-gray-100 flex items-center justify-center">
+                    <div className="text-sm text-[#94A3B8]">Map preview will appear here</div>
+                  </div>
+                </div>
+              </fieldset>
 
-              <Button onClick={handleContinue} size="lg" className="w-full md:w-auto" disabled={!isComplete}>
+              {/* Primary CTA */}
+              <Button 
+                onClick={handleContinue} 
+                disabled={!isComplete}
+                className="w-full rounded-full bg-[#0C53ED] text-white py-3.5 shadow-lg hover:brightness-110 hover:-translate-y-[1px] transition-all duration-200 disabled:brightness-75 disabled:shadow-none disabled:translate-y-0 focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 motion-safe:delay-400"
+              >
                 Continue to Select Cleaner
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
 
+            {/* RIGHT COLUMN - BOOKING SUMMARY */}
             <div className="lg:block hidden">
-              <StickySummary />
+              <div className="sticky top-6">
+                <StickySummary />
+              </div>
             </div>
           </div>
         </div>
