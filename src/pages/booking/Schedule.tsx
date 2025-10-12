@@ -13,6 +13,7 @@ import { ArrowRight, ArrowLeft, MapPin, Lock } from 'lucide-react';
 import { format } from 'date-fns';
 import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
 import { ServiceChangeValidator } from '@/components/booking/ServiceChangeValidator';
+import { MapPreview } from '@/components/ui/map-preview';
 
 export default function Schedule() {
   const navigate = useNavigate();
@@ -187,10 +188,8 @@ export default function Schedule() {
                       className="pl-10 rounded-xl border-gray-200 bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2"
                     />
                   </div>
-                  {/* Optional map preview container - visual only */}
-                  <div className="mt-4 h-32 bg-[#F8FAFC] rounded-xl border border-gray-100 flex items-center justify-center">
-                    <div className="text-sm text-[#94A3B8]">Map preview will appear here</div>
-                  </div>
+                  {/* Map preview */}
+                  <MapPreview address={location} />
                 </div>
               </fieldset>
 

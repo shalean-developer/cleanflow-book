@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format, addDays, startOfDay } from 'date-fns';
@@ -11,21 +11,38 @@ interface HorizontalDatePickerProps {
 
 export function HorizontalDatePicker({ selected, onSelect, disabled }: HorizontalDatePickerProps) {
   const [startDate, setStartDate] = useState(new Date());
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animationDirection, setAnimationDirection] = useState<'left' | 'right' | null>(null);
   const today = startOfDay(new Date());
   
-  // Generate 5 visible dates
-  const visibleDates = Array.from({ length: 5 }, (_, i) => 
+  // Generate 7 visible dates to fill the available space
+  const visibleDates = Array.from({ length: 7 }, (_, i) => 
     addDays(startDate, i)
   );
+
+  // Reset animation state after animation completes
+  useEffect(() => {
+    if (isAnimating) {
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+        setAnimationDirection(null);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isAnimating]);
 
   const handlePrevious = () => {
     const newStart = addDays(startDate, -1);
     if (newStart >= today) {
+      setIsAnimating(true);
+      setAnimationDirection('right');
       setStartDate(newStart);
     }
   };
 
   const handleNext = () => {
+    setIsAnimating(true);
+    setAnimationDirection('left');
     setStartDate(addDays(startDate, 1));
   };
 
@@ -53,8 +70,14 @@ export function HorizontalDatePicker({ selected, onSelect, disabled }: Horizonta
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <div className="flex-1 overflow-x-auto scroll-snap-x scroll-snap-mandatory">
-        <div className="flex gap-3 pb-2 min-w-max">
+      <div className="flex-1 overflow-hidden">
+        <div className={`flex gap-3 pb-2 justify-center transition-all duration-300 ease-in-out ${
+          isAnimating 
+            ? animationDirection === 'left' 
+              ? 'transform translate-x-4 opacity-60 scale-95' 
+              : 'transform -translate-x-4 opacity-60 scale-95'
+            : 'transform translate-x-0 opacity-100 scale-100'
+        }`}>
           {visibleDates.map((date) => {
             const isDateSelected = isSelected(date);
             const isDateDisabled = isDisabled(date) || isPastDate(date);

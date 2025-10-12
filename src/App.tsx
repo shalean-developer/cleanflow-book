@@ -9,8 +9,10 @@ import Index from "./pages/Index";
 import Services from "./pages/Services";
 import HowItWorks from "./pages/HowItWorks";
 import Locations from "./pages/Locations";
+import SuburbDetail from "./pages/SuburbDetail";
 import ContactUs from "./pages/ContactUs";
 import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
 import NotFound from "./pages/NotFound";
 import ServiceSelect from "./pages/booking/ServiceSelect";
 import ServiceDetail from "./pages/booking/ServiceDetail";
@@ -21,6 +23,19 @@ import Review from "./pages/booking/Review";
 import Confirmation from "./pages/booking/Confirmation";
 import Quote from "./pages/booking/Quote";
 import QuoteConfirmation from "./pages/QuoteConfirmation";
+import Careers from "./pages/Careers";
+import Apply from "./pages/careers/Apply";
+import OurTeam from "./pages/OurTeam";
+import Reviews from "./pages/Reviews";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import Cookies from "./pages/Cookies";
+import POPIA from "./pages/POPIA";
+import StandardCleaning from "./pages/services/StandardCleaning";
+import DeepCleaning from "./pages/services/DeepCleaning";
+import MoveInOut from "./pages/services/MoveInOut";
+import SpecializedServices from "./pages/services/SpecializedServices";
+import AirbnbCleaning from "./pages/services/AirbnbCleaning";
 
 const queryClient = new QueryClient();
 
@@ -35,10 +50,17 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/services/standard-cleaning" element={<StandardCleaning />} />
+              <Route path="/services/deep-cleaning" element={<DeepCleaning />} />
+              <Route path="/services/move-in-out" element={<MoveInOut />} />
+              <Route path="/services/specialized-services" element={<SpecializedServices />} />
+              <Route path="/services/airbnb-cleaning" element={<AirbnbCleaning />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/locations" element={<Locations />} />
+              <Route path="/locations/:slug" element={<SuburbDetail />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:id" element={<BlogDetail />} />
               <Route path="/booking/service/select" element={<ServiceSelect />} />
               <Route path="/booking/service/:slug" element={<ServiceDetail />} />
               <Route path="/booking/details" element={<Details />} />
@@ -48,6 +70,14 @@ const App = () => (
               <Route path="/booking/confirmation" element={<Confirmation />} />
               <Route path="/booking/quote" element={<Quote />} />
               <Route path="/quote/confirmation" element={<QuoteConfirmation />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/careers/apply" element={<Apply />} />
+              <Route path="/our-team" element={<OurTeam />} />
+              <Route path="/reviews" element={<Reviews />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/cookies" element={<Cookies />} />
+              <Route path="/popia" element={<POPIA />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </SiteLayout>

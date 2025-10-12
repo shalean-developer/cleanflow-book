@@ -4,20 +4,18 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sparkles, CheckCircle, Star, Calendar, Home, Droplets, ClipboardCheck, Users, Award, Clock, Shield, BookOpen, Briefcase, Quote, Building2 } from 'lucide-react';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
 import { HeroApiIntegration } from '@/components/HeroApiIntegration';
 import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';
-import blogCleaningTipsImage from '@/assets/blog-cleaning-tips.jpg';
-import blogSpringCleaningImage from '@/assets/blog-spring-cleaning.jpg';
-import blogEcoProductsImage from '@/assets/blog-eco-products.jpg';
 import cleaningTeamHero from '@/assets/cleaning-team-hero.jpg';
 import serviceStandardImage from '@/assets/service-standard-cleaning.jpg';
 import serviceDeepImage from '@/assets/service-deep-cleaning.jpg';
 import serviceMoveImage from '@/assets/service-move-inout.jpg';
 import serviceSpecializedImage from '@/assets/service-specialized.jpg';
+import { getRecentPosts } from '@/data/blogPosts';
 const Index = () => {
   const navigate = useNavigate();
   const { elementRef: howItWorksRef, isIntersecting } = useIntersectionObserver({
@@ -81,25 +79,7 @@ const Index = () => {
     title: 'Experienced Team',
     description: 'Our cleaners average 7+ years of professional experience'
   }];
-  const blogPosts = [{
-    title: '6 Cleaning Mistakes That Can Frustrate Your Cleaning Efforts',
-    excerpt: 'One-time cleaning services understand the frustration that comes with dust invading the tranquility of a pristine home. This unwelcome guest finds its way into every corner, making your cleaning efforts feel futile.',
-    category: 'Cleaning Tips',
-    icon: Sparkles,
-    image: blogCleaningTipsImage
-  }, {
-    title: 'How Often Should You Get Your House Cleaned?',
-    excerpt: 'Whether it\'s to give your home a fresh, clean feeling or enjoy great company during any given moment of the day, there are plenty of reasons to get your house professionally cleaned.',
-    category: 'Home Care',
-    icon: Home,
-    image: blogSpringCleaningImage
-  }, {
-    title: 'Professional Mopping Tips',
-    excerpt: 'Mopping is a common chore for many people in the home or office. It is an effortless house cleaning task that can remove dirt, grime, and germs from surfaces. However, it can be frustrating to get the best results.',
-    category: 'Professional Tips',
-    icon: Droplets,
-    image: blogEcoProductsImage
-  }];
+  const blogPosts = getRecentPosts(3);
   const services = [{
     icon: Home,
     image: serviceStandardImage,
@@ -432,18 +412,24 @@ const Index = () => {
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-up-delay-1">
               <Button 
+                asChild
                 size="lg" 
                 className="bg-white text-[#0C53ED] hover:bg-white/95 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70 text-lg px-8 py-3 h-auto transition-all duration-300"
               >
-                Apply Now
-                <ClipboardCheck className="w-5 h-5 ml-2" />
+                <Link to="/careers/apply">
+                  Apply Now
+                  <ClipboardCheck className="w-5 h-5 ml-2" />
+                </Link>
               </Button>
               <Button 
+                asChild
                 size="lg" 
                 variant="outline" 
                 className="bg-white/15 border-white/30 text-white hover:bg-white/25 hover:border-white/50 rounded-full backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70 text-lg px-8 py-3 h-auto transition-all duration-300"
               >
-                Learn More
+                <Link to="/careers">
+                  Learn More
+                </Link>
               </Button>
             </div>
             
@@ -494,11 +480,11 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {blogPosts.map((post, i) => (
               <article 
-                key={i} 
+                key={post.id} 
                 className="group cursor-pointer focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[#0C53ED] rounded-2xl"
               >
-                <a 
-                  href="#" 
+                <Link 
+                  to={`/blog/${post.id}`}
                   className="block h-full bg-white dark:bg-[#0B1220] border border-gray-100 dark:border-white/10 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:border-[#0C53ED]/20 dark:hover:border-white/20 transition-all duration-300 overflow-hidden"
                 >
                   {/* Image Container with Category Chip */}
@@ -539,7 +525,7 @@ const Index = () => {
                       </span>
                     </div>
                   </div>
-                </a>
+                </Link>
               </article>
             ))}
           </div>

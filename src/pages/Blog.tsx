@@ -2,78 +2,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight, BookOpen, Clock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import blogCleaningTipsImage from '@/assets/blog-cleaning-tips.jpg';
-import blogSpringCleaningImage from '@/assets/blog-spring-cleaning.jpg';
-import blogEcoProductsImage from '@/assets/blog-eco-products.jpg';
+import { useNavigate, Link } from 'react-router-dom';
+import { blogPosts, getFeaturedPosts } from '@/data/blogPosts';
 
 const Blog = () => {
   const navigate = useNavigate();
+  const featuredPosts = getFeaturedPosts();
 
-  const blogPosts = [
-    {
-      title: '10 Tips for Maintaining a Clean Home',
-      excerpt: 'Simple daily habits that make a big difference in keeping your home spotless between professional cleanings.',
-      content: 'Discover practical strategies to maintain a consistently clean home with minimal effort.',
-      date: 'March 15, 2025',
-      category: 'Tips & Tricks',
-      image: blogCleaningTipsImage,
-      readTime: '5 min read',
-      featured: true
-    },
-    {
-      title: 'Spring Cleaning Checklist',
-      excerpt: 'Your complete guide to refreshing every corner of your home this season with our comprehensive checklist.',
-      content: 'From deep cleaning carpets to organizing closets, we cover everything you need for a thorough spring refresh.',
-      date: 'March 10, 2025',
-      category: 'Guides',
-      image: blogSpringCleaningImage,
-      readTime: '8 min read',
-      featured: true
-    },
-    {
-      title: 'Eco-Friendly Cleaning Products We Love',
-      excerpt: 'Discover our favorite green cleaning solutions that are safe for your family and effective on dirt and grime.',
-      content: 'Learn about sustainable cleaning products that protect the environment without compromising on cleanliness.',
-      date: 'March 5, 2025',
-      category: 'Products',
-      image: blogEcoProductsImage,
-      readTime: '6 min read',
-      featured: false
-    },
-    {
-      title: 'How to Prepare for a Professional Cleaning',
-      excerpt: 'Maximize the value of your professional cleaning service with these simple preparation tips.',
-      content: 'Get the most out of your cleaning appointment by following our expert recommendations.',
-      date: 'February 28, 2025',
-      category: 'Tips & Tricks',
-      image: blogCleaningTipsImage,
-      readTime: '4 min read',
-      featured: false
-    },
-    {
-      title: 'Deep Cleaning vs. Regular Cleaning: What\'s the Difference?',
-      excerpt: 'Understand the key differences between regular and deep cleaning to choose the right service for your needs.',
-      content: 'We break down what each service includes and when you should schedule each type.',
-      date: 'February 20, 2025',
-      category: 'Guides',
-      image: blogSpringCleaningImage,
-      readTime: '7 min read',
-      featured: false
-    },
-    {
-      title: 'The Benefits of Regular Professional Cleaning',
-      excerpt: 'Learn how consistent professional cleaning services improve your home environment and quality of life.',
-      content: 'From health benefits to time savings, discover why regular professional cleaning is worth the investment.',
-      date: 'February 15, 2025',
-      category: 'Tips & Tricks',
-      image: blogEcoProductsImage,
-      readTime: '5 min read',
-      featured: false
-    }
-  ];
-
-  const categories = ['All', 'Tips & Tricks', 'Guides', 'Products'];
+  const categories = ['All', 'Cleaning Tips', 'Home Care', 'Professional Tips', 'Guides', 'Products'];
 
   return (
     <div className="bg-background">
@@ -122,39 +58,41 @@ const Blog = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-16">
-            {blogPosts.filter(post => post.featured).map((post, i) => (
-              <Card key={i} className="overflow-hidden hover:shadow-xl transition-all border-2 hover:border-primary/20 group cursor-pointer">
-                <div className="relative h-56 overflow-hidden">
-                  <img 
-                    src={post.image} 
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <Badge className="absolute top-4 left-4">{post.category}</Badge>
-                </div>
-                <CardHeader>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {post.date}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {post.readTime}
-                    </span>
+            {featuredPosts.map((post) => (
+              <Link key={post.id} to={`/blog/${post.id}`}>
+                <Card className="overflow-hidden hover:shadow-xl transition-all border-2 hover:border-primary/20 group cursor-pointer h-full">
+                  <div className="relative h-56 overflow-hidden">
+                    <img 
+                      src={post.image} 
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <Badge className="absolute top-4 left-4">{post.category}</Badge>
                   </div>
-                  <CardTitle className="text-2xl group-hover:text-primary transition-colors">
-                    {post.title}
-                  </CardTitle>
-                  <CardDescription className="text-base">{post.excerpt}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="link" className="p-0 h-auto">
-                    Read More
-                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </CardContent>
-              </Card>
+                  <CardHeader>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        {post.date}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        {post.readTime}
+                      </span>
+                    </div>
+                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+                      {post.title}
+                    </CardTitle>
+                    <CardDescription className="text-base">{post.excerpt}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="link" className="p-0 h-auto">
+                      Read More
+                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
@@ -169,41 +107,43 @@ const Blog = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {blogPosts.map((post, i) => (
-              <Card key={i} className="overflow-hidden hover:shadow-lg transition-all group cursor-pointer">
-                <div className="relative h-48 overflow-hidden">
-                  <img 
-                    src={post.image} 
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <Badge className="absolute top-3 left-3" variant="secondary">
-                    {post.category}
-                  </Badge>
-                </div>
-                <CardHeader>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {post.date}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {post.readTime}
-                    </span>
+            {blogPosts.map((post) => (
+              <Link key={post.id} to={`/blog/${post.id}`}>
+                <Card className="overflow-hidden hover:shadow-lg transition-all group cursor-pointer h-full">
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={post.image} 
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <Badge className="absolute top-3 left-3" variant="secondary">
+                      {post.category}
+                    </Badge>
                   </div>
-                  <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">
-                    {post.title}
-                  </CardTitle>
-                  <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="link" className="p-0 h-auto text-sm">
-                    Read More
-                    <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </CardContent>
-              </Card>
+                  <CardHeader>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {post.date}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {post.readTime}
+                      </span>
+                    </div>
+                    <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">
+                      {post.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm line-clamp-2">{post.excerpt}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button variant="link" className="p-0 h-auto text-sm">
+                      Read More
+                      <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>

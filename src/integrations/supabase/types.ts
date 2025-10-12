@@ -128,6 +128,120 @@ export type Database = {
         }
         Relationships: []
       }
+      cleaner_applications: {
+        Row: {
+          id: string
+          created_at: string | null
+          first_name: string
+          last_name: string
+          email: string
+          phone: string
+          id_number_or_passport: string
+          date_of_birth: string
+          has_work_permit: boolean
+          address_line1: string
+          address_line2: string | null
+          suburb_city: string
+          postal_code: string
+          has_own_transport: boolean
+          years_experience: number
+          skills: Json
+          comfortable_with_pets: boolean
+          languages: Json
+          available_days: Json
+          start_time: string
+          frequency: string
+          earliest_start_date: string
+          areas: Json
+          ref1_name: string
+          ref1_phone: string
+          ref1_relationship: string
+          ref2_name: string | null
+          ref2_phone: string | null
+          ref2_relationship: string | null
+          cv_url: string
+          id_doc_url: string
+          proof_of_address_url: string
+          certificate_url: string | null
+          status: string | null
+          notes: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string | null
+          first_name: string
+          last_name: string
+          email: string
+          phone: string
+          id_number_or_passport: string
+          date_of_birth: string
+          has_work_permit?: boolean
+          address_line1: string
+          address_line2?: string | null
+          suburb_city: string
+          postal_code: string
+          has_own_transport?: boolean
+          years_experience: number
+          skills: Json
+          comfortable_with_pets?: boolean
+          languages: Json
+          available_days: Json
+          start_time: string
+          frequency: string
+          earliest_start_date: string
+          areas: Json
+          ref1_name: string
+          ref1_phone: string
+          ref1_relationship: string
+          ref2_name?: string | null
+          ref2_phone?: string | null
+          ref2_relationship?: string | null
+          cv_url: string
+          id_doc_url: string
+          proof_of_address_url: string
+          certificate_url?: string | null
+          status?: string | null
+          notes?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string | null
+          first_name?: string
+          last_name?: string
+          email?: string
+          phone?: string
+          id_number_or_passport?: string
+          date_of_birth?: string
+          has_work_permit?: boolean
+          address_line1?: string
+          address_line2?: string | null
+          suburb_city?: string
+          postal_code?: string
+          has_own_transport?: boolean
+          years_experience?: number
+          skills?: Json
+          comfortable_with_pets?: boolean
+          languages?: Json
+          available_days?: Json
+          start_time?: string
+          frequency?: string
+          earliest_start_date?: string
+          areas?: Json
+          ref1_name?: string
+          ref1_phone?: string
+          ref1_relationship?: string
+          ref2_name?: string | null
+          ref2_phone?: string | null
+          ref2_relationship?: string | null
+          cv_url?: string
+          id_doc_url?: string
+          proof_of_address_url?: string
+          certificate_url?: string | null
+          status?: string | null
+          notes?: string | null
+        }
+        Relationships: []
+      }
       extras: {
         Row: {
           created_at: string | null

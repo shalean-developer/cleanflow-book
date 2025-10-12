@@ -82,20 +82,20 @@ const HowItWorks = () => {
   ];
 
   return (
-    <div className="bg-background">
+    <main className="bg-white">
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-20">
+      <section className="bg-gradient-to-b from-white to-[#F8FAFC] py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <Badge className="inline-flex items-center gap-2 px-4 py-2" variant="outline">
+            <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-white border-gray-200 text-[#475569] hover:bg-gray-50" variant="outline">
               <Sparkles className="w-4 h-4" />
               Simple & Easy Process
             </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold">
-              How It <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">Works</span>
+            <h1 className="text-5xl md:text-6xl font-bold text-[#0F172A]">
+              How It <span className="bg-gradient-to-r from-[#0C53ED] to-[#2A869E] bg-clip-text text-transparent">Works</span>
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-[#475569]">
               Get your home professionally cleaned in four simple steps
             </p>
           </div>
@@ -103,56 +103,98 @@ const HowItWorks = () => {
       </section>
 
       {/* Steps Section */}
-      <section className="py-20">
+      <section aria-label="How it works steps" className="py-20 relative">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto space-y-12">
+          <div className="max-w-5xl mx-auto space-y-16 relative">
+            {/* Connector Line */}
+            <div className="absolute left-8 md:left-24 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[#0C53ED]/10 to-transparent hidden md:block"></div>
+            
             {steps.map((step, i) => (
-              <Card key={i} className="overflow-hidden border-2 hover:border-primary/20 transition-all">
-                <div className="grid md:grid-cols-[200px_1fr] gap-0">
-                  <div className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground p-8 flex flex-col items-center justify-center">
-                    <div className="text-5xl font-bold mb-4">{step.number}</div>
-                    <step.icon className="w-12 h-12" />
+              <article 
+                key={i} 
+                aria-label={`Step ${step.number}: ${step.title}`}
+                className={`group bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 p-6 md:p-8 flex gap-6 items-start relative animate-fade-up ${
+                  i % 2 === 0 ? 'md:ml-0' : 'md:ml-8 xl:ml-16'
+                }`}
+                style={{
+                  animationDelay: `${i * 80}ms`
+                }}
+              >
+                {/* Mobile Layout */}
+                <div className="md:hidden w-full">
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="bg-gradient-to-r from-[#0C53ED] to-[#2A869E] rounded-full w-16 h-16 flex items-center justify-center">
+                      <span className="text-white font-bold text-2xl tabular-nums">{step.number}</span>
+                    </div>
+                    <div className="ml-4">
+                      <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center">
+                        <step.icon className="w-4 h-4 text-[#0C53ED]" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-8">
-                    <CardHeader className="p-0 mb-4">
-                      <CardTitle className="text-2xl">{step.title}</CardTitle>
-                      <CardDescription className="text-base">{step.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                      <ul className="space-y-2">
-                        {step.details.map((detail, idx) => (
-                          <li key={idx} className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                            <span>{detail}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
+                  <div>
+                    <h3 className="text-xl font-semibold text-[#0F172A] mb-2">{step.title}</h3>
+                    <p className="text-[#475569] mb-4">{step.description}</p>
+                    <ul className="space-y-2">
+                      {step.details.map((detail, idx) => (
+                        <li key={idx} className="flex items-center gap-3">
+                          <CheckCircle className="w-4 h-4 text-[#0C53ED] flex-shrink-0" />
+                          <span className="text-[#475569] text-sm">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-              </Card>
+
+                {/* Desktop Layout */}
+                <div className="hidden md:flex w-full gap-6">
+                  {/* Left Rail */}
+                  <div className="w-24 flex-shrink-0">
+                    <div className="bg-gradient-to-b from-[#0C53ED] to-[#2A869E] rounded-l-2xl p-6 flex flex-col items-center justify-center h-full min-h-[120px]">
+                      <div className="text-white font-bold text-4xl mb-3 tabular-nums">{step.number}</div>
+                      <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center">
+                        <step.icon className="w-4 h-4 text-[#0C53ED]" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Right Content */}
+                  <div className="flex-1 pt-2">
+                    <h3 className="text-xl font-semibold text-[#0F172A] mb-2">{step.title}</h3>
+                    <p className="text-[#475569] mb-4">{step.description}</p>
+                    <ul className="space-y-2">
+                      {step.details.map((detail, idx) => (
+                        <li key={idx} className="flex items-center gap-3">
+                          <CheckCircle className="w-4 h-4 text-[#0C53ED] flex-shrink-0" />
+                          <span className="text-[#475569] text-sm">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Shalean?</h2>
-            <p className="text-muted-foreground text-lg">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A] mb-4">Why Choose Shalean?</h2>
+            <p className="text-[#475569] text-lg">
               Quality service backed by trust and reliability
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {benefits.map((benefit, i) => (
-              <div key={i} className="text-center space-y-4">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary">
-                  <benefit.icon className="w-8 h-8" />
+              <div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-6 text-center group">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#0C53ED]/10 text-[#0C53ED] mb-4 group-hover:bg-[#0C53ED]/20 transition-colors">
+                  <benefit.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-semibold">{benefit.title}</h3>
-                <p className="text-muted-foreground text-sm">{benefit.description}</p>
+                <h3 className="text-lg font-semibold text-[#0F172A] mb-2">{benefit.title}</h3>
+                <p className="text-[#475569] text-sm leading-relaxed">{benefit.description}</p>
               </div>
             ))}
           </div>
@@ -160,28 +202,39 @@ const HowItWorks = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
+      <section className="py-20 bg-[#F8FAFC]">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Ready to get started?
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Book your first cleaning in just a few minutes
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" onClick={() => navigate('/booking/service/select')}>
-                Book Now
-                <Calendar className="w-5 h-5 ml-2" />
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate('/booking/quote')}>
-                Get Free Quote
-              </Button>
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="bg-white rounded-2xl border border-gray-100 p-8 space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0F172A]">
+                Ready to get started?
+              </h2>
+              <p className="text-[#475569] text-lg">
+                Book your first cleaning in just a few minutes
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate('/booking/service/select')}
+                  className="bg-[#0C53ED] hover:bg-[#0C53ED]/90 text-white rounded-full shadow-lg focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2"
+                >
+                  Book Now
+                  <Calendar className="w-5 h-5 ml-2" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  onClick={() => navigate('/booking/quote')}
+                  className="border-[#0C53ED] text-[#0C53ED] hover:bg-[#0C53ED] hover:text-white rounded-full focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2"
+                >
+                  Get Free Quote
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 };
 

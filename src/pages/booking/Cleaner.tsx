@@ -101,21 +101,9 @@ export default function Cleaner() {
               </div>
 
               {/* Filter/Sort Toolbar */}
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3">
-                <div className="flex items-center gap-3 overflow-x-auto">
-                  {/* Availability Day Chips */}
-                  <div className="flex gap-2 min-w-0">
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                      <button
-                        key={day}
-                        className="px-3 py-1.5 text-sm font-medium rounded-full bg-[#EAF2FF] text-[#0C53ED] whitespace-nowrap"
-                      >
-                        {day}
-                      </button>
-                    ))}
-                  </div>
-                  
-                  {/* Area/Location Select */}
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
+                {/* Address Section - Top */}
+                <div className="flex items-center justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <button className="px-4 py-2 text-sm font-medium text-[#475569] bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                       {extractArea(booking.location || '')}
@@ -128,6 +116,18 @@ export default function Cleaner() {
                     <option>Experience</option>
                     <option>Closest</option>
                   </select>
+                </div>
+                
+                {/* Availability Day Chips - Bottom */}
+                <div className="flex gap-2 overflow-x-auto">
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+                    <button
+                      key={day}
+                      className="px-3 py-1.5 text-sm font-medium rounded-full bg-[#EAF2FF] text-[#0C53ED] whitespace-nowrap"
+                    >
+                      {day}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>

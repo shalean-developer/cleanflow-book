@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Check, Star, Sparkles } from 'lucide-react';
+import { Check, Star, ThumbsUp, Clock } from 'lucide-react';
 
 interface ChooseForMeCardProps {
   onSelect: () => void;
@@ -11,7 +11,7 @@ export function ChooseForMeCard({ onSelect }: ChooseForMeCardProps) {
       <div className="flex items-start gap-4">
         {/* Icon Badge with Gradient */}
         <div className="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-[#0C53ED] to-[#2A869E] flex items-center justify-center">
-          <Sparkles className="w-5 h-5 text-white" />
+          <ThumbsUp className="w-5 h-5 text-white" />
         </div>
         
         <div className="flex-1 space-y-4">
@@ -29,7 +29,7 @@ export function ChooseForMeCard({ onSelect }: ChooseForMeCardProps) {
                 <span className="font-medium">4.8 avg rating</span>
               </span>
               <span className="flex items-center gap-1 text-[#475569]">
-                <Sparkles className="w-4 h-4 text-[#0C53ED]" />
+                <Clock className="w-4 h-4 text-[#0C53ED]" />
                 <span className="font-medium">2+ years</span>
               </span>
             </div>

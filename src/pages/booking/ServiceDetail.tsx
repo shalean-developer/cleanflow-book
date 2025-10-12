@@ -6,6 +6,7 @@ import { StickySummary } from '@/components/booking/StickySummary';
 import { useBookingStore } from '@/store/bookingStore';
 import { formatCurrencyZAR } from '@/utils/pricing';
 import { ArrowRight, ArrowLeft, Check, Sparkles } from 'lucide-react';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 export default function ServiceDetail() {
   const { slug } = useParams();
@@ -44,14 +45,93 @@ export default function ServiceDetail() {
     );
   }
 
-  const features = [
-    'Professional cleaning team',
-    'Eco-friendly products',
-    'Flexible scheduling',
-    'Satisfaction guaranteed',
-    'Insurance covered',
-    'Background-checked staff',
-  ];
+  // Service-specific features and detailed breakdown
+  const getServiceDetails = (slug: string) => {
+    const commonFeatures = [
+      'Professional cleaning team',
+      'Flexible scheduling',
+      'Insurance covered',
+      'Eco-friendly products',
+      'Satisfaction guaranteed',
+      'Background-checked staff',
+    ];
+
+    switch (slug) {
+      case 'standard-cleaning':
+        return {
+          features: commonFeatures,
+          detailedBreakdown: {
+            title: 'Top-to-bottom clean',
+            description: 'Indoor Cleaning includes a clean of all common areas in your home, including your bedrooms, bathrooms, living room(s) and kitchen.',
+            rooms: [
+              'Bedrooms - Dusting, vacuuming, making beds',
+              'Bathrooms - Sanitizing, scrubbing, mopping',
+              'Living Rooms - Dusting, vacuuming, organizing',
+              'Kitchen - Counter cleaning, appliance wiping, floor mopping',
+              'Common Areas - Hallways, stairs, general tidying'
+            ]
+          }
+        };
+      case 'deep-cleaning':
+        return {
+          features: [...commonFeatures, 'Detailed scrubbing', 'Hard-to-reach areas'],
+          detailedBreakdown: {
+            title: 'Comprehensive deep clean',
+            description: 'Thorough cleaning service covering all areas in detail, including hard-to-reach spaces and intensive scrubbing.',
+            rooms: [
+              'Bedrooms - Deep dusting, mattress cleaning, wardrobe organization',
+              'Bathrooms - Grout cleaning, tile scrubbing, fixture polishing',
+              'Living Rooms - Furniture deep cleaning, baseboard cleaning',
+              'Kitchen - Appliance deep cleaning, cabinet interior cleaning',
+              'Additional Areas - Light fixtures, window sills, door frames'
+            ]
+          }
+        };
+      case 'move-in-out':
+        return {
+          features: [...commonFeatures, 'Move-in/out specialized', 'Complete property cleaning'],
+          detailedBreakdown: {
+            title: 'Complete move cleaning',
+            description: 'Comprehensive cleaning for moving in or out of a property, ensuring every corner is spotless.',
+            rooms: [
+              'All Rooms - Complete top-to-bottom cleaning',
+              'Kitchen - Deep appliance cleaning, cabinet interior',
+              'Bathrooms - Intensive sanitizing, grout cleaning',
+              'Bedrooms - Wardrobe cleaning, mattress sanitizing',
+              'Storage Areas - Closets, cupboards, built-ins',
+              'Windows - Interior and accessible exterior cleaning'
+            ]
+          }
+        };
+      case 'airbnb-cleaning':
+        return {
+          features: [...commonFeatures, 'Quick turnaround', 'Guest-ready standards'],
+          detailedBreakdown: {
+            title: 'Guest-ready cleaning',
+            description: 'Quick turnaround cleaning for short-term rentals, ensuring every guest arrives to a pristine space.',
+            rooms: [
+              'All Rooms - Guest-ready standard cleaning',
+              'Kitchen - Appliance cleaning, counter sanitizing',
+              'Bathrooms - Complete sanitizing, amenity restocking',
+              'Bedrooms - Fresh linens, spot cleaning',
+              'Common Areas - Quick tidy, surface cleaning',
+              'Special Touches - Welcome amenities check'
+            ]
+          }
+        };
+      default:
+        return {
+          features: commonFeatures,
+          detailedBreakdown: {
+            title: 'Standard cleaning service',
+            description: 'Regular cleaning service for maintaining your home\'s cleanliness.',
+            rooms: ['All common areas cleaned', 'Standard tidying and organizing']
+          }
+        };
+    }
+  };
+
+  const serviceDetails = getServiceDetails(service.slug);
 
   const isStandardCleaning = service.slug === 'standard-cleaning';
 
@@ -111,10 +191,32 @@ export default function ServiceDetail() {
                 <div className="mb-8">
                   <h2 className="font-semibold text-[#0F172A] mb-4">What's included:</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {features.map((feature) => (
+                    {serviceDetails.features.map((feature) => (
                       <div key={feature} className="flex items-start gap-3">
                         <Check className="h-5 w-5 text-[#0C53ED] flex-shrink-0 mt-0.5" />
                         <span className="text-[#475569] leading-relaxed">{feature}</span>
+                        {(feature === 'Professional cleaning team' || feature === 'Eco-friendly products') && 
+                         (service.slug === 'standard-cleaning' || service.slug === 'airbnb-cleaning') && (
+                          <InfoTooltip message="Team will and equipment only provided for extra charge contact us for the price." />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Detailed Breakdown */}
+                <div className="mb-8">
+                  <h2 className="font-semibold text-[#0F172A] mb-4">
+                    {serviceDetails.detailedBreakdown.title}
+                  </h2>
+                  <p className="text-[#475569] mb-4 leading-relaxed">
+                    {serviceDetails.detailedBreakdown.description}
+                  </p>
+                  <div className="space-y-2">
+                    {serviceDetails.detailedBreakdown.rooms.map((room, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[#0C53ED] flex-shrink-0 mt-2" />
+                        <span className="text-[#475569] leading-relaxed">{room}</span>
                       </div>
                     ))}
                   </div>
