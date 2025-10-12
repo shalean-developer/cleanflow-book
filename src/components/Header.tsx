@@ -42,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
   logo,
 }) => {
   const navigate = useNavigate();
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, isAdmin, isCleaner, signOut } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -187,9 +187,9 @@ export const Header: React.FC<HeaderProps> = ({
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => {
-                      if (profile?.role === 'admin') {
+                      if (isAdmin) {
                         navigate('/dashboard/admin');
-                      } else if (profile?.role === 'cleaner') {
+                      } else if (isCleaner) {
                         navigate('/dashboard/cleaner');
                       } else {
                         navigate('/dashboard');

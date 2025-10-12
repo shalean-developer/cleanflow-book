@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
 export function ProfileSettings() {
-  const { user, profile } = useAuth();
+  const { user, profile, userRole } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -125,7 +125,7 @@ export function ProfileSettings() {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-600">Account Type:</span>
-              <span className="font-medium capitalize">{profile?.role || 'Customer'}</span>
+              <span className="font-medium capitalize">{userRole || 'Customer'}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Member Since:</span>

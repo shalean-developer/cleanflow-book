@@ -4,11 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 
 type UserProfile = Tables<'profiles'>;
+type UserRole = 'customer' | 'admin' | 'cleaner';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: UserProfile | null;
+  userRole: UserRole | null;
   signUp: (email: string, password: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signInWithMagicLink: (email: string) => Promise<{ error: any }>;
@@ -25,18 +27,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      // Fetch profile
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
       
-      if (!error && data) {
-        setProfile(data);
+      if (!profileError && profileData) {
+        setProfile(profileData);
+      }
+
+      // Fetch user role from user_roles table
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .single();
+      
+      if (!roleError && roleData) {
+        setUserRole(roleData.role as UserRole);
+      } else {
+        // Default to customer if no role found
+        setUserRole('customer');
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -96,17 +114,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     await supabase.auth.signOut();
     setProfile(null);
+    setUserRole(null);
   };
 
-  const isAdmin = profile?.role === 'admin';
-  const isCleaner = profile?.role === 'cleaner';
-  const isCustomer = profile?.role === 'customer';
+  const isAdmin = userRole === 'admin';
+  const isCleaner = userRole === 'cleaner';
+  const isCustomer = userRole === 'customer';
 
   return (
     <AuthContext.Provider value={{ 
       user, 
       session, 
       profile,
+      userRole,
       signUp, 
       signIn, 
       signInWithMagicLink, 
