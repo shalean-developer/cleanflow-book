@@ -48,6 +48,9 @@ export default function AdminDashboard() {
 
   const fetchAllData = async () => {
     try {
+      console.log('Fetching admin dashboard data for user:', user?.id);
+      console.log('Is admin:', isAdmin);
+      
       // Fetch bookings
       const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
@@ -58,7 +61,11 @@ export default function AdminDashboard() {
         `)
         .order('created_at', { ascending: false });
 
-      if (bookingsError) throw bookingsError;
+      if (bookingsError) {
+        console.error('Bookings error:', bookingsError);
+        throw bookingsError;
+      }
+      console.log('Bookings fetched:', bookingsData?.length || 0);
 
       // Fetch cleaners
       const { data: cleanersData, error: cleanersError } = await supabase
@@ -66,7 +73,11 @@ export default function AdminDashboard() {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (cleanersError) throw cleanersError;
+      if (cleanersError) {
+        console.error('Cleaners error:', cleanersError);
+        throw cleanersError;
+      }
+      console.log('Cleaners fetched:', cleanersData?.length || 0);
 
       // Fetch applications
       const { data: applicationsData, error: applicationsError } = await supabase
@@ -74,7 +85,11 @@ export default function AdminDashboard() {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (applicationsError) throw applicationsError;
+      if (applicationsError) {
+        console.error('Applications error:', applicationsError);
+        throw applicationsError;
+      }
+      console.log('Applications fetched:', applicationsData?.length || 0);
 
       setBookings(bookingsData || []);
       setCleaners(cleanersData || []);

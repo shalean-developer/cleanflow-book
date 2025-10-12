@@ -126,7 +126,7 @@ serve(async (req) => {
               If you have any questions or need to update your application, please contact us:
             </p>
             <p style="color: #0C53ED; font-size: 15px; margin: 10px 0;">
-              📧 Email: <a href="mailto:bookings@shalean.co.za" style="color: #0C53ED; text-decoration: none;">bookings@shalean.co.za</a>
+              📧 Email: <a href="mailto:careers@shalean.com" style="color: #0C53ED; text-decoration: none;">careers@shalean.com</a>
             </p>
             <p style="color: #555; font-size: 14px; margin-top: 20px;">
               We look forward to potentially welcoming you to the Shalean family!
@@ -172,14 +172,14 @@ YOUR APPLICATION SUMMARY
 - Preferred Areas: ${allAreas}
 - Earliest Start Date: ${new Date(application.earliest_start_date).toLocaleDateString('en-ZA')}
 
-If you have any questions, contact us at bookings@shalean.co.za
+If you have any questions, contact us at careers@shalean.com
 
 Best regards,
 The Shalean Team
     `.trim();
 
     await resend.emails.send({
-      from: 'Shalean Careers <bookings@shalean.co.za>',
+      from: 'Shalean Careers <careers@shalean.com>',
       to: [application.email],
       subject: `Application Received - ${applicationRef}`,
       html: applicantEmailHtml,
@@ -358,8 +358,8 @@ The Shalean Team
     `;
 
     await resend.emails.send({
-      from: 'Shalean Applications <bookings@shalean.co.za>',
-      to: ['bookings@shalean.co.za'],
+      from: 'Shalean Applications <careers@shalean.com>',
+      to: ['careers@shalean.com'],
       subject: `NEW APPLICATION – ${fullName} (${areasShort})`,
       html: adminEmailHtml,
     });

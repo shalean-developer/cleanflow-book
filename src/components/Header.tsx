@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Sparkles, BadgeDollarSign, ShieldCheck, ArrowUpRight, Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Home, Wrench, MapPin, Settings, ArrowUpRight, Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -30,9 +30,9 @@ interface HeaderProps {
 
 const defaultNavItems: NavItem[] = [
   { to: '/', label: 'Home', icon: Home },
-  { to: '/services', label: 'Services', icon: Sparkles },
-  { to: '/how-it-works', label: 'How It Works', icon: ShieldCheck },
-  { to: '/locations', label: 'Locations', icon: BadgeDollarSign },
+  { to: '/services', label: 'Services', icon: Wrench },
+  { to: '/how-it-works', label: 'How It Works', icon: Settings },
+  { to: '/locations', label: 'Locations', icon: MapPin },
 ];
 
 export const Header: React.FC<HeaderProps> = ({

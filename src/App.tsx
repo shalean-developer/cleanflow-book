@@ -36,6 +36,9 @@ import DeepCleaning from "./pages/services/DeepCleaning";
 import MoveInOut from "./pages/services/MoveInOut";
 import SpecializedServices from "./pages/services/SpecializedServices";
 import AirbnbCleaning from "./pages/services/AirbnbCleaning";
+import CarpetUpholstery from "./pages/services/CarpetUpholstery";
+import PostConstruction from "./pages/services/PostConstruction";
+import ManageBooking from "./pages/ManageBooking";
 import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import CleanerDashboard from "./pages/dashboard/CleanerDashboard";
@@ -56,8 +59,13 @@ const App = () => (
               <Route path="/services/standard-cleaning" element={<StandardCleaning />} />
               <Route path="/services/deep-cleaning" element={<DeepCleaning />} />
               <Route path="/services/move-in-out" element={<MoveInOut />} />
+              <Route path="/services/move-in-out-cleaning" element={<MoveInOut />} />
               <Route path="/services/specialized-services" element={<SpecializedServices />} />
+              <Route path="/services/specialized" element={<SpecializedServices />} />
               <Route path="/services/airbnb-cleaning" element={<AirbnbCleaning />} />
+              <Route path="/services/airbnb-turnover" element={<AirbnbCleaning />} />
+              <Route path="/services/carpet-upholstery" element={<CarpetUpholstery />} />
+              <Route path="/services/post-construction" element={<PostConstruction />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/locations" element={<Locations />} />
               <Route path="/locations/:slug" element={<SuburbDetail />} />
@@ -84,6 +92,7 @@ const App = () => (
               <Route path="/dashboard" element={<CustomerDashboard />} />
               <Route path="/dashboard/admin" element={<AdminDashboard />} />
               <Route path="/dashboard/cleaner" element={<CleanerDashboard />} />
+              <Route path="/manage-booking" element={<ManageBooking />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </SiteLayout>

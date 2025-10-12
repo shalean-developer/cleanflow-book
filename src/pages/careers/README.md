@@ -112,7 +112,7 @@ status (new|reviewing|shortlisted|rejected|hired), notes
 ### Applicant Email (Confirmation)
 
 - **Subject**: `Application Received - {REF_ID}`
-- **From**: `Shalean Careers <bookings@shalean.co.za>`
+- **From**: `Shalean Careers <careers@shalean.com>`
 - **Content**:
   - Confirmation message with reference ID
   - Application summary
@@ -123,7 +123,7 @@ status (new|reviewing|shortlisted|rejected|hired), notes
 ### Admin Email (New Application Alert)
 
 - **Subject**: `NEW APPLICATION – {Name} ({Areas})`
-- **To**: `bookings@shalean.co.za`
+- **To**: `careers@shalean.com`
 - **Content**:
   - Complete applicant details
   - All form responses
@@ -258,7 +258,7 @@ await supabase.functions.invoke("send-application-confirmation", {
 ## Support
 
 For issues or questions:
-- **Email**: bookings@shalean.co.za
+- **Email**: careers@shalean.com
 - **Technical**: Check Supabase logs for edge function errors
 - **Database**: Review RLS policies if access issues occur
 

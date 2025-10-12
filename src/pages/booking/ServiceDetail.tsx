@@ -104,6 +104,7 @@ export default function ServiceDetail() {
           }
         };
       case 'airbnb-cleaning':
+      case 'airbnb-turnover':
         return {
           features: [...commonFeatures, 'Quick turnaround', 'Guest-ready standards'],
           detailedBreakdown: {
@@ -116,6 +117,69 @@ export default function ServiceDetail() {
               'Bedrooms - Fresh linens, spot cleaning',
               'Common Areas - Quick tidy, surface cleaning',
               'Special Touches - Welcome amenities check'
+            ]
+          }
+        };
+      case 'move-in-out-cleaning':
+        return {
+          features: [...commonFeatures, 'Move-in/out specialized', 'Complete property cleaning'],
+          detailedBreakdown: {
+            title: 'Complete move cleaning',
+            description: 'Comprehensive cleaning for moving in or out of a property, ensuring every corner is spotless.',
+            rooms: [
+              'All Rooms - Complete top-to-bottom cleaning',
+              'Kitchen - Deep appliance cleaning, cabinet interior',
+              'Bathrooms - Intensive sanitizing, grout cleaning',
+              'Bedrooms - Wardrobe cleaning, mattress sanitizing',
+              'Storage Areas - Closets, cupboards, built-ins',
+              'Windows - Interior and accessible exterior cleaning'
+            ]
+          }
+        };
+      case 'carpet-upholstery':
+        return {
+          features: [...commonFeatures, 'Deep extraction', 'Stain removal', 'Odor neutralization'],
+          detailedBreakdown: {
+            title: 'Carpet & Upholstery deep clean',
+            description: 'Professional cleaning to revive fabrics and remove embedded dirt, stains, and allergens.',
+            rooms: [
+              'Carpets - Deep extraction cleaning',
+              'Sofas & Chairs - Fabric cleaning and protection',
+              'Stain Treatment - Targeted stain removal',
+              'Odor Removal - Neutralization treatment',
+              'Fabric Protection - Optional protective coating',
+              'Fast Drying - Advanced drying techniques'
+            ]
+          }
+        };
+      case 'post-construction':
+        return {
+          features: [...commonFeatures, 'Construction cleanup', 'Debris removal', 'Final polish'],
+          detailedBreakdown: {
+            title: 'Post-construction cleanup',
+            description: 'Thorough cleaning after renovations or construction to make your space move-in ready.',
+            rooms: [
+              'All Areas - Dust and debris removal',
+              'Windows - Paint splatter and frame cleaning',
+              'Floors - Deep cleaning and polishing',
+              'Fixtures - Complete cleaning and inspection',
+              'Surfaces - Detail finishing touches',
+              'Final Check - Walkthrough and quality assurance'
+            ]
+          }
+        };
+      case 'specialized':
+        return {
+          features: [...commonFeatures, 'Targeted cleaning', 'Specialized equipment'],
+          detailedBreakdown: {
+            title: 'Specialized cleaning services',
+            description: 'Custom cleaning solutions for specific needs including windows, walls, and more.',
+            rooms: [
+              'Interior Windows - Streak-free cleaning',
+              'Walls - Spot cleaning and wiping',
+              'Baseboards - Detailed cleaning',
+              'Light Fixtures - Dusting and polishing',
+              'Special Areas - Custom cleaning as needed'
             ]
           }
         };
@@ -134,6 +198,7 @@ export default function ServiceDetail() {
   const serviceDetails = getServiceDetails(service.slug);
 
   const isStandardCleaning = service.slug === 'standard-cleaning';
+  const showTeamNote = ['standard-cleaning', 'airbnb-cleaning', 'airbnb-turnover'].includes(service.slug);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -196,8 +261,8 @@ export default function ServiceDetail() {
                         <Check className="h-5 w-5 text-[#0C53ED] flex-shrink-0 mt-0.5" />
                         <span className="text-[#475569] leading-relaxed">{feature}</span>
                         {(feature === 'Professional cleaning team' || feature === 'Eco-friendly products') && 
-                         (service.slug === 'standard-cleaning' || service.slug === 'airbnb-cleaning') && (
-                          <InfoTooltip message="Team will and equipment only provided for extra charge contact us for the price." />
+                         showTeamNote && (
+                          <InfoTooltip message="Team and equipment only provided for extra charge. Contact us for pricing." />
                         )}
                       </div>
                     ))}

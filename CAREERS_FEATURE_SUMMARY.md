@@ -21,7 +21,7 @@ A complete, production-ready "Apply to Work at Shalean" application system has b
 - [x] Returns success state + application ID
 
 ### ✅ Notifications
-- [x] Admin email to `bookings@shalean.co.za`
+- [x] Admin email to `careers@shalean.com`
 - [x] Auto-reply to applicant
 - [x] Uses existing Resend integration
 - [x] HTML + text email templates
@@ -173,7 +173,7 @@ CREATE TABLE cleaner_applications (
 ## 📧 Email Templates
 
 ### Admin Notification
-**To**: bookings@shalean.co.za  
+**To**: careers@shalean.com  
 **Subject**: NEW APPLICATION – {Name} ({Areas})  
 **Content**:
 - Eye-catching header with gradient
@@ -406,7 +406,7 @@ For team members working on this feature:
 
 ## 🤝 Support & Maintenance
 
-**Primary Contact**: bookings@shalean.co.za  
+**Primary Contact**: careers@shalean.com  
 **Technical Issues**: Check Supabase logs and error messages  
 **Email Problems**: Verify Resend dashboard for delivery status  
 **Database Issues**: Review RLS policies and migration status

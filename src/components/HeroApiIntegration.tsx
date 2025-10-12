@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Sparkles, Home, Clock, Shield, Users } from 'lucide-react';
+import { Check, Sparkles, Home, Truck, Settings, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -13,8 +13,8 @@ interface FeatureCard {
 const features: FeatureCard[] = [
   { id: 'deep-cleaning', label: 'Deep Cleaning', icon: Sparkles },
   { id: 'regular-cleaning', label: 'Regular Cleaning', icon: Home },
-  { id: 'move-in-out', label: 'Move In/Out', icon: Clock },
-  { id: 'specialized', label: 'Specialized', icon: Shield },
+  { id: 'move-in-out', label: 'Move In/Out', icon: Truck },
+  { id: 'specialized', label: 'Specialized', icon: Settings },
   { id: 'team-service', label: 'Team Service', icon: Users },
 ];
 

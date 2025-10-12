@@ -11,11 +11,8 @@ import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';
 import cleaningTeamHero from '@/assets/cleaning-team-hero.jpg';
-import serviceStandardImage from '@/assets/service-standard-cleaning.jpg';
-import serviceDeepImage from '@/assets/service-deep-cleaning.jpg';
-import serviceMoveImage from '@/assets/service-move-inout.jpg';
-import serviceSpecializedImage from '@/assets/service-specialized.jpg';
 import { getRecentPosts } from '@/data/blogPosts';
+import { serviceGroups } from '@/data/services';
 const Index = () => {
   const navigate = useNavigate();
   const { elementRef: howItWorksRef, isIntersecting } = useIntersectionObserver({
@@ -80,31 +77,6 @@ const Index = () => {
     description: 'Our cleaners average 7+ years of professional experience'
   }];
   const blogPosts = getRecentPosts(3);
-  const services = [{
-    icon: Home,
-    image: serviceStandardImage,
-    title: 'Standard Cleaning',
-    description: 'Regular home maintenance to keep your space fresh and tidy',
-    price: 'From R350'
-  }, {
-    icon: Droplets,
-    image: serviceDeepImage,
-    title: 'Deep Cleaning',
-    description: 'Thorough top-to-bottom cleaning for a spotless home',
-    price: 'From R550'
-  }, {
-    icon: Building2,
-    image: serviceMoveImage,
-    title: 'Move In/Out Cleaning',
-    description: 'Complete cleaning for seamless transitions',
-    price: 'From R650'
-  }, {
-    icon: Sparkles,
-    image: serviceSpecializedImage,
-    title: 'Specialized Services',
-    description: 'Carpet, upholstery, and post-construction cleaning',
-    price: 'Custom Quote'
-  }];
   const reviews = [{
     name: 'Jessica Miller',
     rating: 5,
@@ -130,17 +102,17 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-up">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 text-black">
-              Our Services
+              Our Cleaning Services
             </h2>
             <p className="text-lg max-w-2xl mx-auto" style={{ color: '#6B7280' }}>
-              Choose from our comprehensive range of professional cleaning solutions designed to meet your specific needs and keep your space spotless.
+              Choose a category, then pick the service that fits your home.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {services.map((service, i) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {serviceGroups.map((group, i) => (
               <Card 
-                key={i} 
+                key={group.id} 
                 className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] border-0 shadow-lg animate-fade-up"
                 style={{ 
                   animationDelay: `${i * 0.2}s`,
@@ -149,27 +121,35 @@ const Index = () => {
               >
                 <div className="relative overflow-hidden">
                   <img 
-                    src={service.image} 
-                    alt={service.title} 
+                    src={group.services[0].image} 
+                    alt={group.title} 
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
                   />
                   <div className="absolute top-4 left-4">
                     <div className="flex items-center justify-center w-10 h-10 rounded-full text-white" style={{ backgroundColor: '#0C53ED' }}>
-                      <service.icon className="w-5 h-5" />
+                      <group.icon className="w-5 h-5" />
                     </div>
                   </div>
                 </div>
                 
                 <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <CardTitle className="text-xl font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">
-                      {service.title}
-                    </CardTitle>
-                    <Badge variant="secondary" className="text-xs">{service.price}</Badge>
-                  </div>
-                  <CardDescription className="text-gray-600 leading-relaxed mt-3">
-                    {service.description}
+                  <CardTitle className="text-xl font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors mb-2">
+                    {group.title}
+                  </CardTitle>
+                  <CardDescription className="text-gray-600 leading-relaxed mb-4">
+                    {group.description}
                   </CardDescription>
+                  
+                  {/* Service count and pricing range */}
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                    <span>{group.services.length} service{group.services.length !== 1 ? 's' : ''}</span>
+                    <span>
+                      {group.services.some(s => s.priceLabel.includes('Custom')) 
+                        ? 'Custom pricing' 
+                        : `From ${group.services.find(s => !s.priceLabel.includes('Custom'))?.priceLabel.split(' ')[1] || 'R350'}`
+                      }
+                    </span>
+                  </div>
                 </CardHeader>
                 
                 <CardContent className="pt-0">
@@ -177,9 +157,9 @@ const Index = () => {
                     variant="ghost" 
                     size="sm" 
                     className="w-full group-hover:text-blue-600 transition-colors"
-                    onClick={() => navigate('/booking/service/select')}
+                    onClick={() => navigate('/services')}
                   >
-                    Book Now →
+                    View Services →
                   </Button>
                 </CardContent>
               </Card>

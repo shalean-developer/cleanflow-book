@@ -18,7 +18,7 @@ type Booking = Tables<'bookings'> & {
 };
 
 export default function CustomerDashboard() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, isAdmin, isCleaner, signOut, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
@@ -26,12 +26,37 @@ export default function CustomerDashboard() {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('CustomerDashboard useEffect - authLoading:', authLoading, 'user:', user?.id, 'isAdmin:', isAdmin, 'isCleaner:', isCleaner);
+    
+    // Wait for authentication to finish loading
+    if (authLoading) {
+      console.log('Authentication still loading...');
+      return;
+    }
+    
     if (!user) {
+      console.log('No user, redirecting to home');
       navigate('/');
       return;
     }
+    
+    // Redirect admin users to admin dashboard
+    if (isAdmin) {
+      console.log('User is admin, redirecting to admin dashboard');
+      navigate('/dashboard/admin');
+      return;
+    }
+    
+    // Redirect cleaner users to cleaner dashboard
+    if (isCleaner) {
+      console.log('User is cleaner, redirecting to cleaner dashboard');
+      navigate('/dashboard/cleaner');
+      return;
+    }
+    
+    console.log('User is customer, fetching bookings');
     fetchBookings();
-  }, [user, navigate]);
+  }, [authLoading, user, isAdmin, isCleaner, navigate]);
 
   const fetchBookings = async () => {
     try {
@@ -77,6 +102,17 @@ export default function CustomerDashboard() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your dashboard...</p>
+          {/* Debug info */}
+          <div className="mt-4 p-4 bg-white rounded-lg shadow text-left text-sm">
+            <p><strong>Debug Info:</strong></p>
+            <p>Auth Loading: {authLoading ? 'Yes' : 'No'}</p>
+            <p>User ID: {user?.id || 'Not logged in'}</p>
+            <p>User Email: {user?.email || 'N/A'}</p>
+            <p>Is Admin: {isAdmin ? 'Yes' : 'No'}</p>
+            <p>Is Cleaner: {isCleaner ? 'Yes' : 'No'}</p>
+            <p>Profile Role: {profile?.role || 'No role in profile'}</p>
+            <p>Component Loading: {loading ? 'Yes' : 'No'}</p>
+          </div>
         </div>
       </div>
     );

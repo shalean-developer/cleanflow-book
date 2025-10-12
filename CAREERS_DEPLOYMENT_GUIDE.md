@@ -161,7 +161,7 @@ vercel --prod
 
 ## 📧 Email Configuration
 
-### Admin Email (bookings@shalean.co.za)
+### Admin Email (careers@shalean.com)
 - **Subject**: `NEW APPLICATION – {Name} ({Areas})`
 - **Content**: Full application details with document links
 - **Trigger**: Immediately after successful submission
@@ -256,7 +256,7 @@ const { data } = await supabase
 
 ### Emails not sending
 - Check RESEND_API_KEY in edge function secrets
-- Verify `bookings@shalean.co.za` is a verified domain in Resend
+- Verify `careers@shalean.com` is a verified domain in Resend
 - Check edge function logs: `supabase functions logs send-application-confirmation`
 
 ### File uploads failing
@@ -316,7 +316,7 @@ For issues or questions:
 - **Technical Support**: Check Supabase logs and error messages
 - **Email Issues**: Verify Resend dashboard for delivery status
 - **Database Issues**: Check RLS policies and migration status
-- **General**: bookings@shalean.co.za
+- **General**: careers@shalean.com
 
 ## ✨ Feature Highlights
 

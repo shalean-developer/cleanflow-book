@@ -274,69 +274,145 @@ export default function Apply() {
       }
 
       console.log("File validation passed, creating application...");
+      console.log("Form data being submitted:", {
+        skills: data.skills,
+        languages: data.languages,
+        available_days: data.available_days,
+        areas: data.areas,
+        has_own_transport: data.has_own_transport,
+        comfortable_with_pets: data.comfortable_with_pets,
+      });
 
-      // Create initial application record
+      // Create application record using both old and new column names to handle schema transition
+      const applicationData = {
+        // Basic required fields
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        phone: data.phone,
+        
+        // Address fields (both old and new column names for compatibility)
+        address: data.address_line1 || '', // Old column name (required)
+        address_line1: data.address_line1 || '', // New column name
+        city: data.suburb_city || '', // Old column name (required)
+        suburb_city: data.suburb_city || '', // New column name
+        postal_code: data.postal_code || '',
+        
+        // Transport fields
+        has_transport: data.has_own_transport || false, // Old column name
+        has_own_transport: data.has_own_transport || false, // New column name
+        
+        // Experience fields (both old and new)
+        experience_years: data.years_experience || 0, // Old column name (required)
+        years_experience: data.years_experience || 0, // New column name
+        previous_experience: data.skills ? data.skills.join(', ') : '', // Old column name (required)
+        skills: data.skills || [], // New column name
+        comfortable_with_pets: data.comfortable_with_pets || false,
+        
+        // Areas and availability
+        areas_of_service: data.other_area && data.areas.includes("Other")
+          ? [...data.areas.filter(a => a !== "Other"), data.other_area]
+          : (data.areas || []), // Old column name (required)
+        areas: data.other_area && data.areas.includes("Other")
+          ? [...data.areas.filter(a => a !== "Other"), data.other_area]
+          : (data.areas || []), // New column name
+        
+        // Availability (old format as JSONB)
+        availability: {
+          days: data.available_days || [],
+          start_time: data.start_time || '',
+          frequency: data.frequency || '',
+          earliest_start_date: data.earliest_start_date || new Date().toISOString().split('T')[0]
+        }, // Old column name (required)
+        available_days: data.available_days || [], // New column name
+        start_time: data.start_time || '',
+        frequency: data.frequency || '',
+        earliest_start_date: data.earliest_start_date || new Date().toISOString().split('T')[0],
+        
+        // Languages
+        languages: data.other_language && data.languages.includes("Other")
+          ? [...data.languages.filter(l => l !== "Other"), data.other_language]
+          : (data.languages || []),
+        
+        // References
+        ref1_name: data.ref1_name || '',
+        ref1_phone: data.ref1_phone || '',
+        ref1_relationship: data.ref1_relationship || '',
+        ref2_name: data.ref2_name || null,
+        ref2_phone: data.ref2_phone || null,
+        ref2_relationship: data.ref2_relationship || null,
+        
+        // Optional fields
+        id_number_or_passport: data.id_number_or_passport || null,
+        date_of_birth: data.date_of_birth || null,
+        has_work_permit: data.has_work_permit || false,
+        has_equipment: false, // Old column name (required)
+        
+        // File URLs (will be updated after file upload)
+        cv_url: '',
+        id_doc_url: '',
+        proof_of_address_url: '',
+        certificate_url: null,
+        
+        // Status
+        status: 'new',
+      };
+
+      console.log("Attempting to insert application with correct schema:", applicationData);
+
       const { data: application, error: insertError } = await supabase
         .from("cleaner_applications")
-        .insert([
-          {
-            first_name: data.first_name,
-            last_name: data.last_name,
-            email: data.email,
-            phone: data.phone,
-            id_number_or_passport: data.id_number_or_passport,
-            date_of_birth: data.date_of_birth,
-            has_work_permit: data.has_work_permit,
-            address_line1: data.address_line1,
-            address_line2: data.address_line2 || null,
-            suburb_city: data.suburb_city,
-            postal_code: data.postal_code,
-            has_own_transport: data.has_own_transport,
-            years_experience: data.years_experience,
-            skills: data.skills,
-            comfortable_with_pets: data.comfortable_with_pets,
-            languages: data.other_language && data.languages.includes("Other")
-              ? [...data.languages.filter(l => l !== "Other"), data.other_language]
-              : data.languages,
-            available_days: data.available_days,
-            start_time: data.start_time,
-            frequency: data.frequency,
-            earliest_start_date: data.earliest_start_date,
-            areas: data.other_area && data.areas.includes("Other")
-              ? [...data.areas.filter(a => a !== "Other"), data.other_area]
-              : data.areas,
-            ref1_name: data.ref1_name,
-            ref1_phone: data.ref1_phone,
-            ref1_relationship: data.ref1_relationship,
-            ref2_name: data.ref2_name || null,
-            ref2_phone: data.ref2_phone || null,
-            ref2_relationship: data.ref2_relationship || null,
-            cv_url: "",
-            id_doc_url: "",
-            proof_of_address_url: "",
-            certificate_url: null,
-            status: "new",
-          },
-        ])
+        .insert([applicationData])
         .select()
         .single();
 
       if (insertError || !application) {
         console.error("Application insert error:", insertError);
+        console.error("Insert data that failed:", applicationData);
         throw insertError || new Error("Failed to create application");
       }
 
       console.log("Application created, uploading files...", application.id);
 
-      // Upload files
-      const [cvUrl, idDocUrl, proofUrl, certUrl] = await Promise.all([
-        uploadFile(cvFile!, application.id, "cv"),
-        uploadFile(idDocFile!, application.id, "id_document"),
-        uploadFile(proofOfAddressFile!, application.id, "proof_of_address"),
-        certificateFile ? uploadFile(certificateFile, application.id, "certificate") : Promise.resolve(null),
-      ]);
+      // Upload files with error handling for missing bucket
+      let cvUrl = '';
+      let idDocUrl = '';
+      let proofUrl = '';
+      let certUrl = null;
 
-      // Update application with file URLs
+      try {
+        console.log("Attempting to upload files...");
+        
+        // Check if bucket exists first
+        const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+        const applicationsBucket = buckets?.find(bucket => bucket.id === 'applications');
+        
+        if (!applicationsBucket) {
+          console.warn("Applications bucket not found, skipping file uploads");
+          toast.warning("File uploads are temporarily unavailable. Your application has been submitted successfully.");
+        } else {
+          console.log("Applications bucket found, proceeding with file uploads");
+          
+          const uploadPromises = [
+            uploadFile(cvFile!, application.id, "cv"),
+            uploadFile(idDocFile!, application.id, "id_document"),
+            uploadFile(proofOfAddressFile!, application.id, "proof_of_address"),
+            certificateFile ? uploadFile(certificateFile, application.id, "certificate") : Promise.resolve(null),
+          ];
+          
+          [cvUrl, idDocUrl, proofUrl, certUrl] = await Promise.all(uploadPromises);
+        }
+      } catch (uploadError: any) {
+        console.error("File upload error:", uploadError);
+        if (uploadError.message?.includes('bucket not found') || uploadError.message?.includes('not found')) {
+          console.warn("Storage bucket not found, continuing without file uploads");
+          toast.warning("File uploads are temporarily unavailable. Your application has been submitted successfully.");
+        } else {
+          throw uploadError;
+        }
+      }
+
+      // Update application with file URLs (even if empty due to upload issues)
       const { error: updateError } = await supabase
         .from("cleaner_applications")
         .update({
@@ -433,8 +509,8 @@ export default function Apply() {
             </div>
             <p className="text-sm text-gray-500 dark:text-white/60 mt-8">
               Questions? Contact us at{" "}
-              <a href="mailto:bookings@shalean.co.za" className="text-[#0C53ED] hover:underline">
-                bookings@shalean.co.za
+              <a href="mailto:careers@shalean.com" className="text-[#0C53ED] hover:underline">
+                careers@shalean.com
               </a>
             </p>
           </div>
@@ -1133,8 +1209,8 @@ export default function Apply() {
                   <p className="text-gray-600 dark:text-white/70">
                     <strong>Email:</strong>
                     <br />
-                    <a href="mailto:bookings@shalean.co.za" className="text-[#0C53ED] hover:underline">
-                      bookings@shalean.co.za
+                    <a href="mailto:careers@shalean.com" className="text-[#0C53ED] hover:underline">
+                      careers@shalean.com
                     </a>
                   </p>
                   <p className="text-gray-600 dark:text-white/70">

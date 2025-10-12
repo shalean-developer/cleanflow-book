@@ -286,10 +286,10 @@ export default function Careers() {
           <p className="text-white/80 text-sm mt-6">
             Questions? Email us at{" "}
             <a
-              href="mailto:bookings@shalean.co.za"
+              href="mailto:careers@shalean.com"
               className="underline hover:text-white"
             >
-              bookings@shalean.co.za
+              careers@shalean.com
             </a>
           </p>
         </div>

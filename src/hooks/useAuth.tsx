@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     try {
-      // Fetch profile with role
+      // Fetch profile
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -41,11 +41,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (!profileError && profileData) {
         setProfile(profileData);
-        // Get role from profile, default to customer if not set
-        setUserRole((profileData.role as UserRole) || 'customer');
+      }
+
+      // Fetch user role from user_roles table
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .single();
+      
+      console.log('Role data:', roleData, 'Role error:', roleError);
+      
+      if (!roleError && roleData) {
+        console.log('Setting user role from user_roles table:', roleData.role);
+        setUserRole(roleData.role as UserRole);
       } else {
-        // Default to customer if no profile found
-        setUserRole('customer');
+        // Fallback: try to get role from profile table for backward compatibility
+        if (profileData?.role) {
+          console.log('Setting user role from profile table:', profileData.role);
+          setUserRole(profileData.role as UserRole);
+        } else {
+          // Default to customer if no role found
+          console.log('No role found, defaulting to customer');
+          setUserRole('customer');
+        }
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -57,24 +76,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        try {
+          setSession(session);
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            await fetchProfile(session.user.id);
+          } else {
+            setProfile(null);
+            setUserRole(null);
+          }
+        } catch (error) {
+          console.error('Error in auth state change:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    );
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      try {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
           await fetchProfile(session.user.id);
         } else {
           setProfile(null);
+          setUserRole(null);
         }
+      } catch (error) {
+        console.error('Error getting session:', error);
+      } finally {
         setLoading(false);
       }
-    );
-
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
