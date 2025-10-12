@@ -98,6 +98,120 @@ export type Database = {
           },
         ]
       }
+      cleaner_applications: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          areas: string[]
+          available_days: string[]
+          certificate_url: string | null
+          comfortable_with_pets: boolean
+          created_at: string
+          cv_url: string
+          date_of_birth: string
+          earliest_start_date: string
+          email: string
+          first_name: string
+          frequency: string
+          has_own_transport: boolean
+          has_work_permit: boolean
+          id: string
+          id_doc_url: string
+          id_number_or_passport: string
+          languages: string[]
+          last_name: string
+          phone: string
+          postal_code: string
+          proof_of_address_url: string
+          ref1_name: string
+          ref1_phone: string
+          ref1_relationship: string
+          ref2_name: string | null
+          ref2_phone: string | null
+          ref2_relationship: string | null
+          skills: string[]
+          start_time: string
+          status: string
+          suburb_city: string
+          updated_at: string
+          years_experience: number
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          areas?: string[]
+          available_days?: string[]
+          certificate_url?: string | null
+          comfortable_with_pets?: boolean
+          created_at?: string
+          cv_url?: string
+          date_of_birth: string
+          earliest_start_date: string
+          email: string
+          first_name: string
+          frequency: string
+          has_own_transport?: boolean
+          has_work_permit?: boolean
+          id?: string
+          id_doc_url?: string
+          id_number_or_passport: string
+          languages?: string[]
+          last_name: string
+          phone: string
+          postal_code: string
+          proof_of_address_url?: string
+          ref1_name: string
+          ref1_phone: string
+          ref1_relationship: string
+          ref2_name?: string | null
+          ref2_phone?: string | null
+          ref2_relationship?: string | null
+          skills?: string[]
+          start_time: string
+          status?: string
+          suburb_city: string
+          updated_at?: string
+          years_experience?: number
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          areas?: string[]
+          available_days?: string[]
+          certificate_url?: string | null
+          comfortable_with_pets?: boolean
+          created_at?: string
+          cv_url?: string
+          date_of_birth?: string
+          earliest_start_date?: string
+          email?: string
+          first_name?: string
+          frequency?: string
+          has_own_transport?: boolean
+          has_work_permit?: boolean
+          id?: string
+          id_doc_url?: string
+          id_number_or_passport?: string
+          languages?: string[]
+          last_name?: string
+          phone?: string
+          postal_code?: string
+          proof_of_address_url?: string
+          ref1_name?: string
+          ref1_phone?: string
+          ref1_relationship?: string
+          ref2_name?: string | null
+          ref2_phone?: string | null
+          ref2_relationship?: string | null
+          skills?: string[]
+          start_time?: string
+          status?: string
+          suburb_city?: string
+          updated_at?: string
+          years_experience?: number
+        }
+        Relationships: []
+      }
       cleaners: {
         Row: {
           availability: Json
