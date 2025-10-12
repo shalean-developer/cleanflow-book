@@ -49,53 +49,27 @@ export default function Confirmation() {
     queryFn: async () => {
       if (!reference) return null;
       
-      // First try to find the booking in database
+      // Find the booking in database
       const { data, error } = await supabase
         .from('bookings')
         .select('*, services(name), cleaners(name)')
         .eq('payment_reference', reference)
         .maybeSingle();
       
-      if (data) return data; // If found in database, return it
-      
-      // If not found in database (because we bypassed verification), 
-      // create a temporary booking object for display
-      if (!data && !error) {
-        console.log('Booking not found in database, creating temporary booking for display');
-        
-        // Create a booking object using data from the booking store
-        const mockBooking = {
-          id: 'temp-' + Date.now(),
-          reference: reference,
-          payment_reference: reference,
-          customer_email: user?.email || 'chitekedzaf@gmail.com',
-          status: 'confirmed',
-          created_at: new Date().toISOString(),
-          // Use actual booking data from store
-          services: { name: bookingData?.serviceName || 'Standard Cleaning' },
-          cleaners: { name: bookingData?.cleanerName || 'Normatter Mazhinji' },
-          bedrooms: bookingData?.bedrooms || 2,
-          bathrooms: bookingData?.bathrooms || 1,
-          extras: bookingData?.extras || [],
-          date: bookingData?.date || '2025-10-13',
-          time: bookingData?.time || '09:00',
-          location: bookingData?.location || '39 Havery Road, Claremont, Cape Town',
-          total_amount: bookingData?.pricing?.total || 299.20,
-          pricing: bookingData?.pricing || { 
-            total: 299.20,
-            service_price: 320.00,
-            frequency_discount: 48.00,
-            service_fee: 27.20
-          }
-        };
-        
-        return mockBooking;
+      if (error) {
+        console.error('Error fetching booking:', error);
+        throw error;
       }
       
-      if (error) throw error;
-      throw new Error('Booking not found');
+      if (!data) {
+        throw new Error('Booking not found. If you just completed payment, please wait a moment and refresh the page.');
+      }
+      
+      return data;
     },
     enabled: !!reference,
+    retry: 3, // Retry a few times in case booking is still being created
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000), // Exponential backoff
   });
 
   useEffect(() => {

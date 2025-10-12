@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,8 +32,10 @@ import {
   Home,
   Plus,
   AlertCircle,
-  Loader2
+  Loader2,
+  Sparkles
 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 
 const quoteSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(50),
@@ -50,20 +53,23 @@ const quoteSchema = z.object({
 
 type QuoteFormData = z.infer<typeof quoteSchema>;
 
-const EXTRAS = [
-  { id: 'inside-fridge', label: 'Inside Fridge', icon: Refrigerator },
-  { id: 'inside-oven', label: 'Inside Oven', icon: Flame },
-  { id: 'inside-cabinets', label: 'Inside Cabinets', icon: FileBox },
-  { id: 'interior-windows', label: 'Interior Windows', icon: AppWindow },
-  { id: 'interior-walls', label: 'Interior Walls', icon: Paintbrush },
-  { id: 'ironing', label: 'Ironing', icon: Shirt },
-  { id: 'laundry', label: 'Laundry', icon: WashingMachine },
-];
-
 export default function Quote() {
   const navigate = useNavigate();
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Fetch extras from database
+  const { data: extras = [] } = useQuery({
+    queryKey: ['extras'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('extras')
+        .select('*')
+        .eq('active', true)
+        .order('name');
+      return data || [];
+    },
+  });
 
   const {
     register,
@@ -86,6 +92,11 @@ export default function Quote() {
     setSelectedExtras((prev) =>
       prev.includes(extraId) ? prev.filter((id) => id !== extraId) : [...prev, extraId]
     );
+  };
+
+  const getIcon = (iconName: string) => {
+    const Icon = (LucideIcons as any)[iconName];
+    return Icon ? <Icon className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />;
   };
 
   const onSubmit = async (data: QuoteFormData) => {
@@ -380,8 +391,7 @@ export default function Quote() {
               <div className="flex-1 h-px bg-gray-100 ml-4"></div>
             </legend>
             <div className="flex flex-wrap gap-3">
-              {EXTRAS.map((extra) => {
-                const Icon = extra.icon;
+              {extras.map((extra) => {
                 const isSelected = selectedExtras.includes(extra.id);
                 return (
                   <button
@@ -397,8 +407,8 @@ export default function Quote() {
                       }
                     `}
                   >
-                    <Icon className="w-4 h-4" />
-                    {extra.label}
+                    {getIcon(extra.icon || 'Sparkles')}
+                    {extra.name}
                   </button>
                 );
               })}

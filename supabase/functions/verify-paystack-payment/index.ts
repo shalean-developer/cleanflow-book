@@ -99,6 +99,28 @@ serve(async (req) => {
 
     console.log('Booking created:', booking.id);
 
+    // Create payment record
+    const { data: paymentRecord, error: paymentError } = await supabase
+      .from('payments')
+      .insert({
+        booking_id: booking.id,
+        provider: 'paystack',
+        reference: reference,
+        status: 'success',
+        amount: paystackData.data.amount / 100, // Convert from kobo to currency
+        currency: paystackData.data.currency || 'ZAR',
+        paid_at: paystackData.data.paid_at || new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (paymentError) {
+      console.error('Payment record creation error:', paymentError);
+      // Don't fail the whole process if payment record creation fails
+    } else {
+      console.log('Payment record created:', paymentRecord.id);
+    }
+
     // Handle promo redemption if promo was used
     if (metadata.promo && metadata.promo.claimId) {
       const promoData = metadata.promo;

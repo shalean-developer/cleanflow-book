@@ -37,6 +37,10 @@ interface AdminApplicationsTableProps {
 export function AdminApplicationsTable({ applications, onUpdate }: AdminApplicationsTableProps) {
   const { toast } = useToast();
   const [selectedApplication, setSelectedApplication] = useState<Tables<'cleaner_applications'> | null>(null);
+  
+  // Debug logging
+  console.log('AdminApplicationsTable rendered with:', applications.length, 'applications');
+  console.log('Applications data:', applications);
 
   const updateApplicationStatus = async (applicationId: string, status: string) => {
     try {
@@ -238,33 +242,49 @@ export function AdminApplicationsTable({ applications, onUpdate }: AdminApplicat
                                   <div>
                                     <p className="text-sm font-medium text-gray-500 mb-2">Skills</p>
                                     <div className="flex flex-wrap gap-2">
-                                      {selectedApplication.skills.map((skill, index) => (
-                                        <Badge key={index} variant="secondary">{skill}</Badge>
-                                      ))}
+                                      {Array.isArray(selectedApplication.skills) ? (
+                                        selectedApplication.skills.map((skill, index) => (
+                                          <Badge key={index} variant="secondary">{skill}</Badge>
+                                        ))
+                                      ) : (
+                                        <p className="text-sm">No skills listed</p>
+                                      )}
                                     </div>
                                   </div>
                                   <div>
                                     <p className="text-sm font-medium text-gray-500 mb-2">Preferred Areas</p>
                                     <div className="flex flex-wrap gap-2">
-                                      {selectedApplication.areas.map((area, index) => (
-                                        <Badge key={index} variant="secondary">{area}</Badge>
-                                      ))}
+                                      {Array.isArray(selectedApplication.areas) ? (
+                                        selectedApplication.areas.map((area, index) => (
+                                          <Badge key={index} variant="secondary">{area}</Badge>
+                                        ))
+                                      ) : (
+                                        <p className="text-sm">No areas listed</p>
+                                      )}
                                     </div>
                                   </div>
                                   <div>
                                     <p className="text-sm font-medium text-gray-500 mb-2">Available Days</p>
                                     <div className="flex flex-wrap gap-2">
-                                      {selectedApplication.available_days.map((day, index) => (
-                                        <Badge key={index} variant="secondary">{day}</Badge>
-                                      ))}
+                                      {Array.isArray(selectedApplication.available_days) ? (
+                                        selectedApplication.available_days.map((day, index) => (
+                                          <Badge key={index} variant="secondary">{day}</Badge>
+                                        ))
+                                      ) : (
+                                        <p className="text-sm">No days listed</p>
+                                      )}
                                     </div>
                                   </div>
                                   <div>
                                     <p className="text-sm font-medium text-gray-500 mb-2">Languages</p>
                                     <div className="flex flex-wrap gap-2">
-                                      {selectedApplication.languages.map((lang, index) => (
-                                        <Badge key={index} variant="secondary">{lang}</Badge>
-                                      ))}
+                                      {Array.isArray(selectedApplication.languages) ? (
+                                        selectedApplication.languages.map((lang, index) => (
+                                          <Badge key={index} variant="secondary">{lang}</Badge>
+                                        ))
+                                      ) : (
+                                        <p className="text-sm">No languages listed</p>
+                                      )}
                                     </div>
                                   </div>
                                 </div>

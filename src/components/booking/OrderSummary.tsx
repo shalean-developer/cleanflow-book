@@ -64,7 +64,7 @@ interface OrderSummaryProps {
 export function OrderSummary({ service, extras, cleaner, booking, pricing }: OrderSummaryProps) {
   const navigate = useNavigate();
 
-  const extrasTotal = extras?.reduce((sum, extra) => sum + Number(extra.price), 0) || 0;
+  const extrasTotal = extras?.reduce((sum, extra) => sum + Number(extra.base_price || 0), 0) || 0;
 
   return (
     <Card className="bg-white rounded-2xl border border-gray-100 shadow-lg p-6 sticky top-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-300 delay-80 hover:shadow-xl transition-shadow duration-300">
@@ -103,7 +103,7 @@ export function OrderSummary({ service, extras, cleaner, booking, pricing }: Ord
                 {extras.map((extra) => (
                   <div key={extra.id} className="flex justify-between items-center text-sm">
                     <span className="text-[#475569]">+ {extra.name}</span>
-                    <span className="font-medium text-[#0F172A]">{formatCurrencyZAR(Number(extra.price))}</span>
+                    <span className="font-medium text-[#0F172A]">{formatCurrencyZAR(Number(extra.base_price || 0))}</span>
                   </div>
                 ))}
               </div>

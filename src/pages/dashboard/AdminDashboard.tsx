@@ -5,12 +5,13 @@ import { Tables } from "@/integrations/supabase/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Calendar, Users, Briefcase, ClipboardList, LogOut, TrendingUp } from "lucide-react";
+import { Calendar, Users, Briefcase, ClipboardList, LogOut, TrendingUp, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { AdminBookingsTable } from "@/components/dashboard/admin/AdminBookingsTable";
 import { AdminCleanersTable } from "@/components/dashboard/admin/AdminCleanersTable";
 import { AdminApplicationsTable } from "@/components/dashboard/admin/AdminApplicationsTable";
+import { AdminPricingManager } from "@/components/dashboard/admin/AdminPricingManager";
 
 type Booking = Tables<'bookings'> & {
   services: Tables<'services'> | null;
@@ -28,6 +29,7 @@ export default function AdminDashboard() {
     pendingBookings: 0,
     activeCleaners: 0,
     pendingApplications: 0,
+    totalApplications: 0,
     revenue: 0,
   });
   const navigate = useNavigate();
@@ -105,7 +107,8 @@ export default function AdminDashboard() {
         totalBookings: bookingsData?.length || 0,
         pendingBookings: bookingsData?.filter(b => b.status === 'pending').length || 0,
         activeCleaners: cleanersData?.length || 0,
-        pendingApplications: applicationsData?.filter(a => a.status === 'pending').length || 0,
+        pendingApplications: applicationsData?.filter(a => a.status === 'pending' || a.status === 'new').length || 0,
+        totalApplications: applicationsData?.length || 0,
         revenue: totalRevenue,
       });
     } catch (error) {
@@ -194,7 +197,8 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Applications</p>
-                  <p className="text-3xl font-bold text-purple-600">{stats.pendingApplications}</p>
+                  <p className="text-3xl font-bold text-purple-600">{stats.totalApplications}</p>
+                  <p className="text-xs text-gray-500">{stats.pendingApplications} pending</p>
                 </div>
                 <Briefcase className="h-12 w-12 text-purple-600 opacity-20" />
               </div>
@@ -220,6 +224,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             <TabsTrigger value="cleaners">Cleaners</TabsTrigger>
             <TabsTrigger value="applications">Applications</TabsTrigger>
+            <TabsTrigger value="pricing">Pricing</TabsTrigger>
           </TabsList>
 
           {/* Bookings Tab */}
@@ -252,13 +257,29 @@ export default function AdminDashboard() {
           <TabsContent value="applications">
             <Card>
               <CardHeader>
-                <CardTitle>Cleaner Applications</CardTitle>
+                <CardTitle>Cleaner Applications ({applications.length})</CardTitle>
                 <CardDescription>Review and process new cleaner applications</CardDescription>
               </CardHeader>
               <CardContent>
-                <AdminApplicationsTable applications={applications} onUpdate={fetchAllData} />
+                <div className="mb-4 p-4 bg-blue-50 rounded">
+                  <p><strong>Debug Info:</strong></p>
+                  <p>Applications in state: {applications.length}</p>
+                  <p>First application: {applications[0] ? `${applications[0].first_name} ${applications[0].last_name}` : 'N/A'}</p>
+                </div>
+                {applications.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No applications found
+                  </div>
+                ) : (
+                  <AdminApplicationsTable applications={applications} onUpdate={fetchAllData} />
+                )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Pricing Tab */}
+          <TabsContent value="pricing">
+            <AdminPricingManager />
           </TabsContent>
         </Tabs>
       </div>
