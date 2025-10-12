@@ -164,7 +164,7 @@ export default function Reviews() {
                         {review.name}
                       </h3>
                       {review.verified && (
-                        <CheckCircle2 className="w-5 h-5 text-[#0C53ED]" title="Verified Customer" />
+                        <CheckCircle2 className="w-5 h-5 text-[#0C53ED]" aria-label="Verified Customer" />
                       )}
                     </div>
                     <p className="text-sm text-gray-500 dark:text-white/60">
