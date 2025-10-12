@@ -361,26 +361,35 @@ export type Database = {
       services: {
         Row: {
           base_price: number
+          bathroom_price: number
+          bedroom_price: number
           created_at: string | null
           description: string | null
           id: string
           name: string
+          service_fee_rate: number
           slug: string
         }
         Insert: {
           base_price: number
+          bathroom_price?: number
+          bedroom_price?: number
           created_at?: string | null
           description?: string | null
           id?: string
           name: string
+          service_fee_rate?: number
           slug: string
         }
         Update: {
           base_price?: number
+          bathroom_price?: number
+          bedroom_price?: number
           created_at?: string | null
           description?: string | null
           id?: string
           name?: string
+          service_fee_rate?: number
           slug?: string
         }
         Relationships: []

@@ -73,6 +73,9 @@ export default function Review() {
   const pricing = service
     ? calculatePricing({
         basePrice: Number(service.base_price),
+        bedroomPrice: Number(service.bedroom_price),
+        bathroomPrice: Number(service.bathroom_price),
+        serviceFeeRate: Number(service.service_fee_rate),
         bedrooms: booking.bedrooms,
         bathrooms: booking.bathrooms,
         extrasTotal,

@@ -8,6 +8,9 @@ export interface PricingResult {
 
 interface PricingInput {
   basePrice: number;
+  bedroomPrice: number;
+  bathroomPrice: number;
+  serviceFeeRate: number;
   bedrooms: number;
   bathrooms: number;
   extrasTotal: number;
@@ -18,10 +21,6 @@ interface PricingInput {
   };
 }
 
-const BEDROOM_MULTIPLIER = 50;
-const BATHROOM_MULTIPLIER = 40;
-const SERVICE_FEE_RATE = 0.1; // 10%
-
 const FREQUENCY_DISCOUNTS: Record<string, number> = {
   'one-time': 0,
   'weekly': 0.15,
@@ -31,15 +30,18 @@ const FREQUENCY_DISCOUNTS: Record<string, number> = {
 
 export function calculatePricing({
   basePrice,
+  bedroomPrice,
+  bathroomPrice,
+  serviceFeeRate,
   bedrooms,
   bathrooms,
   extrasTotal,
   frequency,
   promo,
 }: PricingInput): PricingResult {
-  // Calculate room costs
-  const bedroomsCost = bedrooms * BEDROOM_MULTIPLIER;
-  const bathroomsCost = bathrooms * BATHROOM_MULTIPLIER;
+  // Calculate room costs using database values
+  const bedroomsCost = bedrooms * bedroomPrice;
+  const bathroomsCost = bathrooms * bathroomPrice;
   
   // Calculate subtotal
   const subtotal = basePrice + bedroomsCost + bathroomsCost + extrasTotal;
@@ -64,8 +66,8 @@ export function calculatePricing({
   // Calculate final amount after both discounts
   const afterAllDiscounts = afterFrequencyDiscount - promoDiscount;
   
-  // Calculate service fee on final discounted amount
-  const fees = afterAllDiscounts * SERVICE_FEE_RATE;
+  // Calculate service fee on final discounted amount (using database rate)
+  const fees = afterAllDiscounts * serviceFeeRate;
   
   // Calculate total
   const total = afterAllDiscounts + fees;
