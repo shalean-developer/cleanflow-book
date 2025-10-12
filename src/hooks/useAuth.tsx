@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     try {
-      // Fetch profile
+      // Fetch profile with role
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
@@ -41,23 +41,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (!profileError && profileData) {
         setProfile(profileData);
-      }
-
-      // Fetch user role from user_roles table
-      const { data: roleData, error: roleError } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .single();
-      
-      if (!roleError && roleData) {
-        setUserRole(roleData.role as UserRole);
+        // Get role from profile, default to customer if not set
+        setUserRole((profileData.role as UserRole) || 'customer');
       } else {
-        // Default to customer if no role found
+        // Default to customer if no profile found
         setUserRole('customer');
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
+      // Default to customer on error
+      setUserRole('customer');
     }
   };
 
