@@ -222,6 +222,8 @@ export default function Apply() {
   };
 
   const onSubmit = async (data: ApplicationFormData) => {
+    console.log("Form submission started", { hasFiles: { cv: !!cvFile, id: !!idDocFile, proof: !!proofOfAddressFile } });
+    
     // Check honeypot
     if (data.bot_trap) {
       toast.error("Invalid submission detected");
@@ -248,19 +250,30 @@ export default function Apply() {
       ];
 
       for (const { file, name } of files) {
-        if (!file) throw new Error(`${name} is required`);
+        if (!file) {
+          const errorMsg = `${name} is required`;
+          toast.error(errorMsg);
+          throw new Error(errorMsg);
+        }
         if (file.size > 5 * 1024 * 1024) {
-          throw new Error(`${name} must be less than 5MB`);
+          const errorMsg = `${name} must be less than 5MB`;
+          toast.error(errorMsg);
+          throw new Error(errorMsg);
         }
         const allowedTypes = ["application/pdf", "image/jpeg", "image/jpg", "image/png"];
         if (!allowedTypes.includes(file.type)) {
-          throw new Error(`${name} must be PDF, JPG, or PNG`);
+          const errorMsg = `${name} must be PDF, JPG, or PNG`;
+          toast.error(errorMsg);
+          throw new Error(errorMsg);
         }
       }
 
       if (certificateFile && certificateFile.size > 5 * 1024 * 1024) {
+        toast.error("Certificate must be less than 5MB");
         throw new Error("Certificate must be less than 5MB");
       }
+
+      console.log("File validation passed, creating application...");
 
       // Create initial application record
       const { data: application, error: insertError } = await supabase
@@ -308,7 +321,12 @@ export default function Apply() {
         .select()
         .single();
 
-      if (insertError || !application) throw insertError || new Error("Failed to create application");
+      if (insertError || !application) {
+        console.error("Application insert error:", insertError);
+        throw insertError || new Error("Failed to create application");
+      }
+
+      console.log("Application created, uploading files...", application.id);
 
       // Upload files
       const [cvUrl, idDocUrl, proofUrl, certUrl] = await Promise.all([
@@ -329,7 +347,12 @@ export default function Apply() {
         })
         .eq("id", application.id);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error("Application update error:", updateError);
+        throw updateError;
+      }
+
+      console.log("Files uploaded successfully, sending confirmation email...");
 
       // Send notification emails
       try {
@@ -341,12 +364,18 @@ export default function Apply() {
         // Don't fail the entire submission if email fails
       }
 
+      console.log("Application submitted successfully!");
       setApplicationId(application.id);
       setIsSuccess(true);
       toast.success("Application submitted successfully!");
+      
+      // Scroll to top to show success message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error: any) {
-      console.error("Application error:", error);
+      console.error("Application submission error:", error);
       toast.error(error.message || "Failed to submit application. Please try again.");
+      // Scroll to top to show error
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsSubmitting(false);
     }
@@ -431,7 +460,20 @@ export default function Apply() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Form */}
           <div className="flex-1">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form 
+              onSubmit={handleSubmit(
+                onSubmit,
+                (errors) => {
+                  console.log("Form validation errors:", errors);
+                  const firstError = Object.keys(errors)[0];
+                  toast.error(`Please fix the errors in the form: ${errors[firstError]?.message || 'Invalid form data'}`);
+                  // Scroll to first error
+                  const firstErrorElement = document.querySelector(`[name="${firstError}"]`);
+                  firstErrorElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              )} 
+              className="space-y-6"
+            >
               {/* Honeypot field */}
               <input
                 type="text"
