@@ -141,7 +141,6 @@ export default function Review() {
               if (verifyError) throw verifyError;
 
               if (verifyData.success) {
-                reset();
                 navigate(`/booking/confirmation?reference=${response.reference}`);
               } else {
                 throw new Error('Payment verification failed');

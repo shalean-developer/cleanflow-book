@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useBookingStore } from '@/store/bookingStore';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -30,8 +31,6 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { formatCurrencyZAR } from '@/utils/pricing';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Confirmation() {
@@ -39,6 +38,7 @@ export default function Confirmation() {
   const [searchParams] = useSearchParams();
   const reference = searchParams.get('reference');
   const { toast } = useToast();
+  const { reset } = useBookingStore();
 
   const { data: booking, isLoading, isError, error } = useQuery({
     queryKey: ['booking', reference],
@@ -57,11 +57,29 @@ export default function Confirmation() {
     enabled: !!reference,
   });
 
+  // Fetch extras details to display proper names
+  const { data: extras } = useQuery({
+    queryKey: ['extras', booking?.extras],
+    queryFn: async () => {
+      if (!booking?.extras?.length) return [];
+      const { data } = await supabase.from('extras').select('*').in('id', booking.extras);
+      return data || [];
+    },
+    enabled: !!booking?.extras?.length,
+  });
+
   useEffect(() => {
     if (!reference) {
       navigate('/');
     }
   }, [reference, navigate]);
+
+  // Clean up booking store when user leaves confirmation page
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, [reset]);
 
   const pricing = booking?.pricing as any;
 
@@ -175,15 +193,11 @@ export default function Confirmation() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin text-[#0C53ED] mx-auto mb-4" />
-            <p className="text-[#475569]">Loading your booking details...</p>
-          </div>
-        </main>
-        <Footer />
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#0C53ED] mx-auto mb-4" />
+          <p className="text-[#475569]">Loading your booking details...</p>
+        </div>
       </div>
     );
   }
@@ -191,45 +205,40 @@ export default function Confirmation() {
   // Error state
   if (isError || !booking) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center px-4">
-          <Card className="max-w-md w-full p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
-              <AlertCircle className="w-8 h-8 text-red-600" />
-            </div>
-            <h1 className="text-2xl font-bold text-[#0F172A] mb-3">
-              Booking Not Found
-            </h1>
-            <p className="text-[#475569] mb-6">
-              {error?.message || 'We couldn\'t find the booking you\'re looking for. Please check your confirmation email or contact support.'}
-            </p>
-            <div className="space-y-2">
-              <Button
-                onClick={() => navigate('/')}
-                className="w-full bg-[#0C53ED] hover:bg-[#0C53ED]/90"
-              >
-                Go to Home
-              </Button>
-              <Button
-                onClick={() => navigate('/contact')}
-                variant="outline"
-                className="w-full"
-              >
-                Contact Support
-              </Button>
-            </div>
-          </Card>
-        </main>
-        <Footer />
+      <div className="flex items-center justify-center px-4 py-20">
+        <Card className="max-w-md w-full p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+            <AlertCircle className="w-8 h-8 text-red-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-[#0F172A] mb-3">
+            Booking Not Found
+          </h1>
+          <p className="text-[#475569] mb-6">
+            {error?.message || 'We couldn\'t find the booking you\'re looking for. Please check your confirmation email or contact support.'}
+          </p>
+          <div className="space-y-2">
+            <Button
+              onClick={() => navigate('/')}
+              className="w-full bg-[#0C53ED] hover:bg-[#0C53ED]/90"
+            >
+              Go to Home
+            </Button>
+            <Button
+              onClick={() => navigate('/contact')}
+              variant="outline"
+              className="w-full"
+            >
+              Contact Support
+            </Button>
+          </div>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
-      <Header />
-      <main className="flex-1 max-w-5xl mx-auto px-4 md:px-6 py-10 space-y-6 w-full" role="main">
+    <div className="bg-[#F8FAFC]">
+      <main className="max-w-5xl mx-auto px-4 md:px-6 py-10 space-y-6 w-full" role="main">
         {/* Success Hero Card */}
         <Card className="bg-white rounded-2xl border-gray-100 shadow-md p-6 md:p-8 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div 
@@ -446,13 +455,15 @@ export default function Confirmation() {
                   </span>
                 </div>
 
-                {booking.extras && booking.extras.length > 0 && (
+                {extras && extras.length > 0 && (
                   <div className="space-y-2">
                     <div className="text-sm font-medium text-[#0F172A]">Extras</div>
-                    {booking.extras.map((extra: string, idx: number) => (
-                      <div key={idx} className="flex justify-between text-sm pl-3">
-                        <span className="text-[#475569]">{extra}</span>
-                        <span className="text-[#475569] tabular-nums">—</span>
+                    {extras.map((extra) => (
+                      <div key={extra.id} className="flex justify-between text-sm pl-3">
+                        <span className="text-[#475569]">{extra.name}</span>
+                        <span className="font-semibold text-[#0F172A] tabular-nums">
+                          {formatCurrencyZAR(Number(extra.price))}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -574,8 +585,7 @@ export default function Confirmation() {
             </div>
           </div>
         </Card>
-      </main>
-      <Footer />
+        </main>
     </div>
   );
 }
