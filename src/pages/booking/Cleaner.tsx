@@ -52,11 +52,11 @@ export default function Cleaner() {
         sa.toLowerCase() === 'any'
       );
 
+      // Check if cleaner is available on this day (available for all time slots 07:00-13:00)
       const availability = cleaner.availability as Record<string, string[]>;
-      const daySlots = availability[dayName] || [];
-      const isAvailable = daySlots.includes(booking.time || '');
+      const isAvailableOnDay = availability[dayName] && availability[dayName].length > 0;
 
-      return matchesArea && isAvailable;
+      return matchesArea && isAvailableOnDay;
     });
   }, [cleaners, booking.date, booking.time, booking.location]);
 
