@@ -221,6 +221,7 @@ export type Database = {
           name: string
           rating: number | null
           service_areas: string[]
+          user_id: string | null
         }
         Insert: {
           availability: Json
@@ -230,6 +231,7 @@ export type Database = {
           name: string
           rating?: number | null
           service_areas: string[]
+          user_id?: string | null
         }
         Update: {
           availability?: Json
@@ -239,6 +241,7 @@ export type Database = {
           name?: string
           rating?: number | null
           service_areas?: string[]
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -263,6 +266,33 @@ export type Database = {
           id?: string
           name?: string
           price?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          id: string
+          full_name: string | null
+          phone: string | null
+          role: string
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id: string
+          full_name?: string | null
+          phone?: string | null
+          role?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          full_name?: string | null
+          phone?: string | null
+          role?: string
+          created_at?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }

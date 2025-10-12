@@ -8,12 +8,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
-export function AuthModal() {
+interface AuthModalProps {
+  initialTab?: 'signin' | 'signup' | 'magic';
+}
+
+export function AuthModal({ initialTab = 'signin' }: AuthModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup' | 'magic'>('signin');
+  const [activeTab, setActiveTab] = useState<'signin' | 'signup' | 'magic'>(initialTab);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});

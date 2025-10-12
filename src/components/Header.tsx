@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Sparkles, BadgeDollarSign, ShieldCheck, ArrowUpRight, Menu } from 'lucide-react';
+import { Home, Sparkles, BadgeDollarSign, ShieldCheck, ArrowUpRight, Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
+import { LoginDropdown } from '@/components/LoginDropdown';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type NavItem = {
   to: string;
@@ -32,6 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
   logo,
 }) => {
   const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -163,20 +174,47 @@ export const Header: React.FC<HeaderProps> = ({
             <MobileNav />
 
             {/* Desktop CTA */}
-            <div className="hidden md:flex items-center gap-1">
-              <Button
-                onClick={handleCtaClick}
-                className="bg-primary text-primary-foreground font-medium hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-full px-4 py-2"
-              >
-                {ctaText}
-              </Button>
-              <Button
-                size="sm"
-                className="bg-black text-white hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-600 focus-visible:ring-offset-2 rounded-full w-8 h-8 p-0 ml-1"
-                aria-label="Arrow action"
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </Button>
+            <div className="hidden md:flex items-center gap-2">
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="rounded-full">
+                      <User className="mr-2 h-4 w-4" />
+                      {profile?.full_name || 'Account'}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => {
+                      if (profile?.role === 'admin') {
+                        navigate('/dashboard/admin');
+                      } else if (profile?.role === 'cleaner') {
+                        navigate('/dashboard/cleaner');
+                      } else {
+                        navigate('/dashboard');
+                      }
+                    }}>
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => signOut()}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button
+                    onClick={handleCtaClick}
+                    className="bg-primary text-primary-foreground font-medium hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-full px-4 py-2"
+                  >
+                    {ctaText}
+                  </Button>
+                  <LoginDropdown />
+                </>
+              )}
             </div>
           </div>
         </div>

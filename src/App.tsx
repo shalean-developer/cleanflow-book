@@ -36,6 +36,9 @@ import DeepCleaning from "./pages/services/DeepCleaning";
 import MoveInOut from "./pages/services/MoveInOut";
 import SpecializedServices from "./pages/services/SpecializedServices";
 import AirbnbCleaning from "./pages/services/AirbnbCleaning";
+import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import CleanerDashboard from "./pages/dashboard/CleanerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +81,9 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/cookies" element={<Cookies />} />
               <Route path="/popia" element={<POPIA />} />
+              <Route path="/dashboard" element={<CustomerDashboard />} />
+              <Route path="/dashboard/admin" element={<AdminDashboard />} />
+              <Route path="/dashboard/cleaner" element={<CleanerDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </SiteLayout>
