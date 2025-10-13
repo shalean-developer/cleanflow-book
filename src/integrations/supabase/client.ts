@@ -8,9 +8,50 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
+// Custom storage wrapper to handle corrupted data
+const createSafeStorage = () => {
+  return {
+    getItem: (key: string) => {
+      try {
+        return localStorage.getItem(key);
+      } catch (error) {
+        console.warn(`Failed to get item ${key} from localStorage:`, error);
+        return null;
+      }
+    },
+    setItem: (key: string, value: string) => {
+      try {
+        localStorage.setItem(key, value);
+      } catch (error) {
+        console.warn(`Failed to set item ${key} in localStorage:`, error);
+        // If storage is full or corrupted, clear Supabase auth data and retry
+        if (key.startsWith('sb-')) {
+          try {
+            Object.keys(localStorage).forEach(storageKey => {
+              if (storageKey.startsWith('sb-')) {
+                localStorage.removeItem(storageKey);
+              }
+            });
+            localStorage.setItem(key, value);
+          } catch (retryError) {
+            console.error('Failed to set item after cleanup:', retryError);
+          }
+        }
+      }
+    },
+    removeItem: (key: string) => {
+      try {
+        localStorage.removeItem(key);
+      } catch (error) {
+        console.warn(`Failed to remove item ${key} from localStorage:`, error);
+      }
+    }
+  };
+};
+
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: localStorage,
+    storage: createSafeStorage(),
     persistSession: true,
     autoRefreshToken: true,
   }

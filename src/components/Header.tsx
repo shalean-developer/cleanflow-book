@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Wrench, MapPin, Settings, ArrowUpRight, Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Home, Wrench, MapPin, Settings, ArrowUpRight, Menu, User, LogOut, LayoutDashboard, Cog } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -122,6 +122,24 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>{item.label}</span>
               </NavLink>
             ))}
+            
+            {user && (
+              <NavLink
+                to="/settings"
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+                    isActive
+                      ? 'bg-primary text-white'
+                      : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                  )
+                }
+              >
+                <Cog className="w-5 h-5" />
+                <span>Settings</span>
+              </NavLink>
+            )}
           </nav>
 
           <div className="mt-auto pt-6 border-t">
@@ -198,6 +216,11 @@ export const Header: React.FC<HeaderProps> = ({
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       Dashboard
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/settings')}>
+                      <Cog className="mr-2 h-4 w-4" />
+                      Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => signOut()}>
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign Out

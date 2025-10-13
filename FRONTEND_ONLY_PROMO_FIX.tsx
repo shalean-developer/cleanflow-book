@@ -1,3 +1,6 @@
+// Alternative solution: Bypass Edge Function entirely
+// Replace the handleClaim function in NewCustomerPromoModal.tsx with this
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -8,7 +11,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Sparkles } from 'lucide-react';
 import { AuthModal } from '@/components/booking/AuthModal';
-import { claimPromoDirect } from '@/utils/promoUtils';
 
 const PROMO_CONFIG = {
   code: 'NEW20SC',
@@ -43,7 +45,6 @@ export function NewCustomerPromoModal() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session);
       if (session && showAuthModal) {
-        // User just logged in, close auth modal and claim promo
         setShowAuthModal(false);
         handleClaim();
       }
@@ -53,14 +54,11 @@ export function NewCustomerPromoModal() {
   }, [showAuthModal]);
 
   useEffect(() => {
-    // Check if we should show the modal
     const shouldShow = () => {
-      // Check session storage
       if (sessionStorage.getItem('promo_seen_standard20') === 'true') {
         return false;
       }
 
-      // Check if on eligible route
       const isEligibleRoute = ELIGIBLE_ROUTES.some(route => {
         if (route === '/') return location.pathname === '/';
         return location.pathname.startsWith(route);
@@ -74,7 +72,6 @@ export function NewCustomerPromoModal() {
     };
 
     if (shouldShow()) {
-      // Delay 2 seconds
       const timer = setTimeout(() => {
         setIsOpen(true);
       }, 2000);
@@ -93,16 +90,13 @@ export function NewCustomerPromoModal() {
   };
 
   const handleClaimClick = async () => {
-    // Check if user is authenticated
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
-      // Show auth modal
       setShowAuthModal(true);
       return;
     }
 
-    // User is authenticated, proceed with claim
     await handleClaim();
   };
 
@@ -121,21 +115,35 @@ export function NewCustomerPromoModal() {
       if (!user) {
         throw new Error("Authentication required to claim promo");
       }
-      
-      // Claim promo directly via database (bypassing Edge Function CORS issues)
-      const result = await claimPromoDirect({
+
+      console.log('🚀 Claiming promo directly:', {
         code: PROMO_CONFIG.code,
-        serviceSlug: PROMO_CONFIG.appliesTo,
-        sessionId,
-        email: user.email,
-        expiresAt: expiresAt.toISOString(),
+        userId: user.id,
+        sessionId
       });
 
-      if (!result.success) {
-        throw new Error(result.message || 'Failed to claim promo');
+      // Create promo claim directly in database (bypass Edge Function)
+      const { data: newClaim, error } = await supabase
+        .from('promo_claims')
+        .insert({
+          code: PROMO_CONFIG.code,
+          user_id: user.id,
+          email: user.email,
+          service_slug: PROMO_CONFIG.appliesTo,
+          applies_to: PROMO_CONFIG.appliesTo,
+          session_id: sessionId,
+          expires_at: expiresAt.toISOString(),
+          status: 'claimed',
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('❌ Direct promo claim error:', error);
+        throw error;
       }
 
-      const data = { claim: result.claim };
+      console.log('✅ Promo claimed successfully:', newClaim);
 
       // Apply promo to booking state
       setPromo({
@@ -144,7 +152,7 @@ export function NewCustomerPromoModal() {
         value: PROMO_CONFIG.value,
         appliesTo: PROMO_CONFIG.appliesTo,
         expiresAt: expiresAt.toISOString(),
-        claimId: data.claim.id,
+        claimId: newClaim.id,
       });
 
       // Get standard-cleaning service
@@ -173,10 +181,10 @@ export function NewCustomerPromoModal() {
       // Navigate to details
       navigate('/booking/details');
     } catch (error: any) {
-      console.error('Error claiming promo:', error);
+      console.error('❌ Error claiming promo:', error);
       toast({
         title: 'Error',
-        description: 'Failed to apply promo. Please try again.',
+        description: `Failed to apply promo: ${error.message}`,
         variant: 'destructive',
       });
     } finally {

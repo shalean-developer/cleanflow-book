@@ -42,6 +42,7 @@ import ManageBooking from "./pages/ManageBooking";
 import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import CleanerDashboard from "./pages/dashboard/CleanerDashboard";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => (
               <Route path="/dashboard" element={<CustomerDashboard />} />
               <Route path="/dashboard/admin" element={<AdminDashboard />} />
               <Route path="/dashboard/cleaner" element={<CleanerDashboard />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="/manage-booking" element={<ManageBooking />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -52,10 +52,16 @@ interface OrderSummaryProps {
     frequency: string;
     cleanerId?: string;
     specialInstructions?: string;
+    promo?: {
+      code: string;
+      type: 'percent' | 'fixed';
+      value: number;
+    };
   };
   pricing?: {
     subtotal: number;
     discount: number;
+    promoDiscount: number;
     fees: number;
     total: number;
   } | null;
@@ -170,6 +176,13 @@ export function OrderSummary({ service, extras, cleaner, booking, pricing }: Ord
                 <div className="flex justify-between text-sm text-green-600">
                   <span>Discount ({booking.frequency})</span>
                   <span className="font-medium tabular-nums">-{formatCurrencyZAR(pricing.discount)}</span>
+                </div>
+              )}
+              
+              {pricing.promoDiscount > 0 && (
+                <div className="flex justify-between text-sm text-green-600">
+                  <span>Promo Discount {booking.promo && `(${booking.promo.code})`}</span>
+                  <span className="font-medium tabular-nums">-{formatCurrencyZAR(pricing.promoDiscount)}</span>
                 </div>
               )}
               
