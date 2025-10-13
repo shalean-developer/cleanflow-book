@@ -13,6 +13,8 @@ import {
   Award
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '@/components/SEO';
+import { ServiceStructuredData } from '@/components/StructuredData';
 import serviceStandardImage from '@/assets/service-standard-cleaning.jpg';
 
 const StandardCleaning = () => {
@@ -136,6 +138,18 @@ const StandardCleaning = () => {
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <SEO 
+        title="Standard Cleaning Service Cape Town - Professional Home Cleaning"
+        description="Regular home cleaning service in Cape Town. Dusting, vacuuming, mopping, kitchen & bathroom cleaning. Maintain a clean home with our experienced cleaners. From R350 per session."
+        keywords="standard cleaning Cape Town, regular home cleaning, weekly cleaning service, house cleaning, professional cleaners, domestic cleaning"
+        canonical="https://shalean.co.za/services/standard-cleaning"
+      />
+      <ServiceStructuredData 
+        name="Standard Cleaning Service"
+        description="Regular home cleaning including dusting, vacuuming, mopping, kitchen and bathroom cleaning"
+        price="350"
+        url="https://shalean.co.za/services/standard-cleaning"
+      />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-[#0C53ED]/5 via-white to-[#2A869E]/5">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -202,8 +216,9 @@ const StandardCleaning = () => {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={serviceStandardImage}
-                  alt="Standard Cleaning Service"
+                  alt="Professional standard cleaning service - clean and organized living room in Cape Town home"
                   className="w-full h-[500px] object-cover"
+                  loading="lazy"
                 />
               </div>
               {/* Floating Badge */}

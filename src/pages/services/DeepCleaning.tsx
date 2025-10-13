@@ -13,6 +13,8 @@ import {
   Award
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '@/components/SEO';
+import { ServiceStructuredData } from '@/components/StructuredData';
 import serviceDeepImage from '@/assets/service-deep-cleaning.jpg';
 
 const DeepCleaning = () => {
@@ -135,6 +137,17 @@ const DeepCleaning = () => {
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <SEO 
+        title="Deep Cleaning Service Cape Town - Thorough Home Cleaning"
+        description="Professional deep cleaning service in Cape Town. Behind furniture, inside cabinets, oven cleaning, refrigerator cleaning, baseboards, and more. Perfect for spring cleaning or special occasions."
+        keywords="deep cleaning Cape Town, thorough cleaning, spring cleaning, oven cleaning, cabinet cleaning, intensive cleaning, detailed home cleaning"
+        canonical="https://shalean.co.za/services/deep-cleaning"
+      />
+      <ServiceStructuredData 
+        name="Deep Cleaning Service"
+        description="Comprehensive deep cleaning including all standard cleaning plus behind furniture, inside cabinets, oven and refrigerator cleaning"
+        url="https://shalean.co.za/services/deep-cleaning"
+      />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-[#0C53ED]/5 via-white to-[#2A869E]/5">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -201,8 +214,9 @@ const DeepCleaning = () => {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={serviceDeepImage}
-                  alt="Deep Cleaning Service"
+                  alt="Professional deep cleaning service - thorough cleaning behind furniture and appliances in Cape Town"
                   className="w-full h-[500px] object-cover"
+                  loading="lazy"
                 />
               </div>
               {/* Floating Badge */}

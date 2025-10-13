@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 import {
   Users,
   TrendingUp,
@@ -79,6 +80,12 @@ export default function Careers() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#EAF2FF] to-white dark:from-[#0B1220] dark:to-[#0B1220]">
+      <SEO 
+        title="Careers - Join Our Cleaning Team in Cape Town"
+        description="Join the Shalean Cleaning team in Cape Town. Flexible hours, competitive pay, professional training, and supportive work environment. Apply now for cleaner positions."
+        keywords="cleaning jobs Cape Town, cleaner jobs, domestic worker jobs, flexible work Cape Town, cleaning employment, join cleaning team"
+        canonical="https://shalean.co.za/careers"
+      />
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#0C53ED]/10 to-[#2A869E]/10 dark:from-[#0C53ED]/5 dark:to-[#2A869E]/5"></div>

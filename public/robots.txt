@@ -1,14 +1,30 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+# Robots.txt for Shalean Cleaning Services
+# https://shalean.co.za
 
 User-agent: *
 Allow: /
+
+# Disallow admin and dashboard pages
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /manage-booking/
+
+# Disallow booking flow pages (no value for SEO)
+Disallow: /booking/service/select
+Disallow: /booking/details
+Disallow: /booking/schedule
+Disallow: /booking/cleaner
+Disallow: /booking/review
+Disallow: /booking/confirmation
+
+# Allow service pages
+Allow: /booking/service/standard-cleaning
+Allow: /booking/service/deep-cleaning
+Allow: /booking/service/move-in-out
+Allow: /booking/service/airbnb-cleaning
+
+# Sitemap location
+Sitemap: https://shalean.co.za/sitemap.xml
+
+# Crawl delay (optional, helps with server load)
+Crawl-delay: 1

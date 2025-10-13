@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, CheckCircle, Calendar, Sparkles, Home, MapPinIcon, Droplets, Trash2, TruckIcon, Wrench } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSuburbsByArea } from '@/data/suburbs';
+import { SEO } from '@/components/SEO';
+import { LocalBusinessStructuredData } from '@/components/StructuredData';
 
 const Locations = () => {
   const navigate = useNavigate();
@@ -70,6 +72,15 @@ const Locations = () => {
 
   return (
     <div className="bg-white">
+      <SEO 
+        title="Service Areas & Locations - Cleaning Services Across Cape Town"
+        description="Shalean Cleaning Services covers Claremont, Rondebosch, Newlands, Constantia, Observatory, Woodstock, Sea Point, and surrounding Cape Town suburbs. Book professional cleaners in your area."
+        keywords="cleaning services Cape Town, Claremont cleaners, Rondebosch cleaning, Newlands cleaning service, Constantia cleaners, Observatory cleaning, Woodstock cleaners"
+        canonical="https://shalean.co.za/locations"
+      />
+      <LocalBusinessStructuredData 
+        areaServed={['Cape Town', 'Claremont', 'Rondebosch', 'Newlands', 'Constantia', 'Observatory', 'Woodstock', 'Sea Point', 'Green Point', 'Camps Bay']}
+      />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-white to-[#F8FAFC] py-20 relative overflow-hidden">

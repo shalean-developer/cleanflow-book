@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, Users, Home, CheckCircle, Shield, Award, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '@/components/SEO';
 
 const HowItWorks = () => {
   const navigate = useNavigate();
@@ -83,6 +84,12 @@ const HowItWorks = () => {
 
   return (
     <main className="bg-white">
+      <SEO 
+        title="How It Works - Easy Booking Process"
+        description="Book professional cleaning services in Cape Town in 4 simple steps. Choose your service, pick a date, meet your cleaner, and enjoy your spotless home. Fully insured and quality guaranteed."
+        keywords="how to book cleaning service, cleaning booking process, book cleaner Cape Town, schedule cleaning service, easy online booking"
+        canonical="https://shalean.co.za/how-it-works"
+      />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-white to-[#F8FAFC] py-20">

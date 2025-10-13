@@ -15,6 +15,8 @@ import {
   Waves
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '@/components/SEO';
+import { LocalBusinessStructuredData } from '@/components/StructuredData';
 import serviceSpecializedImage from '@/assets/service-specialized.jpg';
 
 const SpecializedServices = () => {
@@ -154,6 +156,13 @@ const SpecializedServices = () => {
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <SEO 
+        title="Specialized Cleaning Services Cape Town - Custom Solutions"
+        description="Specialized cleaning services in Cape Town including carpet cleaning, post-construction cleanup, window cleaning, pressure washing, and custom cleaning solutions for unique needs."
+        keywords="specialized cleaning Cape Town, custom cleaning, window cleaning, pressure washing, commercial cleaning, office cleaning, event cleanup"
+        canonical="https://shalean.co.za/services/specialized-services"
+      />
+      <LocalBusinessStructuredData />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-[#0C53ED]/5 via-white to-[#2A869E]/5">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -222,8 +231,9 @@ const SpecializedServices = () => {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={serviceSpecializedImage}
-                  alt="Specialized Cleaning Services"
+                  alt="Specialized cleaning services including carpet, window, and pressure washing in Cape Town"
                   className="w-full h-[500px] object-cover"
+                  loading="lazy"
                 />
               </div>
               {/* Floating Badge */}

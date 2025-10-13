@@ -7,6 +7,8 @@ import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { useNavigate, Link } from 'react-router-dom';
 import { NewCustomerPromoModal } from '@/components/booking/NewCustomerPromoModal';
 import { HeroApiIntegration } from '@/components/HeroApiIntegration';
+import { SEO } from '@/components/SEO';
+import { LocalBusinessStructuredData } from '@/components/StructuredData';
 import luciaImage from '@/assets/lucia-pazvakavambwa.webp';
 import normatterImage from '@/assets/normatter-mazhinji.webp';
 import nyashaImage from '@/assets/nyasha-mudani.webp';
@@ -94,6 +96,16 @@ const Index = () => {
     date: 'February 2025'
   }];
   return <div>
+      <SEO 
+        title="Shalean Cleaning Services | Trusted Home Cleaning in Cape Town"
+        description="Book trusted professional cleaners in Cape Town. Standard, deep, move-in/out, and Airbnb cleaning services. Easy online booking with flexible scheduling and experienced cleaners."
+        keywords="cleaning services Cape Town, professional cleaners Cape Town, home cleaning, deep cleaning, move out cleaning, Airbnb cleaning, maid services, office cleaning, Claremont cleaners, affordable cleaning service, residential cleaning"
+        canonical="https://shalean.co.za/"
+      />
+      <LocalBusinessStructuredData 
+        areaServed={['Cape Town', 'Claremont', 'Rondebosch', 'Newlands', 'Constantia', 'Observatory', 'Woodstock', 'Sea Point']}
+      />
+      
       {/* Hero Section */}
       <HeroApiIntegration />
 
@@ -122,8 +134,9 @@ const Index = () => {
                 <div className="relative overflow-hidden">
                   <img 
                     src={group.services[0].image} 
-                    alt={group.title} 
+                    alt={`${group.title} - Professional cleaning service in Cape Town`} 
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
+                    loading="lazy"
                   />
                   <div className="absolute top-4 left-4">
                     <div className="flex items-center justify-center w-10 h-10 rounded-full text-white" style={{ backgroundColor: '#0C53ED' }}>
@@ -260,7 +273,7 @@ const Index = () => {
                   <div className="relative w-32 h-32 mx-auto mb-6">
                     <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#0C53ED] to-[#2A869E] p-1 group-hover:p-1.5 transition-all duration-300">
                       <Avatar className="w-full h-full border-4 border-white shadow-lg">
-                        <AvatarImage src={member.image} className="object-cover" />
+                        <AvatarImage src={member.image} className="object-cover" alt={`${member.name} - ${member.role} at Shalean Cleaning`} loading="lazy" />
                         <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-[#0C53ED]/10 to-[#2A869E]/10 text-[#0C53ED]">
                           {member.initials}
                         </AvatarFallback>
@@ -673,11 +686,12 @@ const Index = () => {
                 {/* Image with aspect ratios */}
                 <img 
                   src={cleaningTeamHero} 
-                  alt="Professional cleaning team at work" 
+                  alt="Professional Shalean cleaning team providing exceptional cleaning services in Cape Town home" 
                   className="w-full aspect-[4/3] md:aspect-[16/10] object-cover transition-transform duration-700 hover:scale-[1.02] group-hover:scale-105"
                   style={{
                     animation: 'fadeInScale 0.8s ease-out forwards'
                   }}
+                  loading="lazy"
                 />
                 
                 {/* Subtle overlay gradient */}

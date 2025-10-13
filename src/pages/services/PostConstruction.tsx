@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Check, Hammer, Trash2, Sparkles, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '@/components/SEO';
+import { ServiceStructuredData } from '@/components/StructuredData';
 
 const PostConstruction = () => {
   const navigate = useNavigate();
@@ -40,6 +42,17 @@ const PostConstruction = () => {
 
   return (
     <div className="bg-white min-h-screen">
+      <SEO 
+        title="Post Construction Cleaning Cape Town - Builder's Clean"
+        description="Professional post construction cleaning in Cape Town. Remove dust, debris, paint splatter. Complete builder's clean for new construction, renovations, and remodeling projects."
+        keywords="post construction cleaning Cape Town, builder's clean, renovation cleaning, construction cleanup, after builders cleaning, new construction cleaning"
+        canonical="https://shalean.co.za/services/post-construction"
+      />
+      <ServiceStructuredData 
+        name="Post Construction Cleaning Service"
+        description="Professional post construction cleaning removing dust, debris, and paint splatter with final inspection walkthrough"
+        url="https://shalean.co.za/services/post-construction"
+      />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-[#0C53ED]/5 via-white to-[#2A869E]/5">
         <div className="max-w-7xl mx-auto px-4 md:px-6">

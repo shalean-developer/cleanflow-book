@@ -14,6 +14,8 @@ import {
   Zap
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '@/components/SEO';
+import { ServiceStructuredData } from '@/components/StructuredData';
 import serviceStandardImage from '@/assets/service-standard-cleaning.jpg';
 
 const AirbnbCleaning = () => {
@@ -145,6 +147,17 @@ const AirbnbCleaning = () => {
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <SEO 
+        title="Airbnb Cleaning Service Cape Town - Professional Turnover Cleaning"
+        description="Fast and reliable Airbnb turnover cleaning in Cape Town. Same-day service, linen changes, restocking, thorough cleaning between guests. Perfect for short-term rental hosts."
+        keywords="Airbnb cleaning Cape Town, vacation rental cleaning, turnover cleaning, short term rental cleaning, guest house cleaning, holiday home cleaning"
+        canonical="https://shalean.co.za/services/airbnb-cleaning"
+      />
+      <ServiceStructuredData 
+        name="Airbnb Turnover Cleaning Service"
+        description="Fast and reliable Airbnb turnover cleaning including linen changes, restocking, and thorough cleaning between guests"
+        url="https://shalean.co.za/services/airbnb-cleaning"
+      />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-[#0C53ED]/5 via-white to-[#2A869E]/5">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -211,8 +224,9 @@ const AirbnbCleaning = () => {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={serviceStandardImage}
-                  alt="Airbnb Cleaning Service"
+                  alt="Airbnb turnover cleaning service - fast and reliable cleaning between guests in Cape Town"
                   className="w-full h-[500px] object-cover"
+                  loading="lazy"
                 />
               </div>
               {/* Floating Badge */}

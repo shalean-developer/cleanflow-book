@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/hooks/useAuth";
 import { SiteLayout } from "@/layouts/SiteLayout";
 import { GlobalStorageProtection } from "@/components/GlobalStorageProtection";
@@ -49,14 +50,15 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <GlobalStorageProtection />
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <SiteLayout>
-            <Routes>
+    <HelmetProvider>
+      <AuthProvider>
+        <GlobalStorageProtection />
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <SiteLayout>
+              <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/services" element={<Services />} />
               <Route path="/services/standard-cleaning" element={<StandardCleaning />} />
@@ -98,11 +100,12 @@ const App = () => (
               <Route path="/settings" element={<Settings />} />
               <Route path="/manage-booking" element={<ManageBooking />} />
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </SiteLayout>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+              </Routes>
+            </SiteLayout>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 

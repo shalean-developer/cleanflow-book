@@ -3,12 +3,21 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { serviceGroups } from '@/data/services';
+import { SEO } from '@/components/SEO';
+import { LocalBusinessStructuredData } from '@/components/StructuredData';
 
 const Services = () => {
   const navigate = useNavigate();
 
   return (
     <div className="bg-white min-h-screen">
+      <SEO 
+        title="Professional Cleaning Services in Cape Town"
+        description="Explore our comprehensive cleaning services in Cape Town: standard cleaning, deep cleaning, move-in/out, Airbnb turnover, carpet cleaning, and post-construction cleaning. Expert cleaners, competitive rates."
+        keywords="cleaning services Cape Town, standard cleaning, deep cleaning, move in out cleaning, Airbnb cleaning, carpet cleaning, post construction cleaning, professional cleaners, home cleaning services"
+        canonical="https://shalean.co.za/services"
+      />
+      <LocalBusinessStructuredData />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-[#0C53ED]/5 via-white to-[#2A869E]/5">
         <div className="max-w-7xl mx-auto px-4 md:px-6">

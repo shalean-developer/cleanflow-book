@@ -14,6 +14,8 @@ import {
   Key
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '@/components/SEO';
+import { ServiceStructuredData } from '@/components/StructuredData';
 import serviceMoveImage from '@/assets/service-move-inout.jpg';
 
 const MoveInOut = () => {
@@ -170,6 +172,17 @@ const MoveInOut = () => {
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen">
+      <SEO 
+        title="Move In/Out Cleaning Service Cape Town - End of Lease Cleaning"
+        description="Professional move in/out cleaning service in Cape Town. Complete deep clean for tenants and landlords. Inside cabinets, appliances, walls, windows. Get your deposit back with our thorough cleaning."
+        keywords="move out cleaning Cape Town, move in cleaning, end of lease cleaning, tenant cleaning, bond cleaning, deposit back cleaning, vacate cleaning"
+        canonical="https://shalean.co.za/services/move-in-out"
+      />
+      <ServiceStructuredData 
+        name="Move In/Out Cleaning Service"
+        description="Complete move in/out cleaning including all deep cleaning services plus complete sanitization of all surfaces"
+        url="https://shalean.co.za/services/move-in-out"
+      />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-[#0C53ED]/5 via-white to-[#2A869E]/5">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -237,8 +250,9 @@ const MoveInOut = () => {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={serviceMoveImage}
-                  alt="Move In/Out Cleaning Service"
+                  alt="Move in/out cleaning service - complete sanitization for tenants and landlords in Cape Town"
                   className="w-full h-[500px] object-cover"
+                  loading="lazy"
                 />
               </div>
               {/* Floating Badge */}

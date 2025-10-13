@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight, BookOpen, Clock } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { blogPosts, getFeaturedPosts } from '@/data/blogPosts';
+import { SEO } from '@/components/SEO';
 
 const Blog = () => {
   const navigate = useNavigate();
@@ -13,6 +14,12 @@ const Blog = () => {
 
   return (
     <div className="bg-background">
+      <SEO 
+        title="Cleaning Tips & Blog - Expert Advice from Shalean"
+        description="Get expert cleaning tips, home care advice, and professional cleaning guides from Shalean Cleaning Services. Learn how to maintain a cleaner, healthier home in Cape Town."
+        keywords="cleaning tips, home cleaning advice, cleaning hacks, professional cleaning tips, home care guides, cleaning blog"
+        canonical="https://shalean.co.za/blog"
+      />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-20">

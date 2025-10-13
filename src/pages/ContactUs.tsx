@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { SEO } from '@/components/SEO';
 
 const ContactUs = () => {
   const navigate = useNavigate();
@@ -68,6 +69,12 @@ const ContactUs = () => {
 
   return (
     <div className="bg-background">
+      <SEO 
+        title="Contact Us - Shalean Cleaning Services Cape Town"
+        description="Get in touch with Shalean Cleaning Services. Call +27 87 153 5250 or visit us at 39 Harvery Road, Claremont. Request a quote or ask about our professional cleaning services in Cape Town."
+        keywords="contact cleaning service, get cleaning quote, book cleaner Cape Town, cleaning service contact number, Claremont cleaning contact"
+        canonical="https://shalean.co.za/contact"
+      />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-20">

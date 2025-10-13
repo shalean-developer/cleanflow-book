@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Check, Sparkles, Clock, Shield, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '@/components/SEO';
+import { ServiceStructuredData } from '@/components/StructuredData';
 
 const CarpetUpholstery = () => {
   const navigate = useNavigate();
@@ -40,6 +42,17 @@ const CarpetUpholstery = () => {
 
   return (
     <div className="bg-white min-h-screen">
+      <SEO 
+        title="Carpet & Upholstery Cleaning Cape Town - Professional Steam Cleaning"
+        description="Professional carpet and upholstery cleaning in Cape Town. Deep extraction cleaning, stain removal, odor neutralization. Eco-friendly products and professional equipment."
+        keywords="carpet cleaning Cape Town, upholstery cleaning, steam cleaning, stain removal, carpet shampooing, sofa cleaning, furniture cleaning"
+        canonical="https://shalean.co.za/services/carpet-upholstery"
+      />
+      <ServiceStructuredData 
+        name="Carpet & Upholstery Cleaning Service"
+        description="Professional carpet and upholstery cleaning with deep extraction, stain removal, and odor neutralization"
+        url="https://shalean.co.za/services/carpet-upholstery"
+      />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-[#0C53ED]/5 via-white to-[#2A869E]/5">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
