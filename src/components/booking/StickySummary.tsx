@@ -2,7 +2,8 @@ import { useBookingStore } from '@/store/bookingStore';
 import { calculatePricing, formatCurrencyZAR } from '@/utils/pricing';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import { Calendar, Clock, MapPin, User, Home, Bath, Sparkles, Repeat } from 'lucide-react';
+import { Calendar, Clock, MapPin, User, Home, Bath, Sparkles, Repeat, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
 
 // Reusable SummaryItem component for StickySummary
 interface SummaryItemProps {
@@ -17,7 +18,7 @@ function SummaryItem({ icon, label, value, className = "", showIcon = true }: Su
   return (
     <div className={`flex items-start gap-3 ${className}`}>
       {showIcon && icon && (
-        <div className="w-5 h-5 text-[#0C53ED] mt-0.5 flex-shrink-0">
+        <div className="w-4 h-4 text-[#0C53ED] mt-0.5 flex-shrink-0">
           {icon}
         </div>
       )}
@@ -31,6 +32,7 @@ function SummaryItem({ icon, label, value, className = "", showIcon = true }: Su
 
 export function StickySummary() {
   const { booking } = useBookingStore();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { data: service } = useQuery({
     queryKey: ['service', booking.serviceId],
@@ -76,21 +78,74 @@ export function StickySummary() {
     : null;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-md p-6">
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0C53ED] to-[#2A869E] flex items-center justify-center">
-          <Calendar className="h-4 w-4 text-white" />
+    <div className="bg-white rounded-xl border border-gray-100 shadow-md overflow-hidden">
+      {/* Collapsed Header - Always Visible */}
+      <div 
+        className="flex items-center justify-between p-3 sm:p-4 cursor-pointer hover:bg-gray-50/50 transition-colors duration-200"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center gap-3">
+          {/* Show calendar icon on both mobile and desktop */}
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0C53ED] to-[#2A869E] flex items-center justify-center">
+            <Calendar className="h-4 w-4 text-white" />
+          </div>
+          
+          <div>
+            {/* Mobile: Show total price as main heading */}
+            <div className="block sm:hidden">
+              {pricing ? (
+                <>
+                  <h2 className="text-xl font-bold text-[#0C53ED] tabular-nums">
+                    {formatCurrencyZAR(pricing.total)}
+                  </h2>
+                  <p className="text-sm text-[#475569]">
+                    {booking.serviceName || 'Service not selected'}
+                  </p>
+                  {pricing.discount > 0 || pricing.promoDiscount > 0 ? (
+                    <p className="text-xs text-[#475569] line-through">
+                      {formatCurrencyZAR(pricing.subtotal + pricing.fees)}
+                    </p>
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <h2 className="text-lg font-bold text-[#0F172A]">Total Price</h2>
+                  <p className="text-sm text-[#475569]">
+                    {booking.serviceName || 'Service not selected'}
+                  </p>
+                </>
+              )}
+            </div>
+            
+            {/* Desktop: Show only "Booking Summary" title and service name */}
+            <div className="hidden sm:block">
+              <h2 className="text-lg font-bold text-[#0F172A]">Booking Summary</h2>
+              <p className="text-sm text-[#475569]">
+                {booking.serviceName || 'Service not selected'}
+              </p>
+            </div>
+          </div>
         </div>
-        <h2 className="text-xl font-bold text-[#0F172A]">Booking Summary</h2>
+        
+        {/* Show chevron arrow for mobile */}
+        <div className="sm:hidden">
+          {isExpanded ? (
+            <ChevronUp className="h-5 w-5 text-[#475569]" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-[#475569]" />
+          )}
+        </div>
       </div>
 
-      <div className="space-y-5">
+      {/* Expanded Content */}
+      {isExpanded && (
+        <div className="px-3 sm:px-4 pb-3 sm:pb-4 border-t border-gray-100">
+          <div className="space-y-3 sm:space-y-4 pt-3 sm:pt-4">
         {/* Service Information */}
         {booking.serviceName && (
-          <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl p-4">
+          <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-lg p-4">
             <SummaryItem
-              icon={<Sparkles className="h-5 w-5" />}
+              icon={<Sparkles className="h-4 w-4" />}
               label="Service"
               value={booking.serviceName}
               className="pb-0"
@@ -131,7 +186,7 @@ export function StickySummary() {
         <div className="space-y-3">
           {booking.frequency && (
             <SummaryItem
-              icon={<Repeat className="h-5 w-5" />}
+              icon={<Repeat className="h-4 w-4" />}
               label="Frequency"
               value={booking.frequency.replace('-', ' ')}
               className="capitalize"
@@ -140,7 +195,7 @@ export function StickySummary() {
 
           {booking.date && (
             <SummaryItem
-              icon={<Calendar className="h-5 w-5" />}
+              icon={<Calendar className="h-4 w-4" />}
               label="Date"
               value={new Date(booking.date).toLocaleDateString('en-ZA')}
             />
@@ -148,7 +203,7 @@ export function StickySummary() {
 
           {booking.time && (
             <SummaryItem
-              icon={<Clock className="h-5 w-5" />}
+              icon={<Clock className="h-4 w-4" />}
               label="Time"
               value={booking.time}
             />
@@ -156,7 +211,7 @@ export function StickySummary() {
 
           {booking.location && (
             <SummaryItem
-              icon={<MapPin className="h-5 w-5" />}
+              icon={<MapPin className="h-4 w-4" />}
               label="Location"
               value={booking.location}
             />
@@ -164,7 +219,7 @@ export function StickySummary() {
 
           {booking.cleanerName && (
             <SummaryItem
-              icon={<User className="h-5 w-5" />}
+              icon={<User className="h-4 w-4" />}
               label="Cleaner"
               value={booking.cleanerName}
             />
@@ -177,7 +232,7 @@ export function StickySummary() {
         </p>
 
          {pricing && (
-           <div className="bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-xl p-4 space-y-3">
+           <div className="bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-lg p-4 space-y-3">
              <h3 className="text-sm font-semibold text-[#0F172A] mb-3">Cost Breakdown</h3>
              
              {booking.promo && (
@@ -221,12 +276,14 @@ export function StickySummary() {
              <div className="border-t border-gray-300 pt-3">
                <div className="flex justify-between items-center">
                  <span className="text-lg font-bold text-[#0F172A]">Total</span>
-                 <span className="text-2xl font-bold text-[#0C53ED] tabular-nums">{formatCurrencyZAR(pricing.total)}</span>
+                 <span className="text-xl font-bold text-[#0C53ED] tabular-nums">{formatCurrencyZAR(pricing.total)}</span>
                </div>
              </div>
            </div>
          )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -41,6 +41,19 @@ serve(async (req) => {
     }
 
     console.log('Sending quote confirmation for:', quoteData.id);
+    
+    // Check if RESEND_API_KEY is configured
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendApiKey) {
+      console.warn('RESEND_API_KEY not configured, emails will not be sent');
+      return new Response(
+        JSON.stringify({ success: true, warning: 'Email service not configured, but quote was saved' }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
 
     const { customer, location, bedrooms, bathrooms, extras, instructions } = quoteData;
     const fullName = `${customer.firstName} ${customer.lastName}`;
@@ -74,16 +87,24 @@ serve(async (req) => {
       </div>
     `;
 
-    await resend.emails.send({
-      from: 'Shalean Bookings <bookings@shalean.com>',
-      to: [customer.email],
-      subject: `Your Shalean Booking Quote Request – ${fullName}`,
-      html: customerEmailHtml,
-    });
+    let customerEmailSent = false;
+    let adminEmailSent = false;
 
-    console.log('Customer quote confirmation sent');
+    // Try to send customer confirmation email
+    try {
+      await resend.emails.send({
+        from: 'Shalean Bookings <bookings@shalean.com>',
+        to: [customer.email],
+        subject: `Your Shalean Booking Quote Request – ${fullName}`,
+        html: customerEmailHtml,
+      });
+      customerEmailSent = true;
+      console.log('Customer quote confirmation sent');
+    } catch (emailError) {
+      console.error('Failed to send customer email:', emailError);
+    }
 
-    // Send notification to admin
+    // Try to send admin notification email
     const adminEmailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h1 style="color: #0C53ED;">New Quote Request</h1>
@@ -106,17 +127,28 @@ serve(async (req) => {
       </div>
     `;
 
-    await resend.emails.send({
-      from: 'Shalean Bookings <bookings@shalean.com>',
-      to: ['bookings@shalean.com'],
-      subject: `New Quote Request: ${fullName}`,
-      html: adminEmailHtml,
-    });
-
-    console.log('Admin notification sent');
+    try {
+      await resend.emails.send({
+        from: 'Shalean Bookings <bookings@shalean.com>',
+        to: ['bookings@shalean.com'],
+        subject: `New Quote Request: ${fullName}`,
+        html: adminEmailHtml,
+      });
+      adminEmailSent = true;
+      console.log('Admin notification sent');
+    } catch (emailError) {
+      console.error('Failed to send admin email:', emailError);
+    }
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Quote confirmation emails sent' }),
+      JSON.stringify({ 
+        success: true, 
+        message: 'Quote processed successfully',
+        emailStatus: {
+          customerEmailSent,
+          adminEmailSent
+        }
+      }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,

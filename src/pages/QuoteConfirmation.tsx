@@ -1,6 +1,4 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2, Home, Calendar } from 'lucide-react';
@@ -11,9 +9,7 @@ export default function QuoteConfirmation() {
   const quoteId = searchParams.get('id');
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <CheckCircle2 className="h-20 w-20 text-green-500 mx-auto mb-4" />
@@ -93,8 +89,6 @@ export default function QuoteConfirmation() {
             </p>
           </div>
         </div>
-      </main>
-      <Footer />
     </div>
   );
 }

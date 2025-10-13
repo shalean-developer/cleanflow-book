@@ -16,7 +16,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function LoginDropdown() {
+interface LoginDropdownProps {
+  isMobile?: boolean;
+}
+
+export function LoginDropdown({ isMobile = false }: LoginDropdownProps) {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
@@ -36,7 +40,7 @@ export function LoginDropdown() {
         <DropdownMenuTrigger asChild>
           <Button 
             variant="outline" 
-            className="rounded-full bg-black text-white hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-600 focus-visible:ring-offset-2"
+            className={`bg-black text-white hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-600 focus-visible:ring-offset-2 ${isMobile ? 'w-full rounded-lg' : 'rounded-full'}`}
           >
             <User className="mr-2 h-4 w-4" />
             Login

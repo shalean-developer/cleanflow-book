@@ -310,37 +310,37 @@ export default function Review() {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
           {/* Back Button */}
           <Button 
             variant="ghost" 
             onClick={() => navigate(-1)} 
-            className="mb-8 text-[#475569] hover:text-[#0F172A] hover:bg-gray-50"
+            className="mb-4 md:mb-8 text-[#475569] hover:text-[#0F172A] hover:bg-gray-50 -ml-2 md:ml-0"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
 
           {/* Section Header */}
-          <div className="mb-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
-            <h1 className="text-4xl font-bold text-[#0F172A] tracking-tight mb-3">Review & Pay</h1>
-            <p className="text-[#475569] text-lg">Review your booking and complete payment</p>
-            <div className="w-16 h-[3px] bg-[#0C53ED] mt-4 rounded-full"></div>
+          <div className="mb-6 md:mb-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
+            <h1 className="text-2xl md:text-4xl font-bold text-[#0F172A] tracking-tight mb-2 md:mb-3">Review & Pay</h1>
+            <p className="text-[#475569] text-sm md:text-lg">Review your booking and complete payment</p>
+            <div className="w-12 md:w-16 h-[3px] bg-[#0C53ED] mt-3 md:mt-4 rounded-full"></div>
           </div>
 
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Left Column - Auth/Contact */}
-            <div className="space-y-6">
+            <div className="space-y-6 order-2 lg:order-1">
               {!user ? (
                 <AuthModal />
               ) : (
                 <div className="space-y-6">
-                  <Card className="bg-white rounded-2xl border border-gray-100 shadow-md p-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-300 delay-160">
-                    <CardHeader className="pb-4">
-                      <CardTitle className="text-lg font-semibold text-[#0F172A]">Contact Information</CardTitle>
+                  <Card className="bg-white rounded-2xl border border-gray-100 shadow-md p-4 md:p-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-300 delay-160">
+                    <CardHeader className="pb-3 md:pb-4 px-0">
+                      <CardTitle className="text-base md:text-lg font-semibold text-[#0F172A]">Contact Information</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 px-0">
                       <div className="space-y-2">
                         <Label htmlFor="phoneNumber" className="text-sm font-medium text-[#0F172A]">Phone Number *</Label>
                         <Input
@@ -359,18 +359,20 @@ export default function Review() {
                   <Button 
                     onClick={handlePayment} 
                     size="lg" 
-                    className="w-full rounded-full bg-[#0C53ED] text-white py-3.5 shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5" 
+                    className="w-full rounded-full bg-[#0C53ED] text-white py-3.5 md:py-4 text-base md:text-lg shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5" 
                     disabled={paying || !paystackKey}
                   >
                     {paying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Continue to Payment {pricing ? `• ${formatCurrencyZAR(pricing.total)}` : ''}
+                    <span className="hidden sm:inline">Continue to Payment</span>
+                    <span className="sm:hidden">Pay Now</span>
+                    {pricing && <span className="ml-2">• {formatCurrencyZAR(pricing.total)}</span>}
                   </Button>
 
-                  {/* Back Link */}
+                  {/* Back Link - Hidden on mobile to save space */}
                   <Button
                     variant="ghost"
                     onClick={() => navigate(-1)}
-                    className="w-full text-[#475569] hover:text-[#0F172A] hover:bg-gray-50"
+                    className="hidden sm:flex w-full text-[#475569] hover:text-[#0F172A] hover:bg-gray-50"
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Back
@@ -380,7 +382,8 @@ export default function Review() {
             </div>
 
             {/* Right Column - Order Summary */}
-            <div className="lg:block">
+            {/* On mobile: Only show when user is logged in. On desktop: Always show */}
+            <div className={`order-1 lg:order-2 ${!user ? 'hidden lg:block' : ''}`}>
               <OrderSummary
                 service={service}
                 extras={extras}

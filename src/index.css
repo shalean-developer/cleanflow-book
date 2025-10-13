@@ -360,6 +360,15 @@ All colors MUST be HSL.
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   }
 
+  /* Hide scrollbars for horizontal scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+  }
+
   /* Respect reduced motion for hero animations */
   @media (prefers-reduced-motion: reduce) {
     .hover\:scale-\[1\.02\]:hover,

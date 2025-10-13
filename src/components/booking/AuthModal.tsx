@@ -117,15 +117,15 @@ export function AuthModal({ initialTab = 'signin' }: AuthModalProps) {
   ];
 
   return (
-    <Card className="bg-white rounded-2xl border border-gray-100 shadow-md p-6 md:p-7 w-full max-w-xl animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
-      <CardHeader className="space-y-2">
-        <CardTitle className="text-xl font-semibold text-[#0F172A]">Sign in to continue</CardTitle>
-        <CardDescription className="text-[#475569]">
+    <Card className="bg-white rounded-2xl border border-gray-100 shadow-md p-4 md:p-6 w-full max-w-xl animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
+      <CardHeader className="space-y-1.5 md:space-y-2 px-0 md:px-6">
+        <CardTitle className="text-lg md:text-xl font-semibold text-[#0F172A]">Sign in to continue</CardTitle>
+        <CardDescription className="text-sm md:text-base text-[#475569]">
           You need to be signed in to complete your booking
         </CardDescription>
       </CardHeader>
       
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 md:space-y-6 px-0 md:px-6">
         {/* Tabbed Switch */}
         <div className="flex rounded-full bg-[#F3F4F6] p-1" role="tablist">
           {tabs.map((tab) => (
@@ -139,7 +139,7 @@ export function AuthModal({ initialTab = 'signin' }: AuthModalProps) {
                 setErrors({});
                 setMagicLinkSent(false);
               }}
-              className={`flex-1 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+              className={`flex-1 px-2 md:px-4 py-2 text-xs md:text-sm font-medium rounded-full transition-all duration-200 ${
                 activeTab === tab.id
                   ? 'bg-white shadow-sm text-[#0C53ED]'
                   : 'text-gray-500 hover:text-gray-700'
@@ -226,18 +226,18 @@ export function AuthModal({ initialTab = 'signin' }: AuthModalProps) {
               )}
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between text-xs md:text-sm">
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="remember-me"
                   checked={rememberMe}
                   onCheckedChange={(checked) => setRememberMe(checked === true)}
                 />
-                <Label htmlFor="remember-me" className="text-sm text-[#475569]">Remember me</Label>
+                <Label htmlFor="remember-me" className="text-xs md:text-sm text-[#475569]">Remember me</Label>
               </div>
               <button
                 type="button"
-                className="text-sm text-[#0C53ED] hover:text-[#0B47D1] transition-colors"
+                className="text-xs md:text-sm text-[#0C53ED] hover:text-[#0B47D1] transition-colors whitespace-nowrap"
               >
                 Forgot password?
               </button>
@@ -245,7 +245,7 @@ export function AuthModal({ initialTab = 'signin' }: AuthModalProps) {
 
             <Button
               type="submit"
-              className="w-full rounded-full bg-[#0C53ED] text-white py-3.5 shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
+              className="w-full rounded-full bg-[#0C53ED] text-white py-3 md:py-3.5 text-sm md:text-base shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
               disabled={loading}
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -322,7 +322,7 @@ export function AuthModal({ initialTab = 'signin' }: AuthModalProps) {
               )}
             </div>
 
-            <div className="text-xs text-[#475569]">
+            <div className="text-[10px] md:text-xs text-[#475569]">
               By signing up, you agree to our{' '}
               <a href="#" className="text-[#0C53ED] hover:underline">Terms of Service</a>
               {' '}and{' '}
@@ -331,7 +331,7 @@ export function AuthModal({ initialTab = 'signin' }: AuthModalProps) {
 
             <Button
               type="submit"
-              className="w-full rounded-full bg-[#0C53ED] text-white py-3.5 shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
+              className="w-full rounded-full bg-[#0C53ED] text-white py-3 md:py-3.5 text-sm md:text-base shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
               disabled={loading}
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -387,7 +387,7 @@ export function AuthModal({ initialTab = 'signin' }: AuthModalProps) {
                 
                 <Button
                   type="submit"
-                  className="w-full rounded-full bg-[#0C53ED] text-white py-3.5 shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
+                  className="w-full rounded-full bg-[#0C53ED] text-white py-3 md:py-3.5 text-sm md:text-base shadow-lg hover:bg-[#0B47D1] hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
                   disabled={loading}
                 >
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

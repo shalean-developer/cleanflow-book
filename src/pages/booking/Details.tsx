@@ -57,7 +57,7 @@ export default function Details() {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1">
-        <section aria-label="Booking Details" className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+        <section aria-label="Booking Details" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Back Link */}
           <div 
             className="animate-fade-up mb-6"
@@ -66,7 +66,7 @@ export default function Details() {
             <Button 
               variant="ghost" 
               onClick={() => navigate(-1)} 
-              className="p-2 text-[#475569] hover:text-[#0F172A] hover:underline focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2"
+              className="p-3 text-[#475569] hover:text-[#0F172A] hover:underline focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 -ml-3"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
@@ -74,32 +74,32 @@ export default function Details() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-6">
               {/* Section Title */}
               <div 
-                className="animate-fade-up mb-8"
+                className="animate-fade-up mb-6 sm:mb-8"
                 style={{ animationDelay: '80ms', animationFillMode: 'both' }}
               >
-                <h1 className="text-4xl font-bold text-[#0F172A] tracking-tight mb-2">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0F172A] tracking-tight mb-2">
                   Booking Details
                 </h1>
-                <div className="w-16 h-[3px] bg-[#0C53ED] mb-4"></div>
-                <p className="text-[#475569] text-lg max-w-[60ch] leading-relaxed">
+                <div className="w-16 h-[3px] bg-[#0C53ED] mb-3 sm:mb-4"></div>
+                <p className="text-[#475569] text-base sm:text-lg max-w-[60ch] leading-relaxed">
                   Tell us about your space and any extras you need
                 </p>
               </div>
 
               {/* Card 1 — Room Details */}
               <fieldset 
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-up"
+                className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 animate-fade-up"
                 style={{ animationDelay: '160ms', animationFillMode: 'both' }}
               >
-                <legend className="flex items-center gap-3 mb-6">
-                  <h2 className="text-xl font-bold text-[#0F172A]">Room Details</h2>
+                <legend className="flex items-center gap-3 mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-bold text-[#0F172A]">Room Details</h2>
                 </legend>
-                <p className="text-[#475569] text-sm mb-6">Select the number of bedrooms and bathrooms</p>
+                <p className="text-[#475569] text-sm mb-4 sm:mb-6">Select the number of bedrooms and bathrooms</p>
                 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="bedrooms" className="text-sm font-medium text-[#0F172A]">Bedrooms</Label>
                     <Select value={bedrooms.toString()} onValueChange={(v) => setBedrooms(Number(v))}>
@@ -150,15 +150,15 @@ export default function Details() {
 
               {/* Card 2 — Extra Services */}
               <fieldset 
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-up"
+                className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 animate-fade-up"
                 style={{ animationDelay: '240ms', animationFillMode: 'both' }}
               >
-                <legend className="flex items-center gap-3 mb-6">
-                  <h2 className="text-xl font-bold text-[#0F172A]">Extra Services</h2>
+                <legend className="flex items-center gap-3 mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-bold text-[#0F172A]">Extra Services</h2>
                 </legend>
-                <p className="text-[#475569] text-sm mb-6">Select any additional services you need</p>
+                <p className="text-[#475569] text-sm mb-4 sm:mb-6">Select any additional services you need</p>
                 
-                <div className="grid md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {extras?.map((extra) => {
                     const isSelected = selectedExtras.includes(extra.id);
                     return (
@@ -169,7 +169,7 @@ export default function Details() {
                         aria-pressed={isSelected}
                         role="button"
                         className={`
-                          flex items-center gap-3 p-4 rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2 min-h-[60px]
+                          flex items-center gap-3 p-3 sm:p-4 rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#0C53ED] focus:ring-offset-2 min-h-[56px] sm:min-h-[60px] w-full
                           ${isSelected 
                             ? 'bg-[#EAF2FF] border-[#0C53ED]/30 text-[#0C53ED] shadow-sm scale-100' 
                             : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300 hover:shadow-sm'
@@ -183,9 +183,9 @@ export default function Details() {
                         <div className="flex-shrink-0">
                           {getIcon(extra.icon || 'Sparkles')}
                         </div>
-                        <span className="flex-1 text-left font-medium">{extra.name}</span>
+                        <span className="flex-1 text-left font-medium text-sm sm:text-base">{extra.name}</span>
                         <span className={`
-                          px-2.5 py-1 text-xs font-medium rounded-full transition-colors duration-200
+                          px-2 sm:px-2.5 py-1 text-xs font-medium rounded-full transition-colors duration-200 flex-shrink-0
                           ${isSelected 
                             ? 'bg-white/70 text-[#0C53ED]' 
                             : 'bg-gray-100 text-gray-700'
@@ -201,13 +201,13 @@ export default function Details() {
 
               {/* Card 3 — Special Instructions */}
               <fieldset 
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-up"
+                className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 animate-fade-up"
                 style={{ animationDelay: '320ms', animationFillMode: 'both' }}
               >
-                <legend className="flex items-center gap-3 mb-6">
-                  <h2 className="text-xl font-bold text-[#0F172A]">Special Instructions</h2>
+                <legend className="flex items-center gap-3 mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-bold text-[#0F172A]">Special Instructions</h2>
                 </legend>
-                <p className="text-[#475569] text-sm mb-6">Any specific requirements or notes for the cleaner? (Optional)</p>
+                <p className="text-[#475569] text-sm mb-4 sm:mb-6">Any specific requirements or notes for the cleaner? (Optional)</p>
                 
                 <Textarea
                   placeholder="E.g., Please use pet-friendly products, pay special attention to the kitchen..."
@@ -226,7 +226,7 @@ export default function Details() {
                 <Button 
                   onClick={handleContinue} 
                   size="lg" 
-                  className="w-full md:w-auto rounded-full bg-[#0C53ED] text-white shadow-lg hover:brightness-110 hover:-translate-y-0.5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2"
+                  className="w-full rounded-full bg-[#0C53ED] text-white shadow-lg hover:brightness-110 hover:-translate-y-0.5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 py-3 sm:py-4"
                 >
                   Continue to Schedule
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -250,7 +250,9 @@ export default function Details() {
             className="lg:hidden mt-8 animate-fade-up"
             style={{ animationDelay: '480ms', animationFillMode: 'both' }}
           >
-            <StickySummary />
+            <div className="max-w-md mx-auto">
+              <StickySummary />
+            </div>
           </div>
         </section>
       </main>

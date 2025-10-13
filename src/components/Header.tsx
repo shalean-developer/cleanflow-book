@@ -86,13 +86,13 @@ export const Header: React.FC<HeaderProps> = ({
         <Button
           variant="ghost"
           size="sm"
-          className="rounded-full p-2 md:hidden"
+          className="rounded-full p-1.5 sm:p-2 md:hidden"
           aria-label="Open navigation menu"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-80">
+      <SheetContent side="right" className="w-72 sm:w-80">
         <div className="flex flex-col gap-6 mt-8">
           <div className="flex items-center gap-2 font-bold text-xl">
             {logo || (
@@ -149,6 +149,25 @@ export const Header: React.FC<HeaderProps> = ({
             >
               {ctaText}
             </Button>
+            
+            {/* Login Button for Mobile */}
+            {!user && (
+              <div className="mt-3">
+                <LoginDropdown isMobile />
+              </div>
+            )}
+            
+            {/* Logout Button for Mobile */}
+            {user && (
+              <Button
+                onClick={() => signOut()}
+                variant="outline"
+                className="w-full mt-3"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </Button>
+            )}
           </div>
         </div>
       </SheetContent>
@@ -164,17 +183,17 @@ export const Header: React.FC<HeaderProps> = ({
           : 'bg-white dark:bg-gray-900'
       )}
     >
-      <div className="max-w-screen-xl mx-auto px-4 py-3">
+      <div className="max-w-screen-xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div
-            className="flex items-center gap-2 font-semibold text-lg cursor-pointer hover:opacity-80 transition-opacity"
+            className="flex items-center gap-1.5 sm:gap-2 font-semibold text-base sm:text-lg cursor-pointer hover:opacity-80 transition-opacity"
             onClick={() => navigate('/')}
           >
             {logo || (
               <>
-                <img src="/favicon.png" alt="Shalean Logo" className="w-7 h-7" />
-                <span>Shalean</span>
+                <img src="/favicon.png" alt="Shalean Logo" className="w-6 h-6 sm:w-7 sm:h-7" />
+                <span className="hidden xs:inline">Shalean</span>
               </>
             )}
           </div>

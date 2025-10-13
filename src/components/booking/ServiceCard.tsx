@@ -121,55 +121,55 @@ export function ServiceCard({ slug, name, description, basePrice }: ServiceCardP
 
   return (
     <article 
-      className="group bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg hover:border-[#0C53ED]/20 hover:-translate-y-0.5 transition-all duration-300 p-5 md:p-6 flex flex-col justify-between focus-within:ring-2 focus-within:ring-[#0C53ED] focus-within:ring-offset-2 relative"
+      className="group bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-md hover:shadow-lg hover:border-[#0C53ED]/20 hover:-translate-y-0.5 transition-all duration-300 p-4 sm:p-5 md:p-6 flex flex-col justify-between focus-within:ring-2 focus-within:ring-[#0C53ED] focus-within:ring-offset-2 relative h-full"
       role="button"
       tabIndex={0}
       aria-label={`Select ${name} service`}
     >
       {/* Most Popular Badge - Top Right Corner */}
       {isStandardCleaning && (
-        <div className="absolute -top-3 -right-3 z-10">
-          <span className="px-3 py-1 text-xs font-medium text-white bg-[#0C53ED] rounded-full shadow-md">
+        <div className="absolute -top-2 sm:-top-3 -right-2 sm:-right-3 z-10">
+          <span className="px-2 sm:px-3 py-1 text-xs font-medium text-white bg-[#0C53ED] rounded-full shadow-md">
             Most popular
           </span>
         </div>
       )}
 
       {/* Top Row: Icon, Title, Description */}
-      <div className="mb-6">
-        <div className="flex items-start gap-4 mb-4">
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
           {/* Service Icon with Gradient Background */}
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0C53ED] to-[#2A869E] flex items-center justify-center flex-shrink-0">
-            <Icon className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#0C53ED] to-[#2A869E] flex items-center justify-center flex-shrink-0">
+            <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           
           {/* Service Name */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-[#0F172A] truncate mb-1">{name}</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-[#0F172A] truncate mb-1">{name}</h3>
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-[#475569] text-sm line-clamp-2 leading-relaxed">
+        <p className="text-[#475569] text-xs sm:text-sm line-clamp-2 leading-relaxed">
           {description}
         </p>
       </div>
 
       {/* Price Block */}
-      <div className="mb-6">
-        <div className="text-3xl font-bold text-[#0F172A] tabular-nums">
+      <div className="mb-4 sm:mb-6">
+        <div className="text-2xl sm:text-3xl font-bold text-[#0F172A] tabular-nums">
           {formatCurrencyZAR(basePrice)}
-          <span className="text-sm font-normal text-[#475569] ml-1">from</span>
+          <span className="text-xs sm:text-sm font-normal text-[#475569] ml-1">from</span>
         </div>
       </div>
 
       {/* What's included section */}
-      <div className="mb-6">
-        <h4 className="font-semibold text-[#0F172A] mb-3 text-sm">What's included:</h4>
-        <div className="grid grid-cols-1 gap-2">
+      <div className="mb-4 sm:mb-6">
+        <h4 className="font-semibold text-[#0F172A] mb-2 sm:mb-3 text-xs sm:text-sm">What's included:</h4>
+        <div className="grid grid-cols-1 gap-1.5 sm:gap-2">
           {serviceDetails.features.slice(0, 3).map((feature) => (
             <div key={feature} className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-[#0C53ED] flex-shrink-0" />
+              <Check className="h-3 w-3 sm:h-4 sm:w-4 text-[#0C53ED] flex-shrink-0" />
               <span className="text-[#475569] text-xs leading-relaxed">{feature}</span>
               {(feature === 'Professional cleaning team' || feature === 'Eco-friendly products') && 
                (slug === 'standard-cleaning' || slug === 'airbnb-cleaning') && (
@@ -179,22 +179,22 @@ export function ServiceCard({ slug, name, description, basePrice }: ServiceCardP
           ))}
           {serviceDetails.features.length > 3 && (
             <div className="flex items-center gap-2 text-[#475569] text-xs">
-              <span className="ml-6">+{serviceDetails.features.length - 3} more</span>
+              <span className="ml-5 sm:ml-6">+{serviceDetails.features.length - 3} more</span>
             </div>
           )}
         </div>
       </div>
 
       {/* Tell Me More Button with Modal */}
-      <div className="mb-4">
+      <div className="mb-3 sm:mb-4">
         <Dialog>
           <DialogTrigger asChild>
             <Button 
               variant="ghost"
               size="sm"
-              className="w-full text-[#0C53ED] hover:bg-[#0C53ED]/5 hover:text-[#0C53ED] p-2 h-auto"
+              className="w-full text-[#0C53ED] hover:bg-[#0C53ED]/5 hover:text-[#0C53ED] p-1.5 sm:p-2 h-auto text-xs sm:text-sm"
             >
-              <Info className="h-4 w-4 mr-2" />
+              <Info className="h-3 w-3 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
               Tell Me More
             </Button>
           </DialogTrigger>
@@ -260,14 +260,14 @@ export function ServiceCard({ slug, name, description, basePrice }: ServiceCardP
       </div>
 
       {/* CTA Row */}
-      <div>
+      <div className="mt-auto">
         <Link to={`/booking/service/${slug}`}>
           <Button 
-            className="w-full bg-[#0C53ED] hover:bg-[#0C53ED]/90 hover:brightness-110 transition-all duration-200 group/btn"
+            className="w-full bg-[#0C53ED] hover:bg-[#0C53ED]/90 hover:brightness-110 transition-all duration-200 group/btn text-xs sm:text-sm h-8 sm:h-9"
             size="sm"
           >
             Continue to Details
-            <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-0.5 transition-transform duration-200" />
+            <ArrowRight className="ml-1.5 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover/btn:translate-x-0.5 transition-transform duration-200" />
           </Button>
         </Link>
       </div>
