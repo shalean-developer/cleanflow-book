@@ -43,7 +43,13 @@ export default function CleanerDashboard() {
   };
 
   useEffect(() => {
-    if (!user || !isCleaner) {
+    // Don't show access denied if user is null (logged out)
+    if (!user) {
+      // User is logged out, let the auth system handle the redirect
+      return;
+    }
+    
+    if (!isCleaner) {
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
@@ -52,6 +58,7 @@ export default function CleanerDashboard() {
       navigate('/');
       return;
     }
+    
     fetchCleanerData();
   }, [user, isCleaner, navigate]);
 
@@ -100,8 +107,15 @@ export default function CleanerDashboard() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
+    try {
+      await signOut();
+      // Navigate immediately without waiting for auth state to change
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      // Still navigate even if signOut fails
+      navigate('/');
+    }
   };
 
   const upcomingJobs = bookings.filter(b => 

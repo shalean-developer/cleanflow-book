@@ -12,10 +12,17 @@ import { AdminBookingsTable } from "@/components/dashboard/admin/AdminBookingsTa
 import { AdminCleanersTable } from "@/components/dashboard/admin/AdminCleanersTable";
 import { AdminApplicationsTable } from "@/components/dashboard/admin/AdminApplicationsTable";
 import { AdminPricingManager } from "@/components/dashboard/admin/AdminPricingManager";
+import { AdminPaymentsTable } from "@/components/dashboard/admin/AdminPaymentsTable";
 
 type Booking = Tables<'bookings'> & {
   services: Tables<'services'> | null;
   cleaners: Tables<'cleaners'> | null;
+};
+
+type Payment = Tables<'payments'> & {
+  bookings: (Tables<'bookings'> & {
+    services: Tables<'services'> | null;
+  }) | null;
 };
 
 export default function AdminDashboard() {
@@ -23,6 +30,7 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cleaners, setCleaners] = useState<Tables<'cleaners'>[]>([]);
   const [applications, setApplications] = useState<Tables<'cleaner_applications'>[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalBookings: 0,
@@ -31,12 +39,20 @@ export default function AdminDashboard() {
     pendingApplications: 0,
     totalApplications: 0,
     revenue: 0,
+    totalPayments: 0,
+    successfulPayments: 0,
   });
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!user || !isAdmin) {
+    // Don't show access denied if user is null (logged out)
+    if (!user) {
+      // User is logged out, let the auth system handle the redirect
+      return;
+    }
+    
+    if (!isAdmin) {
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
@@ -45,6 +61,7 @@ export default function AdminDashboard() {
       navigate('/');
       return;
     }
+    
     fetchAllData();
   }, [user, isAdmin, navigate]);
 
@@ -93,15 +110,35 @@ export default function AdminDashboard() {
       }
       console.log('Applications fetched:', applicationsData?.length || 0);
 
+      // Fetch payments
+      const { data: paymentsData, error: paymentsError } = await supabase
+        .from('payments')
+        .select(`
+          *,
+          bookings(
+            *,
+            services(*)
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (paymentsError) {
+        console.error('Payments error:', paymentsError);
+        throw paymentsError;
+      }
+      console.log('Payments fetched:', paymentsData?.length || 0);
+
       setBookings(bookingsData || []);
       setCleaners(cleanersData || []);
       setApplications(applicationsData || []);
+      setPayments(paymentsData || []);
 
       // Calculate stats
-      const totalRevenue = (bookingsData || []).reduce((sum, booking) => {
-        const pricing = booking.pricing as any;
-        return sum + (pricing?.total || 0);
-      }, 0);
+      const totalRevenue = (paymentsData || [])
+        .filter(p => p.status === 'success')
+        .reduce((sum, payment) => sum + (payment.amount || 0), 0);
+
+      const successfulPayments = (paymentsData || []).filter(p => p.status === 'success').length;
 
       setStats({
         totalBookings: bookingsData?.length || 0,
@@ -110,6 +147,8 @@ export default function AdminDashboard() {
         pendingApplications: applicationsData?.filter(a => a.status === 'pending' || a.status === 'new').length || 0,
         totalApplications: applicationsData?.length || 0,
         revenue: totalRevenue,
+        totalPayments: paymentsData?.length || 0,
+        successfulPayments: successfulPayments,
       });
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -124,8 +163,15 @@ export default function AdminDashboard() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
+    try {
+      await signOut();
+      // Navigate immediately without waiting for auth state to change
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      // Still navigate even if signOut fails
+      navigate('/');
+    }
   };
 
   if (loading) {
@@ -155,7 +201,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -176,6 +222,19 @@ export default function AdminDashboard() {
                   <p className="text-3xl font-bold text-yellow-600">{stats.pendingBookings}</p>
                 </div>
                 <ClipboardList className="h-12 w-12 text-yellow-600 opacity-20" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Payments</p>
+                  <p className="text-3xl font-bold text-emerald-600">{stats.totalPayments}</p>
+                  <p className="text-xs text-gray-500">{stats.successfulPayments} successful</p>
+                </div>
+                <DollarSign className="h-12 w-12 text-emerald-600 opacity-20" />
               </div>
             </CardContent>
           </Card>
@@ -222,6 +281,7 @@ export default function AdminDashboard() {
         <Tabs defaultValue="bookings" className="space-y-6">
           <TabsList className="bg-white">
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            <TabsTrigger value="payments">Payments</TabsTrigger>
             <TabsTrigger value="cleaners">Cleaners</TabsTrigger>
             <TabsTrigger value="applications">Applications</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
@@ -236,6 +296,25 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <AdminBookingsTable bookings={bookings} cleaners={cleaners} onUpdate={fetchAllData} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Payments Tab */}
+          <TabsContent value="payments">
+            <Card>
+              <CardHeader>
+                <CardTitle>Payment Transactions ({payments.length})</CardTitle>
+                <CardDescription>View all payment transactions and their status</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {payments.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No payment records found
+                  </div>
+                ) : (
+                  <AdminPaymentsTable payments={payments} />
+                )}
               </CardContent>
             </Card>
           </TabsContent>
