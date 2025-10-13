@@ -9,7 +9,11 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!robots\\.txt|sitemap\\.xml|favicon).*)",
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap.xml"
+    },
+    {
+      "source": "/((?!robots\\.txt|favicon).*)",
       "destination": "/"
     }
   ],
@@ -20,24 +24,6 @@
         {
           "key": "Content-Type",
           "value": "text/plain"
-        }
-      ]
-    },
-    {
-      "source": "/sitemap.xml",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/xml; charset=utf-8"
-        }
-      ]
-    },
-    {
-      "source": "/sitemap-simple.xml",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/xml; charset=utf-8"
         }
       ]
     }
