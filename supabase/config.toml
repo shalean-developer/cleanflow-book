@@ -1,4 +1,4 @@
-project_id = "vpbdcqzlvwtkumbtnxhe"
+project_id = "utfvbtcszzafuoyytlpf"
 
 [functions.claim-promo]
 verify_jwt = true

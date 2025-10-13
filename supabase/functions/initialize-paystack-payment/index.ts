@@ -28,6 +28,21 @@ interface PaymentRequest {
   };
 }
 
+interface PaystackError {
+  status: boolean;
+  message: string;
+}
+
+interface PaystackResponse {
+  status: boolean;
+  message: string;
+  data: {
+    authorization_url: string;
+    access_code: string;
+    reference: string;
+  };
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -83,12 +98,12 @@ serve(async (req) => {
     });
 
     if (!paystackResponse.ok) {
-      const errorData = await paystackResponse.json();
+      const errorData = await paystackResponse.json() as PaystackError;
       console.error('Paystack error:', errorData);
       throw new Error(`Paystack initialization failed: ${errorData.message}`);
     }
 
-    const paystackData = await paystackResponse.json();
+    const paystackData = await paystackResponse.json() as PaystackResponse;
     console.log('Paystack response:', paystackData);
 
     // Create a pending booking record
@@ -148,7 +163,7 @@ serve(async (req) => {
       }
     );
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return new Response(
