@@ -6,12 +6,5 @@
       "permanent": true,
       "statusCode": 301
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/((?!robots\\.txt|sitemap\\.xml|favicon).*)",
-      "destination": "/"
-    }
   ]
 }
-

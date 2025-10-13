@@ -24,7 +24,7 @@ Allow: /booking/service/move-in-out
 Allow: /booking/service/airbnb-cleaning
 
 # Sitemap location
-Sitemap: https://shalean.co.za/sitemap-data.xml
+Sitemap: https://shalean.co.za/sitemap.xml
 
 # Crawl delay (optional, helps with server load)
 Crawl-delay: 1
