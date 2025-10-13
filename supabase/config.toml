@@ -11,3 +11,9 @@ verify_jwt = true
 
 [functions.get-paystack-public-key]
 verify_jwt = false
+
+[functions.test-public-key]
+verify_jwt = false
+
+[functions.get-paystack-public-key-simple]
+verify_jwt = false

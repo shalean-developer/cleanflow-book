@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { SiteLayout } from "@/layouts/SiteLayout";
+import { GlobalStorageProtection } from "@/components/GlobalStorageProtection";
 import Index from "./pages/Index";
 import Services from "./pages/Services";
 import HowItWorks from "./pages/HowItWorks";
@@ -49,6 +50,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
+      <GlobalStorageProtection />
       <TooltipProvider>
         <Toaster />
         <Sonner />
