@@ -98,8 +98,8 @@ const Index = () => {
   return <div>
       <SEO 
         title="Shalean Cleaning Services | Trusted Home Cleaning in Cape Town"
-        description="Book trusted professional cleaners in Cape Town. Standard, deep, move-in/out, and Airbnb cleaning services. Easy online booking with flexible scheduling and experienced cleaners."
-        keywords="cleaning services Cape Town, professional cleaners Cape Town, home cleaning, deep cleaning, move out cleaning, Airbnb cleaning, maid services, office cleaning, Claremont cleaners, affordable cleaning service, residential cleaning"
+        description="⭐ Top-rated cleaning service in Cape Town! Professional cleaners for homes, offices & Airbnb. Standard, deep, move-in/out cleaning. Same-day booking available. Call +27 87 153 5250"
+        keywords="cleaning services Cape Town, professional cleaners Cape Town, home cleaning, deep cleaning, move out cleaning, Airbnb cleaning, maid services, office cleaning, Claremont cleaners, affordable cleaning service, residential cleaning, top rated cleaners, same day cleaning"
         canonical="https://shalean.co.za/"
       />
       <LocalBusinessStructuredData 
@@ -686,7 +686,7 @@ const Index = () => {
                 {/* Image with aspect ratios */}
                 <img 
                   src={cleaningTeamHero} 
-                  alt="Professional Shalean cleaning team providing exceptional cleaning services in Cape Town home" 
+                  alt="Professional Shalean Cleaning Services team in blue uniforms cleaning modern Cape Town kitchen - three experienced cleaners providing top-rated home cleaning service with attention to detail" 
                   className="w-full aspect-[4/3] md:aspect-[16/10] object-cover transition-transform duration-700 hover:scale-[1.02] group-hover:scale-105"
                   style={{
                     animation: 'fadeInScale 0.8s ease-out forwards'
@@ -700,7 +700,7 @@ const Index = () => {
                 {/* Optional caption chip */}
                 <div className="absolute top-4 left-4">
                   <div className="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-white/90 backdrop-blur-sm text-[#4B5563] border border-white/20 rounded-full shadow-sm dark:bg-white/10 dark:text-white/70 dark:border-white/20">
-                    Shalean crew on site
+                    ⭐ Professional Team at Work
                   </div>
                 </div>
               </div>
