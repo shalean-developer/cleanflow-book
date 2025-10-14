@@ -203,10 +203,11 @@ const Locations = () => {
               </Button>
               <Button 
                 variant="outline"
+                onClick={() => navigate('/booking/quote')}
                 className="border border-[#0C53ED] text-[#0C53ED] hover:bg-[#0C53ED] hover:text-white rounded-full px-8 py-3 font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2"
-                aria-label="Join waitlist for new areas"
+                aria-label="Get a free quote"
               >
-                Join Waitlist
+                Get Free Quote
               </Button>
             </div>
           </div>
