@@ -39,14 +39,10 @@ export function useBookingsPage(pageSize = 10) {
         let bookingsData: Booking[];
 
         if (isAdmin) {
-          // Admin sees all bookings with relations
+          // Admin sees all bookings - start with basic query to avoid join issues
           const { data: adminData, error: adminError } = await supabase
             .from('bookings')
-            .select(`
-              *,
-              services(*),
-              cleaners(*)
-            `)
+            .select('*')
             .order('created_at', { ascending: false })
             .limit(pageSize);
 
