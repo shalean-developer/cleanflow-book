@@ -1,0 +1,30 @@
+# Ignore SQL files and scripts
+*.sql
+*.js
+!src/**/*.js
+!src/**/*.ts
+!src/**/*.tsx
+
+# Ignore documentation files
+*.md
+!README.md
+
+# Ignore test files
+test_*
+*_test.*
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore lock files (keep package-lock.json)
+bun.lockb
+
+# Ignore Supabase functions (they're deployed separately)
+supabase/functions/
+
+# Ignore development files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
