@@ -56,15 +56,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('Setting user role from user_roles table:', roleData.role);
         setUserRole(roleData.role as UserRole);
       } else {
-        // Fallback: try to get role from profile table for backward compatibility
-        if (profileData?.role) {
-          console.log('Setting user role from profile table:', profileData.role);
-          setUserRole(profileData.role as UserRole);
-        } else {
-          // Default to customer if no role found
-          console.log('No role found, defaulting to customer');
-          setUserRole('customer');
-        }
+        // Default to customer if no role found
+        console.log('No role found, defaulting to customer');
+        setUserRole('customer');
       }
     } catch (error) {
       console.error('Error fetching profile:', error);

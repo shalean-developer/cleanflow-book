@@ -191,7 +191,7 @@ export default function Details() {
                             : 'bg-gray-100 text-gray-700'
                           }
                         `}>
-                          R{Number(extra.base_price || 0).toFixed(0)}
+                          R{Number(extra.price || 0).toFixed(0)}
                         </span>
                       </button>
                     );

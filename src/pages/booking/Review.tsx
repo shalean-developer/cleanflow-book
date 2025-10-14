@@ -69,7 +69,7 @@ export default function Review() {
     }
   }, [booking, navigate]);
 
-  const extrasTotal = extras?.reduce((sum, extra) => sum + Number(extra.base_price || 0), 0) || 0;
+  const extrasTotal = extras?.reduce((sum, extra) => sum + Number(extra.price || 0), 0) || 0;
   const pricing = service
     ? calculatePricing({
         basePrice: Number(service.base_price),

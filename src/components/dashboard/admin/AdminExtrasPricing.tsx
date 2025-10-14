@@ -83,10 +83,8 @@ export function AdminExtrasPricing() {
   const handleNew = () => {
     setEditing({
       name: '',
-      description: '',
-      base_price: '0',
+      price: '0',
       icon: '',
-      active: true,
     });
     setIsNew(true);
     setDialogOpen(true);
@@ -98,10 +96,8 @@ export function AdminExtrasPricing() {
     try {
       const extraData = {
         name: editing.name,
-        description: editing.description,
-        base_price: parseFloat(editing.base_price),
+        price: parseFloat(editing.price),
         icon: editing.icon,
-        active: editing.active,
       };
 
       if (isNew) {
@@ -221,17 +217,15 @@ export function AdminExtrasPricing() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
               <TableHead>Price (R)</TableHead>
               <TableHead>Icon</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {extras.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={4} className="text-center py-8 text-gray-500">
                   No extras found
                 </TableCell>
               </TableRow>
@@ -239,16 +233,8 @@ export function AdminExtrasPricing() {
               extras.map((extra) => (
                 <TableRow key={extra.id}>
                   <TableCell className="font-medium">{extra.name}</TableCell>
-                  <TableCell className="max-w-xs truncate">{extra.description}</TableCell>
-                  <TableCell>R {Number(extra.base_price || 0).toFixed(2)}</TableCell>
+                  <TableCell>R {Number(extra.price || 0).toFixed(2)}</TableCell>
                   <TableCell>{extra.icon || '-'}</TableCell>
-                  <TableCell>
-                    {extra.active ? (
-                      <Badge className="bg-green-100 text-green-800">Active</Badge>
-                    ) : (
-                      <Badge className="bg-gray-100 text-gray-800">Inactive</Badge>
-                    )}
-                  </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Button
@@ -296,25 +282,14 @@ export function AdminExtrasPricing() {
               </div>
 
               <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={editing.description}
-                  onChange={(e) => setEditing({ ...editing, description: e.target.value })}
-                  placeholder="Brief description of the service"
-                  rows={3}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="base_price">Price (R) *</Label>
+                <Label htmlFor="price">Price (R) *</Label>
                 <Input
-                  id="base_price"
+                  id="price"
                   type="number"
                   step="0.01"
                   min="0"
-                  value={editing.base_price}
-                  onChange={(e) => setEditing({ ...editing, base_price: e.target.value })}
+                  value={editing.price}
+                  onChange={(e) => setEditing({ ...editing, price: e.target.value })}
                   placeholder="e.g., 150.00"
                 />
               </div>
@@ -330,15 +305,6 @@ export function AdminExtrasPricing() {
                 <p className="text-xs text-gray-500 mt-1">
                   Enter a Lucide React icon name (optional)
                 </p>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="active"
-                  checked={editing.active}
-                  onCheckedChange={(checked) => setEditing({ ...editing, active: checked })}
-                />
-                <Label htmlFor="active">Active (visible to customers)</Label>
               </div>
             </div>
           )}

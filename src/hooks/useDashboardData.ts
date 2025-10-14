@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { sbPage } from '@/lib/dataClient';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/integrations/supabase/types';
 
