@@ -1,38 +1,5 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "framework": "vite",
-  "installCommand": "npm install",
-  "devCommand": "npm run dev",
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.shalean.co.za"
-        }
-      ],
-      "destination": "https://shalean.co.za/:path*",
-      "permanent": true
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "framework": "vite"
 }
