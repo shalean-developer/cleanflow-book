@@ -26,7 +26,7 @@ type Payment = Tables<'payments'> & {
 };
 
 export default function AdminDashboard() {
-  const { user, profile, isAdmin, signOut } = useAuth();
+  const { user, profile, isAdmin, signOut, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cleaners, setCleaners] = useState<Tables<'cleaners'>[]>([]);
   const [applications, setApplications] = useState<Tables<'cleaner_applications'>[]>([]);
@@ -46,13 +46,23 @@ export default function AdminDashboard() {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('AdminDashboard useEffect - authLoading:', authLoading, 'user:', user?.id, 'isAdmin:', isAdmin);
+    
+    // Wait for authentication to finish loading
+    if (authLoading) {
+      console.log('Authentication still loading...');
+      return;
+    }
+    
     // Don't show access denied if user is null (logged out)
     if (!user) {
-      // User is logged out, let the auth system handle the redirect
+      console.log('No user, redirecting to home');
+      navigate('/');
       return;
     }
     
     if (!isAdmin) {
+      console.log('User is not admin, showing access denied');
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
@@ -62,8 +72,9 @@ export default function AdminDashboard() {
       return;
     }
     
+    console.log('User is admin, fetching data');
     fetchAllData();
-  }, [user, isAdmin, navigate]);
+  }, [authLoading, user, isAdmin, navigate]);
 
   const fetchAllData = async () => {
     try {
@@ -174,12 +185,22 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading admin dashboard...</p>
+          {/* Debug info */}
+          <div className="mt-4 p-4 bg-white rounded-lg shadow text-left text-sm">
+            <p><strong>Debug Info:</strong></p>
+            <p>Auth Loading: {authLoading ? 'Yes' : 'No'}</p>
+            <p>User ID: {user?.id || 'Not logged in'}</p>
+            <p>User Email: {user?.email || 'N/A'}</p>
+            <p>Is Admin: {isAdmin ? 'Yes' : 'No'}</p>
+            <p>Profile Role: {profile?.role || 'No role in profile'}</p>
+            <p>Component Loading: {loading ? 'Yes' : 'No'}</p>
+          </div>
         </div>
       </div>
     );
