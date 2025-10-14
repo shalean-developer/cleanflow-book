@@ -1,7 +1,14 @@
 -- Test script to verify admin access to tables
 -- Run this in Supabase SQL Editor to test if admin policies are working
 
--- 1. First, check if you have admin role in profiles
+-- 0. First, check the actual structure of the cleaners table
+SELECT column_name, data_type 
+FROM information_schema.columns 
+WHERE table_name = 'cleaners' 
+AND table_schema = 'public'
+ORDER BY ordinal_position;
+
+-- 1. Check if you have admin role in profiles
 SELECT 
   id, 
   role, 
@@ -21,16 +28,14 @@ SELECT COUNT(*) as payments_count FROM public.payments;
 SELECT COUNT(*) as cleaners_count FROM public.cleaners;
 SELECT COUNT(*) as applications_count FROM public.cleaner_applications;
 
--- 5. Test a sample query (what the dashboard uses)
+-- 5. Test a simple booking query first (without cleaner join)
 SELECT 
   b.id,
   b.reference,
   b.status,
   b.created_at,
-  s.name as service_name,
-  c.full_name as cleaner_name
+  s.name as service_name
 FROM public.bookings b
 LEFT JOIN public.services s ON b.service_id = s.id
-LEFT JOIN public.cleaners c ON b.cleaner_id = c.id
 ORDER BY b.created_at DESC
 LIMIT 5;
