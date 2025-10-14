@@ -24,7 +24,7 @@ do $$ begin
     for update using (auth.uid() = id);
 exception when others then null; end $$;
 
--- Helper predicate to check admin
+-- Helper predicate to check admin (simplified version)
 create or replace function public.is_admin(uid uuid)
 returns boolean
 language sql
@@ -33,6 +33,9 @@ as $$
   select exists (
     select 1 from public.profiles p
     where p.id = uid and p.role = 'admin'
+  ) or exists (
+    select 1 from public.user_roles ur
+    where ur.user_id = uid and ur.role = 'admin'
   );
 $$;
 
@@ -90,6 +93,16 @@ do $$ begin
   create policy "cleaners admin can read" on public.cleaners
     for select using (public.is_admin(auth.uid()));
   create policy "applications admin can read" on public.cleaner_applications
+    for select using (public.is_admin(auth.uid()));
+    
+  -- TEMPORARY: Add more permissive policies for testing
+  create policy "bookings admin read all" on public.bookings
+    for select using (public.is_admin(auth.uid()));
+  create policy "cleaners admin read all" on public.cleaners
+    for select using (public.is_admin(auth.uid()));
+  create policy "applications admin read all" on public.cleaner_applications
+    for select using (public.is_admin(auth.uid()));
+  create policy "payments admin read all" on public.payments
     for select using (public.is_admin(auth.uid()));
 exception when undefined_table then
   -- If tables don't exist yet, skip; we'll re-run later.
