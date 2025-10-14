@@ -74,64 +74,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    let mounted = true;
-    
-    // First, get the current session
-    const initializeAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
+    let cancelled = false;
+
+    // ❶ Listen for auth state changes - use INITIAL_SESSION to end loading reliably
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, currentSession) => {
+        if (cancelled) return;
         
-        if (!mounted) return;
+        console.log('Auth state changed:', event, 'Session:', !!currentSession);
         
-        setSession(session);
-        setUser(session?.user ?? null);
+        setSession(currentSession ?? null);
+        setUser(currentSession?.user ?? null);
         
-        if (session?.user) {
-          await fetchProfile(session.user.id);
+        // End loading state on definitive events
+        if (
+          event === 'INITIAL_SESSION' ||
+          event === 'SIGNED_IN' ||
+          event === 'SIGNED_OUT' ||
+          event === 'TOKEN_REFRESHED' ||
+          event === 'USER_UPDATED'
+        ) {
+          setLoading(false);
+        }
+        
+        // Fetch profile for authenticated users (non-blocking)
+        if (currentSession?.user) {
+          // Fire-and-forget: don't block auth loading on profile fetch
+          fetchProfile(currentSession.user.id);
         } else {
           setProfile(null);
           setUserRole(null);
         }
-      } catch (error) {
-        console.error('Error getting session:', error);
-        // On error, default to customer role if we have a session
-        if (mounted) {
-          setUserRole('customer');
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    initializeAuth();
-
-    // Then, listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (!mounted) return;
-        
-        console.log('Auth state changed:', event, 'Session:', !!session);
-        
-        try {
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          if (session?.user) {
-            await fetchProfile(session.user.id);
-          } else {
-            setProfile(null);
-            setUserRole(null);
-          }
-        } catch (error) {
-          console.error('Error in auth state change:', error);
-        }
       }
     );
 
+    // ❷ Also call getSession once to prime local state
+    supabase.auth.getSession().then(({ data }) => {
+      if (cancelled) return;
+      setSession(data.session ?? null);
+      setUser(data.session?.user ?? null);
+      // Note: don't set loading false here; onAuthStateChange INITIAL_SESSION will do it
+    });
+
+    // ❸ Hard-stop guard so we never spin forever (e.g., storage blocked)
+    const failSafe = setTimeout(() => {
+      if (!cancelled) {
+        console.warn('Auth restoration timeout - forcing loading state to end');
+        setLoading(false);
+      }
+    }, 2000);
+
     return () => {
-      mounted = false;
+      cancelled = true;
+      clearTimeout(failSafe);
       subscription.unsubscribe();
     };
   }, []);

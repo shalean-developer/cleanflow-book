@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { ProfileSettings } from "@/components/dashboard/ProfileSettings";
 import { BookingCard } from "@/components/dashboard/BookingCard";
 import { useToast } from "@/hooks/use-toast";
+import { useBookingsPage, useDashboardStats } from "@/hooks/useDashboardData";
 
 type Booking = Tables<'bookings'> & {
   services: Tables<'services'> | null;
@@ -19,11 +20,17 @@ type Booking = Tables<'bookings'> & {
 
 export default function CustomerDashboard() {
   const { user, profile, isAdmin, isCleaner, signOut, loading: authLoading } = useAuth();
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  // Use new data hooks for reliable Supabase data fetching
+  const { rows: bookings, loading: bookingsLoading, refresh: refreshBookings } = useBookingsPage(50);
+  const { stats: bookingStats, loading: statsLoading } = useDashboardStats();
+  
   const [activeTab, setActiveTab] = useState("overview");
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // Combined loading state
+  const loading = authLoading || bookingsLoading;
 
   useEffect(() => {
     console.log('CustomerDashboard useEffect - authLoading:', authLoading, 'user:', user?.id, 'isAdmin:', isAdmin, 'isCleaner:', isCleaner);
@@ -54,35 +61,8 @@ export default function CustomerDashboard() {
       return;
     }
     
-    console.log('User is customer, fetching bookings');
-    fetchBookings();
+    console.log('User is customer, bookings will load via hooks');
   }, [authLoading, user, isAdmin, isCleaner, navigate]);
-
-  const fetchBookings = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          services(*),
-          cleaners(*)
-        `)
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setBookings(data || []);
-    } catch (error) {
-      console.error('Error fetching bookings:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load bookings. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSignOut = async () => {
     await signOut();
