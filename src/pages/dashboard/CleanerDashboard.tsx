@@ -17,7 +17,7 @@ type Booking = Tables<'bookings'> & {
 };
 
 export default function CleanerDashboard() {
-  const { user, profile, isCleaner, signOut } = useAuth();
+  const { user, profile, isCleaner, signOut, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cleanerProfile, setCleanerProfile] = useState<Tables<'cleaners'> | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,13 +43,23 @@ export default function CleanerDashboard() {
   };
 
   useEffect(() => {
+    console.log('CleanerDashboard useEffect - authLoading:', authLoading, 'user:', user?.id, 'isCleaner:', isCleaner);
+    
+    // Wait for authentication to finish loading
+    if (authLoading) {
+      console.log('Authentication still loading...');
+      return;
+    }
+    
     // Don't show access denied if user is null (logged out)
     if (!user) {
-      // User is logged out, let the auth system handle the redirect
+      console.log('No user, redirecting to home');
+      navigate('/');
       return;
     }
     
     if (!isCleaner) {
+      console.log('User is not cleaner, showing access denied');
       toast({
         title: "Access Denied",
         description: "You don't have permission to access this page.",
@@ -59,8 +69,9 @@ export default function CleanerDashboard() {
       return;
     }
     
+    console.log('User is cleaner, fetching data');
     fetchCleanerData();
-  }, [user, isCleaner, navigate]);
+  }, [authLoading, user, isCleaner, navigate]);
 
   const fetchCleanerData = async () => {
     if (!user?.id) return;
@@ -130,12 +141,22 @@ export default function CleanerDashboard() {
     format(new Date(b.date), 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
   );
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your dashboard...</p>
+          {/* Debug info */}
+          <div className="mt-4 p-4 bg-white rounded-lg shadow text-left text-sm">
+            <p><strong>Debug Info:</strong></p>
+            <p>Auth Loading: {authLoading ? 'Yes' : 'No'}</p>
+            <p>User ID: {user?.id || 'Not logged in'}</p>
+            <p>User Email: {user?.email || 'N/A'}</p>
+            <p>Is Cleaner: {isCleaner ? 'Yes' : 'No'}</p>
+            <p>Profile Role: {profile?.role || 'No role in profile'}</p>
+            <p>Component Loading: {loading ? 'Yes' : 'No'}</p>
+          </div>
         </div>
       </div>
     );
