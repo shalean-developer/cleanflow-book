@@ -82,10 +82,10 @@ export default function AdminDashboard() {
     try {
       console.log('Fetching additional admin dashboard data for user:', user?.id);
       
-      // Fetch cleaners with minimal fields to avoid column issues
+      // Fetch cleaners with only basic fields that definitely exist
       const { data: cleanersData, error: cleanersError } = await supabase
         .from('cleaners')
-        .select('id, name, full_name, active, created_at')
+        .select('id, active, created_at')
         .order('created_at', { ascending: false });
 
       if (cleanersError) {
@@ -97,10 +97,10 @@ export default function AdminDashboard() {
         setCleaners(cleanersData || []);
       }
 
-      // Fetch applications with minimal fields
+      // Fetch applications with only basic fields
       const { data: applicationsData, error: applicationsError } = await supabase
         .from('cleaner_applications')
-        .select('id, first_name, last_name, status, created_at')
+        .select('id, status, created_at')
         .order('created_at', { ascending: false });
 
       if (applicationsError) {
@@ -111,10 +111,10 @@ export default function AdminDashboard() {
         setApplications(applicationsData || []);
       }
 
-      // Fetch payments with minimal fields first
+      // Fetch payments with only basic fields
       const { data: paymentsData, error: paymentsError } = await supabase
         .from('payments')
-        .select('id, booking_id, amount, status, created_at')
+        .select('id, amount, status, created_at')
         .order('created_at', { ascending: false });
 
       if (paymentsError) {

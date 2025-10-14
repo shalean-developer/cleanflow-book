@@ -164,7 +164,7 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
                           <SelectItem value="unassigned">Unassigned</SelectItem>
                           {cleaners.map((cleaner) => (
                             <SelectItem key={cleaner.id} value={cleaner.id}>
-                              {(cleaner as any).name || (cleaner as any).full_name || 'Unknown Cleaner'}
+                              Cleaner {cleaner.id.slice(0, 8)}
                             </SelectItem>
                           ))}
                         </SelectContent>
