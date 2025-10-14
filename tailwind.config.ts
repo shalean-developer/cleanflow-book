@@ -4,7 +4,36 @@ import tailwindcssTypography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
-  content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+  ],
+  safelist: [
+    // Classes used in dynamic contexts or that might be purged incorrectly
+    'container',
+    'prose',
+    'prose-sm',
+    'prose-lg',
+    'mx-auto',
+    'text-center',
+    'animate-fade-up',
+    'animate-fade-up-delay-1',
+    'animate-fade-up-delay-2',
+    'animate-fade-up-delay-3',
+    'animate-fade-up-scale',
+    'animate-slide-in-left',
+    'animate-slide-in-right',
+    'animate-float',
+    'scrollbar-hide',
+    'line-clamp-1',
+    'line-clamp-2',
+    'line-clamp-3',
+    'line-clamp-4',
+    'line-clamp-5',
+    'line-clamp-6',
+  ],
   prefix: "",
   theme: {
     container: {
