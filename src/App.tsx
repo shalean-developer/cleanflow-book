@@ -1,12 +1,12 @@
-// Minimal App for testing CSS deployment
+// Original App with just Home page
 import { HelmetProvider } from "react-helmet-async";
 import { SiteLayout } from "@/layouts/SiteLayout";
-import IndexMinimal from "./pages/IndexMinimal";
+import Index from "./pages/Index";
 
 const App = () => (
   <HelmetProvider>
     <SiteLayout>
-      <IndexMinimal />
+      <Index />
     </SiteLayout>
   </HelmetProvider>
 );
