@@ -22,6 +22,7 @@ export function useBookingsPage(pageSize = 10) {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     let cancel = false;
@@ -39,10 +40,14 @@ export function useBookingsPage(pageSize = 10) {
         let bookingsData: Booking[];
 
         if (isAdmin) {
-          // Admin sees all bookings - start with basic query to avoid join issues
+          // Admin sees all bookings with services and cleaners joined
           const { data: adminData, error: adminError } = await supabase
             .from('bookings')
-            .select('*')
+            .select(`
+              *,
+              services(*),
+              cleaners(*)
+            `)
             .order('created_at', { ascending: false })
             .limit(pageSize);
 
@@ -107,7 +112,7 @@ export function useBookingsPage(pageSize = 10) {
     return () => {
       cancel = true;
     };
-  }, [user?.id, isAdmin, isCleaner, authLoading, cursor, pageSize]);
+  }, [user?.id, isAdmin, isCleaner, authLoading, cursor, pageSize, refreshTrigger]);
 
   return {
     rows: data,
@@ -118,6 +123,7 @@ export function useBookingsPage(pageSize = 10) {
     refresh: () => {
       setCursor(null);
       setNextCursor(null);
+      setRefreshTrigger(prev => prev + 1); // Force re-fetch
     }
   };
 }

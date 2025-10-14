@@ -112,7 +112,7 @@ export function CleanerDialog({ open, onOpenChange, cleaner, onSuccess }: Cleane
       }
 
       setFormData({
-        name: cleaner.name || "",
+        name: cleaner.name || cleaner.full_name || "",
         avatar_url: cleaner.avatar_url || "",
         rating: cleaner.rating?.toString() || "5.0",
       });
@@ -193,7 +193,7 @@ export function CleanerDialog({ open, onOpenChange, cleaner, onSuccess }: Cleane
       // Delete old avatar if updating and it's in our bucket
       if (cleaner?.avatar_url && cleaner.avatar_url.includes('cleaner-avatars')) {
         try {
-          const oldPath = cleaner.avatar_url.split('/').pop();
+          const oldPath = cleaner.avatar_url ? cleaner.avatar_url.split('/').pop() : null;
           if (oldPath) {
             await supabase.storage
               .from('cleaner-avatars')
@@ -365,7 +365,7 @@ export function CleanerDialog({ open, onOpenChange, cleaner, onSuccess }: Cleane
                 <Avatar className="h-20 w-20">
                   <AvatarImage src={previewUrl} />
                   <AvatarFallback>
-                    {formData.name.split(' ').map(n => n[0]).join('').toUpperCase() || '?'}
+                    {formData.name ? formData.name.split(' ').map(n => n[0]).join('').toUpperCase() : '?'}
                   </AvatarFallback>
                 </Avatar>
                 <Button
