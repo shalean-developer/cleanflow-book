@@ -1,4 +1,3 @@
-// @ts-nocheck - Disabling type checking due to Supabase deep type instantiation issues
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,7 +37,7 @@ export default function CleanerDashboard() {
       .from('cleaners')
       .select('*')
       .eq('user_id', userId);
-    return result as any;
+    return result;
   };
 
   const queryBookings = async (cleanerId: string) => {
@@ -47,7 +46,7 @@ export default function CleanerDashboard() {
       .select('*, services(*)')
       .eq('cleaner_id', cleanerId)
       .order('date', { ascending: true });
-    return result as any;
+    return result;
   };
 
   useEffect(() => {

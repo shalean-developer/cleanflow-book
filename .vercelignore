@@ -28,3 +28,7 @@ supabase/functions/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Ignore specific problematic files
+BYPASS_EDGE_FUNCTION_FIX.js
+FRONTEND_ONLY_PROMO_FIX.tsx

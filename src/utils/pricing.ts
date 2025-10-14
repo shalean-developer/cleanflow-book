@@ -51,7 +51,7 @@ export function calculatePricing({
   const discount = subtotal * discountRate;
   
   // Apply frequency discount first
-  let afterFrequencyDiscount = subtotal - discount;
+  const afterFrequencyDiscount = subtotal - discount;
   
   // Calculate promo discount (applied after frequency discount)
   let promoDiscount = 0;

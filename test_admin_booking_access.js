@@ -126,7 +126,7 @@ async function testAdminAccess() {
     console.log('\n🔧 Next Steps:');
     console.log('==============');
     console.log('1. If no admin users found, manually set admin role:');
-    console.log('   UPDATE public.profiles SET role = ''admin'' WHERE id = ''your-user-id'';');
+    console.log('   UPDATE public.profiles SET role = \'admin\' WHERE id = \'your-user-id\';');
     console.log('2. If bookings exist but dashboard shows none, the RLS fix should work');
     console.log('3. Test the dashboard with an admin user logged in');
     console.log('4. Check browser console for any remaining RLS errors');

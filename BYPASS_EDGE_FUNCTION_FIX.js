@@ -76,7 +76,7 @@ const handleClaimDirect = async () => {
 
     // Navigate to details
     navigate('/booking/details');
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error claiming promo:', error);
     toast({
       title: 'Error',
