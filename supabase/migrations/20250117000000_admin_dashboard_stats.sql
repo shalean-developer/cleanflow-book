@@ -68,6 +68,7 @@ do $$ begin
   drop policy if exists "bookings admin or owner can read" on public.bookings;
   drop policy if exists "payments admin or owner can read" on public.payments;
   drop policy if exists "cleaners admin can read" on public.cleaners;
+  drop policy if exists "applications admin can read" on public.cleaner_applications;
   drop policy if exists "Admins can view all bookings" on public.bookings;
   drop policy if exists "Admins can view all cleaners" on public.cleaners;
   drop policy if exists "Admins can view all applications" on public.cleaner_applications;
