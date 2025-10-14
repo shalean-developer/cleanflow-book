@@ -1,7 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+// TEMPORARILY DISABLED FOR HOME-ONLY DEPLOYMENT
+// import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white">
@@ -18,8 +19,8 @@ const Home = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
               <button 
-                onClick={() => navigate('/booking/service/select')}
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-4 text-lg font-semibold flex items-center justify-center gap-2 transition-all"
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-4 text-lg font-semibold flex items-center justify-center gap-2 transition-all cursor-not-allowed opacity-70"
+                disabled
               >
                 Book Now
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,8 +28,8 @@ const Home = () => {
                 </svg>
               </button>
               <button 
-                onClick={() => navigate('/services')}
-                className="border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full px-8 py-4 text-lg font-semibold transition-all"
+                className="border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full px-8 py-4 text-lg font-semibold transition-all cursor-not-allowed opacity-70"
+                disabled
               >
                 Apply For Work
               </button>
@@ -136,8 +137,8 @@ const Home = () => {
               </div>
               
               <button 
-                onClick={() => navigate('/booking/service/select')}
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-4 text-lg font-semibold flex items-center gap-2 transition-all"
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-4 text-lg font-semibold flex items-center gap-2 transition-all cursor-not-allowed opacity-70"
+                disabled
               >
                 Get a Free Quote
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,8 +250,8 @@ const Home = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Home Cleaning</h3>
                 <p className="text-gray-600 mb-4">Regular or one-time cleaning services for apartments, houses, and condos throughout Cape Town.</p>
                 <button 
-                  onClick={() => navigate('/services')}
-                  className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1"
+                  className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 cursor-not-allowed opacity-70"
+                  disabled
                 >
                   View Details
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,8 +276,8 @@ const Home = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Deep Clean Services</h3>
                 <p className="text-gray-600 mb-4">Intensive top-to-bottom cleaning including hard-to-reach areas and detailed sanitization.</p>
                 <button 
-                  onClick={() => navigate('/services')}
-                  className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1"
+                  className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 cursor-not-allowed opacity-70"
+                  disabled
                 >
                   View Details
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -301,8 +302,8 @@ const Home = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Move-In/Out Cleaning</h3>
                 <p className="text-gray-600 mb-4">Comprehensive cleaning for properties between tenants or before moving in.</p>
                 <button 
-                  onClick={() => navigate('/services')}
-                  className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1"
+                  className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 cursor-not-allowed opacity-70"
+                  disabled
                 >
                   View Details
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -407,14 +408,14 @@ const Home = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => navigate('/booking/service/select')}
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-4 text-lg font-semibold transition-all"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 py-4 text-lg font-semibold transition-all cursor-not-allowed opacity-70"
+              disabled
             >
               Book Your Cleaning
             </button>
             <button 
-              onClick={() => navigate('/booking/service/select')}
-              className="border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full px-8 py-4 text-lg font-semibold transition-all"
+              className="border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-full px-8 py-4 text-lg font-semibold transition-all cursor-not-allowed opacity-70"
+              disabled
             >
               Get a Free Quote
             </button>

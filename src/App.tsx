@@ -7,45 +7,46 @@ import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/hooks/useAuth";
 import { SiteLayout } from "@/layouts/SiteLayout";
 import { GlobalStorageProtection } from "@/components/GlobalStorageProtection";
-import ProtectedRoute from "@/components/ProtectedRoute";
+// import ProtectedRoute from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
-import Services from "./pages/Services";
-import HowItWorks from "./pages/HowItWorks";
-import Locations from "./pages/Locations";
-import SuburbDetail from "./pages/SuburbDetail";
-import ContactUs from "./pages/ContactUs";
-import Blog from "./pages/Blog";
-import BlogDetail from "./pages/BlogDetail";
-import NotFound from "./pages/NotFound";
-import ServiceSelect from "./pages/booking/ServiceSelect";
-import ServiceDetail from "./pages/booking/ServiceDetail";
-import Details from "./pages/booking/Details";
-import Schedule from "./pages/booking/Schedule";
-import Cleaner from "./pages/booking/Cleaner";
-import Review from "./pages/booking/Review";
-import Confirmation from "./pages/booking/Confirmation";
-import Quote from "./pages/booking/Quote";
-import QuoteConfirmation from "./pages/QuoteConfirmation";
-import Careers from "./pages/Careers";
-import Apply from "./pages/careers/Apply";
-import OurTeam from "./pages/OurTeam";
-import Reviews from "./pages/Reviews";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
-import Cookies from "./pages/Cookies";
-import POPIA from "./pages/POPIA";
-import StandardCleaning from "./pages/services/StandardCleaning";
-import DeepCleaning from "./pages/services/DeepCleaning";
-import MoveInOut from "./pages/services/MoveInOut";
-import SpecializedServices from "./pages/services/SpecializedServices";
-import AirbnbCleaning from "./pages/services/AirbnbCleaning";
-import CarpetUpholstery from "./pages/services/CarpetUpholstery";
-import PostConstruction from "./pages/services/PostConstruction";
-import ManageBooking from "./pages/ManageBooking";
-import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
-import AdminDashboard from "./pages/dashboard/AdminDashboard";
-import CleanerDashboard from "./pages/dashboard/CleanerDashboard";
-import Settings from "./pages/Settings";
+// TEMPORARILY DISABLED FOR HOME-ONLY DEPLOYMENT - UNCOMMENT TO RESTORE
+// import Services from "./pages/Services";
+// import HowItWorks from "./pages/HowItWorks";
+// import Locations from "./pages/Locations";
+// import SuburbDetail from "./pages/SuburbDetail";
+// import ContactUs from "./pages/ContactUs";
+// import Blog from "./pages/Blog";
+// import BlogDetail from "./pages/BlogDetail";
+// import NotFound from "./pages/NotFound";
+// import ServiceSelect from "./pages/booking/ServiceSelect";
+// import ServiceDetail from "./pages/booking/ServiceDetail";
+// import Details from "./pages/booking/Details";
+// import Schedule from "./pages/booking/Schedule";
+// import Cleaner from "./pages/booking/Cleaner";
+// import Review from "./pages/booking/Review";
+// import Confirmation from "./pages/booking/Confirmation";
+// import Quote from "./pages/booking/Quote";
+// import QuoteConfirmation from "./pages/QuoteConfirmation";
+// import Careers from "./pages/Careers";
+// import Apply from "./pages/careers/Apply";
+// import OurTeam from "./pages/OurTeam";
+// import Reviews from "./pages/Reviews";
+// import PrivacyPolicy from "./pages/PrivacyPolicy";
+// import Terms from "./pages/Terms";
+// import Cookies from "./pages/Cookies";
+// import POPIA from "./pages/POPIA";
+// import StandardCleaning from "./pages/services/StandardCleaning";
+// import DeepCleaning from "./pages/services/DeepCleaning";
+// import MoveInOut from "./pages/services/MoveInOut";
+// import SpecializedServices from "./pages/services/SpecializedServices";
+// import AirbnbCleaning from "./pages/services/AirbnbCleaning";
+// import CarpetUpholstery from "./pages/services/CarpetUpholstery";
+// import PostConstruction from "./pages/services/PostConstruction";
+// import ManageBooking from "./pages/ManageBooking";
+// import CustomerDashboard from "./pages/dashboard/CustomerDashboard";
+// import AdminDashboard from "./pages/dashboard/AdminDashboard";
+// import CleanerDashboard from "./pages/dashboard/CleanerDashboard";
+// import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -60,8 +61,11 @@ const App = () => (
           <BrowserRouter>
             <SiteLayout>
               <Routes>
+                {/* HOME PAGE ONLY - UNCOMMENT ROUTES BELOW TO RESTORE FULL SITE */}
                 <Route path="/" element={<Home />} />
-                <Route path="/services" element={<Services />} />
+                
+                {/* ALL OTHER ROUTES TEMPORARILY DISABLED */}
+                {/* <Route path="/services" element={<Services />} />
                 <Route path="/services/standard-cleaning" element={<StandardCleaning />} />
                 <Route path="/services/deep-cleaning" element={<DeepCleaning />} />
                 <Route path="/services/move-in-out" element={<MoveInOut />} />
@@ -128,7 +132,7 @@ const App = () => (
                   } 
                 />
                 <Route path="/manage-booking" element={<ManageBooking />} />
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<NotFound />} /> */}
               </Routes>
             </SiteLayout>
           </BrowserRouter>
