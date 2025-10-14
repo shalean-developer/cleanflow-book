@@ -1,9 +1,9 @@
+/* Leaflet CSS */
+@import 'leaflet/dist/leaflet.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Leaflet CSS */
-@import 'leaflet/dist/leaflet.css';
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
@@ -331,7 +331,7 @@ All colors MUST be HSL.
   }
 
   /* Dark mode quote icon gradient */
-  .dark .bg-gradient-to-r.from-\[#0C53ED\].to-\[#2A869E\] {
+  .dark .bg-gradient-to-r.from-primary.to-secondary {
     background: linear-gradient(to right, rgba(255, 255, 255, 0.7), hsl(215 100% 49%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
