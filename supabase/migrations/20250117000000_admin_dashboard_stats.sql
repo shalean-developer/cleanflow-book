@@ -10,13 +10,19 @@ alter table public.profiles enable row level security;
 
 -- Users can read/insert/update their own profile
 do $$ begin
-  create policy if not exists "profiles read own" on public.profiles
+  -- Drop existing policies if they exist
+  drop policy if exists "profiles read own" on public.profiles;
+  drop policy if exists "profiles insert own" on public.profiles;
+  drop policy if exists "profiles update own" on public.profiles;
+  
+  -- Create new policies
+  create policy "profiles read own" on public.profiles
     for select using (auth.uid() = id);
-  create policy if not exists "profiles insert own" on public.profiles
+  create policy "profiles insert own" on public.profiles
     for insert with check (auth.uid() = id);
-  create policy if not exists "profiles update own" on public.profiles
+  create policy "profiles update own" on public.profiles
     for update using (auth.uid() = id);
-exception when duplicate_object then null; end $$;
+exception when others then null; end $$;
 
 -- Helper predicate to check admin
 create or replace function public.is_admin(uid uuid)
@@ -58,15 +64,21 @@ grant execute on function public.admin_dashboard_stats() to anon, authenticated;
 
 -- OPTIONAL: admin read-all policies so table views also load
 do $$ begin
-  create policy if not exists "bookings admin or owner can read" on public.bookings
+  -- Drop existing policies if they exist
+  drop policy if exists "bookings admin or owner can read" on public.bookings;
+  drop policy if exists "payments admin or owner can read" on public.payments;
+  drop policy if exists "cleaners admin can read" on public.cleaners;
+  
+  -- Create new policies
+  create policy "bookings admin or owner can read" on public.bookings
     for select using (
       public.is_admin(auth.uid()) or auth.uid() = user_id or auth.uid() = cleaner_id
     );
-  create policy if not exists "payments admin or owner can read" on public.payments
+  create policy "payments admin or owner can read" on public.payments
     for select using (
       public.is_admin(auth.uid()) or auth.uid() = user_id
     );
-  create policy if not exists "cleaners admin can read" on public.cleaners
+  create policy "cleaners admin can read" on public.cleaners
     for select using (public.is_admin(auth.uid()));
 exception when undefined_table then
   -- If tables don't exist yet, skip; we'll re-run later.
