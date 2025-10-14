@@ -291,6 +291,14 @@ export default function AdminDashboard() {
                 <CardDescription>Manage customer bookings and assignments</CardDescription>
               </CardHeader>
               <CardContent>
+                {/* Debug info */}
+                <div className="mb-4 p-4 bg-blue-50 rounded text-sm">
+                  <p><strong>Debug Info:</strong></p>
+                  <p>Bookings count: {bookings.length}</p>
+                  <p>Cleaners count: {cleaners.length}</p>
+                  <p>First booking: {bookings[0] ? `${bookings[0].reference} - ${bookings[0].status}` : 'None'}</p>
+                  <p>First cleaner: {cleaners[0] ? `${(cleaners[0] as any).name || (cleaners[0] as any).full_name || 'No name'}` : 'None'}</p>
+                </div>
                 <AdminBookingsTable bookings={bookings} cleaners={cleaners} onUpdate={fetchAllData} />
               </CardContent>
             </Card>
