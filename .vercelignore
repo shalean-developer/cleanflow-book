@@ -32,3 +32,8 @@ supabase/functions/
 # Ignore specific problematic files
 BYPASS_EDGE_FUNCTION_FIX.js
 FRONTEND_ONLY_PROMO_FIX.tsx
+
+# Ignore Supabase functions that have TypeScript errors
+supabase/functions/claim-promo/
+supabase/functions/revoke-promo/
+supabase/functions/types.d.ts
