@@ -1,4 +1,7 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
   "redirects": [
     {
       "source": "https://www.shalean.co.za/:path*",
@@ -12,6 +15,11 @@
       "source": "/((?!robots\\.txt|sitemap\\.xml|favicon).*)",
       "destination": "/"
     }
-  ]
+  ],
+  "functions": {
+    "app/api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
 
