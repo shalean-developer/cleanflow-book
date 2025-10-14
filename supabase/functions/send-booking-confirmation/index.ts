@@ -79,7 +79,7 @@ serve(async (req) => {
         .in('id', booking.extras);
       
       if (extrasData && extrasData.length > 0) {
-        extrasHtml = extrasData.map(extra => 
+        extrasHtml = extrasData.map((extra: any) => 
           `<li>${extra.name} - ZAR ${extra.price}</li>`
         ).join('');
       }

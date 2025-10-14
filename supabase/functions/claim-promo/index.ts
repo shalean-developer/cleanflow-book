@@ -169,7 +169,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ 
         error: error.message || "Internal server error",
-        details: process.env.NODE_ENV === "development" ? error.stack : undefined
+        details: Deno.env.get("NODE_ENV") === "development" ? error.stack : undefined
       }),
       {
         status: 500,
