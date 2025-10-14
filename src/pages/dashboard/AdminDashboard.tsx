@@ -13,7 +13,8 @@ import { AdminCleanersTable } from "@/components/dashboard/admin/AdminCleanersTa
 import { AdminApplicationsTable } from "@/components/dashboard/admin/AdminApplicationsTable";
 import { AdminPricingManager } from "@/components/dashboard/admin/AdminPricingManager";
 import { AdminPaymentsTable } from "@/components/dashboard/admin/AdminPaymentsTable";
-import { useBookingsPage, useDashboardStats, usePaymentStats, useCleanerStats, useApplicationStats } from "@/hooks/useDashboardData";
+import { useBookingsPage, useApplicationStats } from "@/hooks/useDashboardData";
+import { useAdminStats } from "@/hooks/useAdminStats";
 
 type Booking = Tables<'bookings'> & {
   services: Tables<'services'> | null;
@@ -31,9 +32,7 @@ export default function AdminDashboard() {
   
   // Use new data hooks for reliable Supabase data fetching
   const { rows: bookings, loading: bookingsLoading, refresh: refreshBookings } = useBookingsPage(50);
-  const { stats: bookingStats, loading: statsLoading } = useDashboardStats();
-  const { stats: paymentStats, loading: paymentStatsLoading } = usePaymentStats();
-  const { stats: cleanerStats, loading: cleanerStatsLoading } = useCleanerStats();
+  const { data: adminStats, loading: adminStatsLoading, error: adminStatsError } = useAdminStats();
   const { stats: applicationStats, loading: applicationStatsLoading } = useApplicationStats();
   
   // Keep separate state for cleaners, applications, and payments (fetched separately)
@@ -46,7 +45,7 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   
   // Combined loading state
-  const loading = authLoading || bookingsLoading || statsLoading || detailsLoading;
+  const loading = authLoading || bookingsLoading || adminStatsLoading || detailsLoading;
 
   useEffect(() => {
     console.log('AdminDashboard useEffect - authLoading:', authLoading, 'user:', user?.id, 'isAdmin:', isAdmin);
@@ -173,6 +172,9 @@ export default function AdminDashboard() {
             <p>Is Admin: {isAdmin ? 'Yes' : 'No'}</p>
             <p>Profile Role: {profile?.role || 'No role in profile'}</p>
             <p>Component Loading: {loading ? 'Yes' : 'No'}</p>
+            <p>Admin Stats Loading: {adminStatsLoading ? 'Yes' : 'No'}</p>
+            <p>Admin Stats Error: {adminStatsError?.message || 'None'}</p>
+            <p>Admin Stats Data: {adminStats ? JSON.stringify(adminStats) : 'No data'}</p>
           </div>
         </div>
       </div>
@@ -201,7 +203,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                  <p className="text-3xl font-bold text-primary">{bookingStats?.total ?? 0}</p>
+                  <p className="text-3xl font-bold text-primary">{adminStats?.total_bookings ?? 0}</p>
                 </div>
                 <Calendar className="h-12 w-12 text-primary opacity-20" />
               </div>
@@ -213,7 +215,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-3xl font-bold text-yellow-600">{bookingStats?.pending ?? 0}</p>
+                  <p className="text-3xl font-bold text-yellow-600">{adminStats?.pending ?? 0}</p>
                 </div>
                 <ClipboardList className="h-12 w-12 text-yellow-600 opacity-20" />
               </div>
@@ -225,8 +227,8 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Payments</p>
-                  <p className="text-3xl font-bold text-emerald-600">{paymentStats?.total ?? 0}</p>
-                  <p className="text-xs text-gray-500">{paymentStats?.successful ?? 0} successful</p>
+                  <p className="text-3xl font-bold text-emerald-600">{adminStats?.successful_payments ?? 0}</p>
+                  <p className="text-xs text-gray-500">{adminStats?.successful_payments ?? 0} successful</p>
                 </div>
                 <DollarSign className="h-12 w-12 text-emerald-600 opacity-20" />
               </div>
@@ -238,7 +240,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Active Cleaners</p>
-                  <p className="text-3xl font-bold text-blue-600">{cleanerStats?.active ?? 0}</p>
+                  <p className="text-3xl font-bold text-blue-600">{adminStats?.active_cleaners ?? 0}</p>
                 </div>
                 <Users className="h-12 w-12 text-blue-600 opacity-20" />
               </div>
@@ -263,7 +265,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold text-green-600">R{(paymentStats?.revenue ?? 0).toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-green-600">R{(adminStats?.total_revenue ?? 0).toFixed(2)}</p>
                 </div>
                 <TrendingUp className="h-12 w-12 text-green-600 opacity-20" />
               </div>
