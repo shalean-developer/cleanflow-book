@@ -6,7 +6,13 @@
   "devCommand": "npm run dev",
   "redirects": [
     {
-      "source": "https://www.shalean.co.za/:path*",
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.shalean.co.za"
+        }
+      ],
       "destination": "https://shalean.co.za/:path*",
       "permanent": true,
       "statusCode": 301
