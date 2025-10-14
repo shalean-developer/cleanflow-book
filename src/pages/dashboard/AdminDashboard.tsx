@@ -13,6 +13,7 @@ import { AdminCleanersTable } from "@/components/dashboard/admin/AdminCleanersTa
 import { AdminApplicationsTable } from "@/components/dashboard/admin/AdminApplicationsTable";
 import { AdminPricingManager } from "@/components/dashboard/admin/AdminPricingManager";
 import { AdminPaymentsTable } from "@/components/dashboard/admin/AdminPaymentsTable";
+import { useBookingsPage, useDashboardStats, usePaymentStats, useCleanerStats, useApplicationStats } from "@/hooks/useDashboardData";
 
 type Booking = Tables<'bookings'> & {
   services: Tables<'services'> | null;
@@ -27,23 +28,25 @@ type Payment = Tables<'payments'> & {
 
 export default function AdminDashboard() {
   const { user, profile, isAdmin, signOut, loading: authLoading } = useAuth();
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  
+  // Use new data hooks for reliable Supabase data fetching
+  const { rows: bookings, loading: bookingsLoading, refresh: refreshBookings } = useBookingsPage(50);
+  const { stats: bookingStats, loading: statsLoading } = useDashboardStats();
+  const { stats: paymentStats, loading: paymentStatsLoading } = usePaymentStats();
+  const { stats: cleanerStats, loading: cleanerStatsLoading } = useCleanerStats();
+  const { stats: applicationStats, loading: applicationStatsLoading } = useApplicationStats();
+  
+  // Keep separate state for cleaners, applications, and payments (fetched separately)
   const [cleaners, setCleaners] = useState<Tables<'cleaners'>[]>([]);
   const [applications, setApplications] = useState<Tables<'cleaner_applications'>[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    totalBookings: 0,
-    pendingBookings: 0,
-    activeCleaners: 0,
-    pendingApplications: 0,
-    totalApplications: 0,
-    revenue: 0,
-    totalPayments: 0,
-    successfulPayments: 0,
-  });
+  const [detailsLoading, setDetailsLoading] = useState(true);
+  
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // Combined loading state
+  const loading = authLoading || bookingsLoading || statsLoading || detailsLoading;
 
   useEffect(() => {
     console.log('AdminDashboard useEffect - authLoading:', authLoading, 'user:', user?.id, 'isAdmin:', isAdmin);
@@ -72,31 +75,14 @@ export default function AdminDashboard() {
       return;
     }
     
-    console.log('User is admin, fetching data');
-    fetchAllData();
+    console.log('User is admin, fetching additional data');
+    fetchAdditionalData();
   }, [authLoading, user, isAdmin, navigate]);
 
-  const fetchAllData = async () => {
+  const fetchAdditionalData = async () => {
     try {
-      console.log('Fetching admin dashboard data for user:', user?.id);
-      console.log('Is admin:', isAdmin);
+      console.log('Fetching additional admin dashboard data for user:', user?.id);
       
-      // Fetch bookings
-      const { data: bookingsData, error: bookingsError } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          services(*),
-          cleaners(*)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (bookingsError) {
-        console.error('Bookings error:', bookingsError);
-        throw bookingsError;
-      }
-      console.log('Bookings fetched:', bookingsData?.length || 0);
-
       // Fetch cleaners
       const { data: cleanersData, error: cleanersError } = await supabase
         .from('cleaners')
@@ -139,38 +125,25 @@ export default function AdminDashboard() {
       }
       console.log('Payments fetched:', paymentsData?.length || 0);
 
-      setBookings(bookingsData || []);
       setCleaners(cleanersData || []);
       setApplications(applicationsData || []);
       setPayments(paymentsData || []);
-
-      // Calculate stats
-      const totalRevenue = (paymentsData || [])
-        .filter(p => p.status === 'success')
-        .reduce((sum, payment) => sum + (payment.amount || 0), 0);
-
-      const successfulPayments = (paymentsData || []).filter(p => p.status === 'success').length;
-
-      setStats({
-        totalBookings: bookingsData?.length || 0,
-        pendingBookings: bookingsData?.filter(b => b.status === 'pending').length || 0,
-        activeCleaners: cleanersData?.length || 0,
-        pendingApplications: applicationsData?.filter(a => a.status === 'pending' || a.status === 'new').length || 0,
-        totalApplications: applicationsData?.length || 0,
-        revenue: totalRevenue,
-        totalPayments: paymentsData?.length || 0,
-        successfulPayments: successfulPayments,
-      });
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching additional data:', error);
       toast({
         title: "Error",
-        description: "Failed to load dashboard data. Please try again.",
+        description: "Failed to load some dashboard data. Please try again.",
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      setDetailsLoading(false);
     }
+  };
+  
+  // Callback to refresh all data
+  const fetchAllData = () => {
+    refreshBookings();
+    fetchAdditionalData();
   };
 
   const handleSignOut = async () => {
@@ -228,7 +201,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                  <p className="text-3xl font-bold text-primary">{stats.totalBookings}</p>
+                  <p className="text-3xl font-bold text-primary">{bookingStats?.total ?? 0}</p>
                 </div>
                 <Calendar className="h-12 w-12 text-primary opacity-20" />
               </div>
@@ -240,7 +213,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-3xl font-bold text-yellow-600">{stats.pendingBookings}</p>
+                  <p className="text-3xl font-bold text-yellow-600">{bookingStats?.pending ?? 0}</p>
                 </div>
                 <ClipboardList className="h-12 w-12 text-yellow-600 opacity-20" />
               </div>
@@ -252,8 +225,8 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Payments</p>
-                  <p className="text-3xl font-bold text-emerald-600">{stats.totalPayments}</p>
-                  <p className="text-xs text-gray-500">{stats.successfulPayments} successful</p>
+                  <p className="text-3xl font-bold text-emerald-600">{paymentStats?.total ?? 0}</p>
+                  <p className="text-xs text-gray-500">{paymentStats?.successful ?? 0} successful</p>
                 </div>
                 <DollarSign className="h-12 w-12 text-emerald-600 opacity-20" />
               </div>
@@ -265,7 +238,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Active Cleaners</p>
-                  <p className="text-3xl font-bold text-blue-600">{stats.activeCleaners}</p>
+                  <p className="text-3xl font-bold text-blue-600">{cleanerStats?.active ?? 0}</p>
                 </div>
                 <Users className="h-12 w-12 text-blue-600 opacity-20" />
               </div>
@@ -277,8 +250,8 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Applications</p>
-                  <p className="text-3xl font-bold text-purple-600">{stats.totalApplications}</p>
-                  <p className="text-xs text-gray-500">{stats.pendingApplications} pending</p>
+                  <p className="text-3xl font-bold text-purple-600">{applicationStats?.total ?? 0}</p>
+                  <p className="text-xs text-gray-500">{applicationStats?.pending ?? 0} pending</p>
                 </div>
                 <Briefcase className="h-12 w-12 text-purple-600 opacity-20" />
               </div>
@@ -290,7 +263,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold text-green-600">R{stats.revenue.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-green-600">R{(paymentStats?.revenue ?? 0).toFixed(2)}</p>
                 </div>
                 <TrendingUp className="h-12 w-12 text-green-600 opacity-20" />
               </div>

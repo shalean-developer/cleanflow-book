@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { CleanerJobCard } from "@/components/dashboard/cleaner/CleanerJobCard";
+import { useBookingsPage, useDashboardStats } from "@/hooks/useDashboardData";
 
 type Booking = Tables<'bookings'> & {
   services: Tables<'services'> | null;
@@ -18,11 +19,18 @@ type Booking = Tables<'bookings'> & {
 
 export default function CleanerDashboard() {
   const { user, profile, isCleaner, signOut, loading: authLoading } = useAuth();
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  
+  // Use new data hooks for reliable Supabase data fetching
+  const { rows: bookings, loading: bookingsLoading, refresh: refreshBookings } = useBookingsPage(50);
+  const { stats: bookingStats, loading: statsLoading } = useDashboardStats();
+  
   const [cleanerProfile, setCleanerProfile] = useState<Tables<'cleaners'> | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // Combined loading state
+  const loading = authLoading || bookingsLoading || profileLoading;
 
   // Helper to avoid type instantiation issues
   const queryCleaners = async (userId: string) => {
@@ -69,15 +77,15 @@ export default function CleanerDashboard() {
       return;
     }
     
-    console.log('User is cleaner, fetching data');
-    fetchCleanerData();
+    console.log('User is cleaner, fetching profile');
+    fetchCleanerProfile();
   }, [authLoading, user, isCleaner, navigate]);
 
-  const fetchCleanerData = async () => {
+  const fetchCleanerProfile = async () => {
     if (!user?.id) return;
     
     try {
-      // First, get the cleaner profile using helper function
+      // Get the cleaner profile using helper function
       const cleanersResponse = await queryCleaners(user.id);
       
       const cleanerData = cleanersResponse.data?.[0] as Tables<'cleaners'> | null;
@@ -90,31 +98,27 @@ export default function CleanerDashboard() {
           description: "Could not find cleaner profile. Please contact admin.",
           variant: "destructive"
         });
-        setLoading(false);
+        setProfileLoading(false);
         return;
       }
 
       setCleanerProfile(cleanerData);
-
-      // Then get all bookings assigned to this cleaner
-      const bookingsResponse = await queryBookings(cleanerData.id);
-
-      const bookingsData = bookingsResponse.data as Booking[] | null;
-      const bookingsError = bookingsResponse.error;
-
-      if (bookingsError) throw bookingsError;
-
-      setBookings(bookingsData || []);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching cleaner profile:', error);
       toast({
         title: "Error",
-        description: "Failed to load your jobs. Please try again.",
+        description: "Failed to load your profile. Please try again.",
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
     }
+  };
+  
+  // Callback to refresh data
+  const fetchCleanerData = () => {
+    refreshBookings();
+    fetchCleanerProfile();
   };
 
   const handleSignOut = async () => {
