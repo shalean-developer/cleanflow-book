@@ -53,9 +53,9 @@ as $$
   select
     (select count(*) from public.bookings) as total_bookings,
     (select count(*) from public.bookings where status = 'pending') as pending,
-    (select count(*) from public.payments where status in ('successful','paid')) as successful_payments,
-    (select count(*) from public.cleaners where is_active = true) as active_cleaners,
-    coalesce((select sum(amount) from public.payments where status in ('successful','paid')), 0) as total_revenue
+    (select count(*) from public.payments where status in ('success','paid')) as successful_payments,
+    (select count(*) from public.cleaners where active = true) as active_cleaners,
+    coalesce((select sum(amount) from public.payments where status in ('success','paid')), 0) as total_revenue
   where public.is_admin(auth.uid());
 $$;
 
