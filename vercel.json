@@ -1,4 +1,5 @@
 {
+  // Force redeploy to apply CSP fixes
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
