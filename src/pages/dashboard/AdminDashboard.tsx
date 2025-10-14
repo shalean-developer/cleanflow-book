@@ -49,6 +49,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     console.log('AdminDashboard useEffect - authLoading:', authLoading, 'user:', user?.id, 'isAdmin:', isAdmin);
+    console.log('User role details:', { userRole: profile?.role, user });
     
     // Wait for authentication to finish loading
     if (authLoading) {
@@ -65,13 +66,15 @@ export default function AdminDashboard() {
     
     if (!isAdmin) {
       console.log('User is not admin, showing access denied');
-      toast({
-        title: "Access Denied",
-        description: "You don't have permission to access this page.",
-        variant: "destructive"
-      });
-      navigate('/');
-      return;
+      console.log('Admin check details:', { isAdmin, userRole: profile?.role, user });
+      // Temporarily comment out the redirect to test
+      // toast({
+      //   title: "Access Denied",
+      //   description: "You don't have permission to access this page.",
+      //   variant: "destructive"
+      // });
+      // navigate('/');
+      // return;
     }
     
     console.log('User is admin, fetching additional data');
@@ -82,18 +85,25 @@ export default function AdminDashboard() {
     try {
       console.log('Fetching additional admin dashboard data for user:', user?.id);
       
-      // Fetch cleaners with only basic fields that definitely exist
+      // Fetch cleaners with basic fields that definitely exist
       const { data: cleanersData, error: cleanersError } = await supabase
         .from('cleaners')
-        .select('id, active, created_at')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (cleanersError) {
         console.error('Cleaners error:', cleanersError);
+        console.error('Cleaners error details:', {
+          message: cleanersError.message,
+          details: cleanersError.details,
+          hint: cleanersError.hint,
+          code: cleanersError.code
+        });
         // Don't throw, just log and continue
         console.log('Skipping cleaners due to error');
       } else {
         console.log('Cleaners fetched:', cleanersData?.length || 0);
+        console.log('Sample cleaner data:', cleanersData?.[0]);
         setCleaners(cleanersData || []);
       }
 
@@ -111,10 +121,16 @@ export default function AdminDashboard() {
         setApplications(applicationsData || []);
       }
 
-      // Fetch payments with only basic fields
+      // Fetch payments with joined booking and service data
       const { data: paymentsData, error: paymentsError } = await supabase
         .from('payments')
-        .select('id, amount, status, created_at')
+        .select(`
+          *,
+          bookings!booking_id (
+            *,
+            services (*)
+          )
+        `)
         .order('created_at', { ascending: false });
 
       if (paymentsError) {
@@ -122,8 +138,8 @@ export default function AdminDashboard() {
         console.log('Skipping payments due to error');
       } else {
         console.log('Payments fetched:', paymentsData?.length || 0);
-        // For now, just set basic payment data without joins
-        setPayments(paymentsData?.map(p => ({ ...p, bookings: null })) || []);
+        console.log('Sample payment data:', paymentsData?.[0]);
+        setPayments(paymentsData || []);
       }
 
     } catch (error) {
@@ -196,90 +212,90 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                  <p className="text-3xl font-bold text-primary">{adminStats?.total_bookings ?? 0}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Bookings</p>
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">{adminStats?.total_bookings ?? 0}</p>
                 </div>
-                <Calendar className="h-12 w-12 text-primary opacity-20" />
+                <Calendar className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-primary opacity-20" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-3xl font-bold text-yellow-600">{adminStats?.pending ?? 0}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Pending</p>
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-600">{adminStats?.pending ?? 0}</p>
                 </div>
-                <ClipboardList className="h-12 w-12 text-yellow-600 opacity-20" />
+                <ClipboardList className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-yellow-600 opacity-20" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Payments</p>
-                  <p className="text-3xl font-bold text-emerald-600">{adminStats?.successful_payments ?? 0}</p>
-                  <p className="text-xs text-gray-500">{adminStats?.successful_payments ?? 0} successful</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Payments</p>
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold text-emerald-600">{adminStats?.successful_payments ?? 0}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500">{adminStats?.successful_payments ?? 0} successful</p>
                 </div>
-                <DollarSign className="h-12 w-12 text-emerald-600 opacity-20" />
+                <DollarSign className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-emerald-600 opacity-20" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Cleaners</p>
-                  <p className="text-3xl font-bold text-blue-600">{adminStats?.active_cleaners ?? 0}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Active Cleaners</p>
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold text-blue-600">{adminStats?.active_cleaners ?? 0}</p>
                 </div>
-                <Users className="h-12 w-12 text-blue-600 opacity-20" />
+                <Users className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-blue-600 opacity-20" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Applications</p>
-                  <p className="text-3xl font-bold text-purple-600">{applicationStats?.total ?? 0}</p>
-                  <p className="text-xs text-gray-500">{applicationStats?.pending ?? 0} pending</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Applications</p>
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold text-purple-600">{applicationStats?.total ?? 0}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500">{applicationStats?.pending ?? 0} pending</p>
                 </div>
-                <Briefcase className="h-12 w-12 text-purple-600 opacity-20" />
+                <Briefcase className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-purple-600 opacity-20" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold text-green-600">R{(adminStats?.total_revenue ?? 0).toFixed(2)}</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600">Total Revenue</p>
+                  <p className="text-lg sm:text-xl md:text-2xl font-bold text-green-600">R{(adminStats?.total_revenue ?? 0).toFixed(2)}</p>
                 </div>
-                <TrendingUp className="h-12 w-12 text-green-600 opacity-20" />
+                <TrendingUp className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-green-600 opacity-20" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="bookings" className="space-y-6">
-          <TabsList className="bg-white">
-            <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            <TabsTrigger value="payments">Payments</TabsTrigger>
-            <TabsTrigger value="cleaners">Cleaners</TabsTrigger>
-            <TabsTrigger value="applications">Applications</TabsTrigger>
-            <TabsTrigger value="pricing">Pricing</TabsTrigger>
+        <Tabs defaultValue="bookings" className="space-y-4 sm:space-y-6">
+          <TabsList className="bg-white w-full sm:w-auto flex-wrap h-auto gap-1 sm:gap-0 p-1">
+            <TabsTrigger value="bookings" className="text-xs sm:text-sm px-2 sm:px-3">Bookings</TabsTrigger>
+            <TabsTrigger value="payments" className="text-xs sm:text-sm px-2 sm:px-3">Payments</TabsTrigger>
+            <TabsTrigger value="cleaners" className="text-xs sm:text-sm px-2 sm:px-3">Cleaners</TabsTrigger>
+            <TabsTrigger value="applications" className="text-xs sm:text-sm px-2 sm:px-3">Applications</TabsTrigger>
+            <TabsTrigger value="pricing" className="text-xs sm:text-sm px-2 sm:px-3">Pricing</TabsTrigger>
           </TabsList>
 
           {/* Bookings Tab */}

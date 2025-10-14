@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Tables } from "@/integrations/supabase/types";
 import {
   Table,
@@ -28,6 +28,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, Download, CheckCircle, XCircle } from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
 
 interface AdminApplicationsTableProps {
   applications: Tables<'cleaner_applications'>[];
@@ -37,10 +38,29 @@ interface AdminApplicationsTableProps {
 export function AdminApplicationsTable({ applications, onUpdate }: AdminApplicationsTableProps) {
   const { toast } = useToast();
   const [selectedApplication, setSelectedApplication] = useState<Tables<'cleaner_applications'> | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   
   // Debug logging
   console.log('AdminApplicationsTable rendered with:', applications.length, 'applications');
   console.log('Applications data:', applications);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(applications.length / itemsPerPage);
+  const paginatedApplications = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return applications.slice(startIndex, endIndex);
+  }, [applications, currentPage, itemsPerPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
 
   const updateApplicationStatus = async (applicationId: string, status: string) => {
     try {
@@ -76,43 +96,43 @@ export function AdminApplicationsTable({ applications, onUpdate }: AdminApplicat
     
     return (
       <Badge className={statusColors[status as keyof typeof statusColors] || "bg-gray-100 text-gray-800"}>
-        {status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+        {status ? status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 'Unknown'}
       </Badge>
     );
   };
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Experience</TableHead>
-              <TableHead>Applied</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="whitespace-nowrap">Name</TableHead>
+              <TableHead className="hidden md:table-cell whitespace-nowrap">Email</TableHead>
+              <TableHead className="hidden sm:table-cell whitespace-nowrap">Phone</TableHead>
+              <TableHead className="hidden lg:table-cell whitespace-nowrap">Experience</TableHead>
+              <TableHead className="hidden md:table-cell whitespace-nowrap">Applied</TableHead>
+              <TableHead className="whitespace-nowrap">Status</TableHead>
+              <TableHead className="whitespace-nowrap">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {applications.length === 0 ? (
+            {paginatedApplications.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                   No applications found
                 </TableCell>
               </TableRow>
             ) : (
-              applications.map((application) => (
+              paginatedApplications.map((application) => (
                 <TableRow key={application.id}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium text-xs sm:text-sm">
                     {application.first_name} {application.last_name}
                   </TableCell>
-                  <TableCell>{application.email}</TableCell>
-                  <TableCell>{application.phone}</TableCell>
-                  <TableCell>{application.years_experience} years</TableCell>
-                  <TableCell>
+                  <TableCell className="hidden md:table-cell text-xs sm:text-sm max-w-[150px] truncate">{application.email}</TableCell>
+                  <TableCell className="hidden sm:table-cell text-xs sm:text-sm">{application.phone}</TableCell>
+                  <TableCell className="hidden lg:table-cell text-xs sm:text-sm">{application.years_experience} years</TableCell>
+                  <TableCell className="hidden md:table-cell text-xs sm:text-sm">
                     {new Date(application.created_at).toLocaleDateString()}
                   </TableCell>
                   <TableCell>
@@ -120,7 +140,7 @@ export function AdminApplicationsTable({ applications, onUpdate }: AdminApplicat
                       value={application.status}
                       onValueChange={(value) => updateApplicationStatus(application.id, value)}
                     >
-                      <SelectTrigger className="w-[150px]">
+                      <SelectTrigger className="w-[110px] sm:w-[150px] text-xs sm:text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -132,18 +152,19 @@ export function AdminApplicationsTable({ applications, onUpdate }: AdminApplicat
                     </Select>
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1 sm:gap-2">
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => setSelectedApplication(application)}
+                            className="h-8 w-8 p-0"
                           >
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                        <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
                             <DialogTitle>Application Details</DialogTitle>
                             <DialogDescription>
@@ -380,6 +401,17 @@ export function AdminApplicationsTable({ applications, onUpdate }: AdminApplicat
           </TableBody>
         </Table>
       </div>
+
+      {applications.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={applications.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      )}
     </div>
   );
 }
