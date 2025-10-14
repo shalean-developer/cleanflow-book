@@ -34,6 +34,8 @@ export default {
     'line-clamp-5',
     'line-clamp-6',
   ],
+  // Preserve CSS custom properties and @layer directives
+  important: true, // Ensure custom CSS takes precedence
   prefix: "",
   theme: {
     container: {
@@ -130,5 +132,44 @@ export default {
       },
     },
   },
-  plugins: [tailwindcssAnimate, tailwindcssTypography],
+  plugins: [
+    tailwindcssAnimate, 
+    tailwindcssTypography,
+    // Plugin to inject CSS custom properties
+    function({ addBase }: any) {
+      addBase({
+        ':root': {
+          '--background': '0 0% 100%',
+          '--foreground': '260 13% 15%',
+          '--card': '0 0% 100%',
+          '--card-foreground': '260 13% 15%',
+          '--popover': '0 0% 100%',
+          '--popover-foreground': '260 13% 15%',
+          '--primary': '215 100% 49%',
+          '--primary-foreground': '0 0% 100%',
+          '--primary-glow': '191 60% 39%',
+          '--secondary': '210 40% 98%',
+          '--secondary-foreground': '260 13% 15%',
+          '--muted': '210 40% 98%',
+          '--muted-foreground': '0 0% 33%',
+          '--accent': '14 88% 62%',
+          '--accent-foreground': '0 0% 100%',
+          '--destructive': '0 84.2% 60.2%',
+          '--destructive-foreground': '0 0% 100%',
+          '--border': '210 14% 89%',
+          '--input': '210 14% 89%',
+          '--ring': '215 100% 49%',
+          '--radius': '0.75rem',
+          '--sidebar-background': '0 0% 98%',
+          '--sidebar-foreground': '240 5.3% 26.1%',
+          '--sidebar-primary': '240 5.9% 10%',
+          '--sidebar-primary-foreground': '0 0% 98%',
+          '--sidebar-accent': '240 4.8% 95.9%',
+          '--sidebar-accent-foreground': '240 5.9% 10%',
+          '--sidebar-border': '220 13% 91%',
+          '--sidebar-ring': '217.2 10.6% 64.9%',
+        },
+      });
+    },
+  ],
 } satisfies Config;
