@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Lock files (keep only package-lock.json)
+bun.lockb
+yarn.lock
+pnpm-lock.yaml
+
 # Environment variables
 .env
 .env.local
