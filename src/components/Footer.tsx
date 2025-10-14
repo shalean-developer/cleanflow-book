@@ -25,24 +25,36 @@ export const Footer = () => {
             <nav aria-label="Services navigation">
               <ul className="space-y-3">
                 <li>
-                  <span className="text-sm text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+                  <a 
+                    href="/services" 
+                    className="text-sm text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+                  >
                     Standard Cleaning
-                  </span>
+                  </a>
                 </li>
                 <li>
-                  <span className="text-sm text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+                  <a 
+                    href="/services" 
+                    className="text-sm text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+                  >
                     Deep Cleaning
-                  </span>
+                  </a>
                 </li>
                 <li>
-                  <span className="text-sm text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+                  <a 
+                    href="/services" 
+                    className="text-sm text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+                  >
                     Move In/Out
-                  </span>
+                  </a>
                 </li>
                 <li>
-                  <span className="text-sm text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+                  <a 
+                    href="/services" 
+                    className="text-sm text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+                  >
                     Specialized Services
-                  </span>
+                  </a>
                 </li>
               </ul>
             </nav>
@@ -56,24 +68,36 @@ export const Footer = () => {
             <nav aria-label="Company navigation">
               <ul className="space-y-3">
                 <li>
-                  <span className="text-sm text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+                  <a 
+                    href="/our-team" 
+                    className="text-sm text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+                  >
                     Our Team
-                  </span>
+                  </a>
                 </li>
                 <li>
-                  <span className="text-sm text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+                  <a 
+                    href="/careers" 
+                    className="text-sm text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+                  >
                     Careers
-                  </span>
+                  </a>
                 </li>
                 <li>
-                  <span className="text-sm text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+                  <a 
+                    href="/reviews" 
+                    className="text-sm text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+                  >
                     Reviews
-                  </span>
+                  </a>
                 </li>
                 <li>
-                  <span className="text-sm text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+                  <a 
+                    href="/blog" 
+                    className="text-sm text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+                  >
                     Blog
-                  </span>
+                  </a>
                 </li>
               </ul>
             </nav>
@@ -154,21 +178,33 @@ export const Footer = () => {
 
           {/* Legal Links */}
           <nav aria-label="Legal links" className="flex flex-wrap items-center justify-center md:justify-end gap-3 sm:gap-4 text-xs sm:text-sm">
-            <span className="text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+            <a 
+              href="/privacy" 
+              className="text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+            >
               Privacy Policy
-            </span>
+            </a>
             <span className="text-[#E5E7EB] dark:text-white/40">·</span>
-            <span className="text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+            <a 
+              href="/terms" 
+              className="text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+            >
               Terms
-            </span>
+            </a>
             <span className="text-[#E5E7EB] dark:text-white/40">·</span>
-            <span className="text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+            <a 
+              href="/cookies" 
+              className="text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+            >
               Cookies
-            </span>
+            </a>
             <span className="text-[#E5E7EB] dark:text-white/40">·</span>
-            <span className="text-[#475569] dark:text-white/80 opacity-60 cursor-not-allowed">
+            <a 
+              href="/popia" 
+              className="text-[#475569] dark:text-white/80 hover:text-[#0C53ED] dark:hover:text-white transition-colors duration-150 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0C53ED] focus-visible:ring-offset-2 rounded-sm"
+            >
               POPIA
-            </span>
+            </a>
           </nav>
 
           {/* Social Icons */}
