@@ -64,12 +64,15 @@ grant execute on function public.admin_dashboard_stats() to anon, authenticated;
 
 -- OPTIONAL: admin read-all policies so table views also load
 do $$ begin
-  -- Drop existing policies if they exist
+  -- Drop existing conflicting policies if they exist
   drop policy if exists "bookings admin or owner can read" on public.bookings;
   drop policy if exists "payments admin or owner can read" on public.payments;
   drop policy if exists "cleaners admin can read" on public.cleaners;
+  drop policy if exists "Admins can view all bookings" on public.bookings;
+  drop policy if exists "Admins can view all cleaners" on public.cleaners;
+  drop policy if exists "Admins can view all applications" on public.cleaner_applications;
   
-  -- Create new policies
+  -- Create new unified policies that work with our is_admin function
   create policy "bookings admin or owner can read" on public.bookings
     for select using (
       public.is_admin(auth.uid()) or auth.uid() = user_id or auth.uid() = cleaner_id
@@ -84,6 +87,8 @@ do $$ begin
       )
     );
   create policy "cleaners admin can read" on public.cleaners
+    for select using (public.is_admin(auth.uid()));
+  create policy "applications admin can read" on public.cleaner_applications
     for select using (public.is_admin(auth.uid()));
 exception when undefined_table then
   -- If tables don't exist yet, skip; we'll re-run later.
