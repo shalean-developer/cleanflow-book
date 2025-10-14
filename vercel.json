@@ -14,8 +14,7 @@
         }
       ],
       "destination": "https://shalean.co.za/:path*",
-      "permanent": true,
-      "statusCode": 301
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -24,11 +23,6 @@
       "destination": "/"
     }
   ],
-  "functions": {
-    "app/api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "env": {
     "NODE_ENV": "production"
   }
