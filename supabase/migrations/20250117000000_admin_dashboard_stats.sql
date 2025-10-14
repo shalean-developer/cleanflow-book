@@ -76,7 +76,12 @@ do $$ begin
     );
   create policy "payments admin or owner can read" on public.payments
     for select using (
-      public.is_admin(auth.uid()) or auth.uid() = user_id
+      public.is_admin(auth.uid()) or 
+      exists (
+        select 1 from public.bookings 
+        where bookings.id = payments.booking_id 
+        and bookings.user_id = auth.uid()
+      )
     );
   create policy "cleaners admin can read" on public.cleaners
     for select using (public.is_admin(auth.uid()));
