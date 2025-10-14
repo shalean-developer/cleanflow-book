@@ -112,7 +112,7 @@ export function CleanerDialog({ open, onOpenChange, cleaner, onSuccess }: Cleane
       }
 
       setFormData({
-        name: cleaner.name || cleaner.full_name || "",
+        name: cleaner.name || "",
         avatar_url: cleaner.avatar_url || "",
         rating: cleaner.rating?.toString() || "5.0",
       });

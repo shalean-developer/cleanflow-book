@@ -32,10 +32,8 @@ type Extra = Tables<'extras'>;
 interface EditingExtra {
   id?: string;
   name: string;
-  description: string;
-  base_price: string;
+  price: string;
   icon: string;
-  active: boolean;
 }
 
 export function AdminExtrasPricing() {
@@ -75,10 +73,8 @@ export function AdminExtrasPricing() {
     setEditing({
       id: extra.id,
       name: extra.name,
-      description: extra.description || '',
-                  base_price: String(extra.base_price || 0),
+      price: String(extra.price || 0),
       icon: extra.icon || '',
-      active: extra.active,
     });
     setIsNew(false);
     setDialogOpen(true);

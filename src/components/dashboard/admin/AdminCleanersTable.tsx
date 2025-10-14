@@ -137,13 +137,13 @@ export function AdminCleanersTable({ cleaners, onUpdate }: AdminCleanersTablePro
                   <TableCell>
                     <div className="flex items-center gap-2 sm:gap-3">
                       <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
-                        <AvatarImage src={cleaner.avatar_url || cleaner.photo_url || undefined} />
+                        <AvatarImage src={cleaner.avatar_url || undefined} />
                         <AvatarFallback className="text-xs sm:text-sm">
-                          {(cleaner.name || cleaner.full_name) ? (cleaner.name || cleaner.full_name).split(' ').map(n => n[0]).join('') : 'N/A'}
+                          {cleaner.name ? cleaner.name.split(' ').map(n => n[0]).join('') : 'N/A'}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium text-xs sm:text-sm">{cleaner.name || cleaner.full_name || 'Unnamed Cleaner'}</p>
+                        <p className="font-medium text-xs sm:text-sm">{cleaner.name || 'Unnamed Cleaner'}</p>
                       </div>
                     </div>
                   </TableCell>

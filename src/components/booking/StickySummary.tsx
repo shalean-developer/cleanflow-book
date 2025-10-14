@@ -61,7 +61,7 @@ export function StickySummary() {
     enabled: booking.extras.length > 0,
   });
 
-  const extrasTotal = extras?.reduce((sum, extra) => sum + Number(extra.base_price || 0), 0) || 0;
+  const extrasTotal = extras?.reduce((sum, extra) => sum + Number(extra.price || 0), 0) || 0;
   
   const pricing = service
     ? calculatePricing({
@@ -173,7 +173,7 @@ export function StickySummary() {
                   {extras.map((extra) => (
                     <div key={extra.id} className="text-sm flex justify-between">
                       <span className="text-[#475569]">+ {extra.name}</span>
-                      <span className="font-medium tabular-nums text-[#0F172A]">{formatCurrencyZAR(Number(extra.base_price || 0))}</span>
+                      <span className="font-medium tabular-nums text-[#0F172A]">{formatCurrencyZAR(Number(extra.price || 0))}</span>
                     </div>
                   ))}
                 </div>
