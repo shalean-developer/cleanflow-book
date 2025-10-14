@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Tables } from "@/integrations/supabase/types";
 import {
   Table,
@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Eye, Edit } from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
 
 type Booking = Tables<'bookings'> & {
   services: Tables<'services'> | null;
@@ -44,9 +45,53 @@ interface AdminBookingsTableProps {
 export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookingsTableProps) {
   const { toast } = useToast();
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(bookings.length / itemsPerPage);
+  const paginatedBookings = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return bookings.slice(startIndex, endIndex);
+  }, [bookings, currentPage, itemsPerPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
+
+  // Debug logging
+  console.log('AdminBookingsTable render:', {
+    bookingsCount: bookings.length,
+    cleanersCount: cleaners.length,
+    sampleBooking: bookings[0] ? {
+      id: bookings[0].id,
+      cleaner_id: bookings[0].cleaner_id,
+      status: bookings[0].status,
+      cleaners: bookings[0].cleaners
+    } : null,
+    sampleCleaner: cleaners[0] ? {
+      id: cleaners[0].id,
+      name: (cleaners[0] as any).name,
+      full_name: (cleaners[0] as any).full_name
+    } : null,
+    allBookings: bookings.map(b => ({
+      id: b.id,
+      cleaner_id: b.cleaner_id,
+      status: b.status,
+      hasCleanerData: !!b.cleaners
+    }))
+  });
 
   const updateBookingStatus = async (bookingId: string, status: string) => {
     try {
+      console.log('Updating booking status:', { bookingId, status });
+      
       const { error } = await supabase
         .from('bookings')
         .update({ status })
@@ -54,11 +99,17 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
 
       if (error) throw error;
 
+      console.log('Booking status updated successfully, refreshing data...');
+
       toast({
         title: "Status Updated",
         description: "Booking status has been updated successfully.",
       });
-      onUpdate();
+      
+      // Add a small delay to ensure database has updated
+      setTimeout(() => {
+        onUpdate();
+      }, 500);
     } catch (error) {
       console.error('Error updating booking:', error);
       toast({
@@ -71,6 +122,8 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
 
   const assignCleaner = async (bookingId: string, cleanerId: string) => {
     try {
+      console.log('Assigning cleaner:', { bookingId, cleanerId });
+      
       const { error } = await supabase
         .from('bookings')
         .update({ cleaner_id: cleanerId })
@@ -78,11 +131,17 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
 
       if (error) throw error;
 
+      console.log('Cleaner assigned successfully, refreshing data...');
+      
       toast({
         title: "Cleaner Assigned",
         description: "Cleaner has been assigned to the booking.",
       });
-      onUpdate();
+      
+      // Add a small delay to ensure database has updated
+      setTimeout(() => {
+        onUpdate();
+      }, 500);
     } catch (error) {
       console.error('Error assigning cleaner:', error);
       toast({
@@ -111,44 +170,44 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Reference</TableHead>
-              <TableHead>Customer</TableHead>
-              <TableHead>Service</TableHead>
-              <TableHead>Date & Time</TableHead>
-              <TableHead>Location</TableHead>
-              <TableHead>Cleaner</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="whitespace-nowrap">Reference</TableHead>
+              <TableHead className="whitespace-nowrap">Customer</TableHead>
+              <TableHead className="hidden md:table-cell whitespace-nowrap">Service</TableHead>
+              <TableHead className="whitespace-nowrap">Date & Time</TableHead>
+              <TableHead className="hidden lg:table-cell whitespace-nowrap">Location</TableHead>
+              <TableHead className="hidden sm:table-cell whitespace-nowrap">Cleaner</TableHead>
+              <TableHead className="whitespace-nowrap">Status</TableHead>
+              <TableHead className="hidden md:table-cell whitespace-nowrap">Amount</TableHead>
+              <TableHead className="whitespace-nowrap">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {bookings.length === 0 ? (
+            {paginatedBookings.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={9} className="text-center py-8 text-gray-500">
                   No bookings found
                 </TableCell>
               </TableRow>
             ) : (
-              bookings.map((booking) => {
+              paginatedBookings.map((booking) => {
                 const pricing = booking.pricing as any;
                 return (
                   <TableRow key={booking.id}>
-                    <TableCell className="font-medium">{booking.reference}</TableCell>
-                    <TableCell>{booking.customer_email}</TableCell>
-                    <TableCell>{booking.services?.name || 'N/A'}</TableCell>
+                    <TableCell className="font-medium text-xs sm:text-sm">{booking.reference}</TableCell>
+                    <TableCell className="text-xs sm:text-sm max-w-[120px] truncate">{booking.customer_email}</TableCell>
+                    <TableCell className="hidden md:table-cell text-xs sm:text-sm">{booking.services?.name || 'N/A'}</TableCell>
                     <TableCell>
-                      <div className="text-sm">
-                        <div>{format(new Date(booking.date), 'MMM dd, yyyy')}</div>
+                      <div className="text-xs sm:text-sm">
+                        <div className="whitespace-nowrap">{format(new Date(booking.date), 'MMM dd, yyyy')}</div>
                         <div className="text-gray-500">{booking.time}</div>
                       </div>
                     </TableCell>
-                    <TableCell className="max-w-[150px] truncate">{booking.location}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell text-xs sm:text-sm max-w-[150px] truncate">{booking.location}</TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <Select
                         value={booking.cleaner_id || "unassigned"}
                         onValueChange={(value) => {
@@ -157,14 +216,26 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
                           }
                         }}
                       >
-                        <SelectTrigger className="w-[150px]">
-                          <SelectValue placeholder="Assign cleaner" />
+                        <SelectTrigger className="w-[120px] sm:w-[150px] text-xs sm:text-sm">
+                          <SelectValue placeholder="Assign cleaner">
+                            {(() => {
+                              if (!booking.cleaner_id || booking.cleaner_id === "unassigned") {
+                                return "Unassigned";
+                              }
+                              // Find the cleaner from the cleaners array
+                              const assignedCleaner = cleaners.find(c => c.id === booking.cleaner_id);
+                              if (assignedCleaner) {
+                                return (assignedCleaner as any).name || (assignedCleaner as any).full_name || `Cleaner ${booking.cleaner_id.slice(0, 8)}`;
+                              }
+                              return `Cleaner ${booking.cleaner_id.slice(0, 8)}`;
+                            })()}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="unassigned">Unassigned</SelectItem>
                           {cleaners.map((cleaner) => (
                             <SelectItem key={cleaner.id} value={cleaner.id}>
-                              {cleaner.name}
+                              {(cleaner as any).name || (cleaner as any).full_name || `Cleaner ${cleaner.id.slice(0, 8)}`}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -175,7 +246,7 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
                         value={booking.status || "pending"}
                         onValueChange={(value) => updateBookingStatus(booking.id, value)}
                       >
-                        <SelectTrigger className="w-[130px]">
+                        <SelectTrigger className="w-[100px] sm:w-[130px] text-xs sm:text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -186,7 +257,7 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    <TableCell>R{pricing?.total?.toFixed(2) || '0.00'}</TableCell>
+                    <TableCell className="hidden md:table-cell text-xs sm:text-sm">R{pricing?.total?.toFixed(2) || '0.00'}</TableCell>
                     <TableCell>
                       <Dialog>
                         <DialogTrigger asChild>
@@ -194,11 +265,12 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
                             variant="ghost"
                             size="sm"
                             onClick={() => setSelectedBooking(booking)}
+                            className="h-8 w-8 p-0"
                           >
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
+                        <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
                             <DialogTitle>Booking Details</DialogTitle>
                             <DialogDescription>
@@ -242,6 +314,22 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
                                   <p className="text-sm font-medium text-gray-500">Bathrooms</p>
                                   <p className="text-sm">{selectedBooking.bathrooms}</p>
                                 </div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-500">Assigned Cleaner</p>
+                                  <p className="text-sm">
+                                    {(() => {
+                                      if (!selectedBooking.cleaner_id) {
+                                        return 'Unassigned';
+                                      }
+                                      // Find the cleaner from the cleaners array
+                                      const assignedCleaner = cleaners.find(c => c.id === selectedBooking.cleaner_id);
+                                      if (assignedCleaner) {
+                                        return (assignedCleaner as any).name || (assignedCleaner as any).full_name || `Cleaner ${selectedBooking.cleaner_id.slice(0, 8)}`;
+                                      }
+                                      return `Cleaner ${selectedBooking.cleaner_id.slice(0, 8)}`;
+                                    })()}
+                                  </p>
+                                </div>
                               </div>
                               {selectedBooking.special_instructions && (
                                 <div>
@@ -271,6 +359,17 @@ export function AdminBookingsTable({ bookings, cleaners, onUpdate }: AdminBookin
           </TableBody>
         </Table>
       </div>
+
+      {bookings.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={bookings.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      )}
     </div>
   );
 }

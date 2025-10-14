@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Tables } from "@/integrations/supabase/types";
 import {
   Table,
@@ -25,6 +25,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Pagination } from "@/components/ui/pagination";
 
 interface AdminCleanersTableProps {
   cleaners: Tables<'cleaners'>[];
@@ -37,6 +38,25 @@ export function AdminCleanersTable({ cleaners, onUpdate }: AdminCleanersTablePro
   const [selectedCleaner, setSelectedCleaner] = useState<Tables<'cleaners'> | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [cleanerToDelete, setCleanerToDelete] = useState<Tables<'cleaners'> | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(cleaners.length / itemsPerPage);
+  const paginatedCleaners = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return cleaners.slice(startIndex, endIndex);
+  }, [cleaners, currentPage, itemsPerPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
 
   const handleAddCleaner = () => {
     setSelectedCleaner(null);
@@ -86,84 +106,92 @@ export function AdminCleanersTable({ cleaners, onUpdate }: AdminCleanersTablePro
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button onClick={handleAddCleaner}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add New Cleaner
+        <Button onClick={handleAddCleaner} className="text-xs sm:text-sm h-8 sm:h-10">
+          <Plus className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline">Add New Cleaner</span>
+          <span className="sm:hidden">Add Cleaner</span>
         </Button>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Cleaner</TableHead>
-              <TableHead>Rating</TableHead>
-              <TableHead>Service Areas</TableHead>
-              <TableHead>Joined</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="whitespace-nowrap">Cleaner</TableHead>
+              <TableHead className="whitespace-nowrap">Rating</TableHead>
+              <TableHead className="hidden md:table-cell whitespace-nowrap">Service Areas</TableHead>
+              <TableHead className="hidden sm:table-cell whitespace-nowrap">Joined</TableHead>
+              <TableHead className="text-right whitespace-nowrap">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {cleaners.length === 0 ? (
+            {paginatedCleaners.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-8 text-gray-500">
                   No cleaners found
                 </TableCell>
               </TableRow>
             ) : (
-              cleaners.map((cleaner) => (
+              paginatedCleaners.map((cleaner) => (
                 <TableRow key={cleaner.id}>
                   <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={cleaner.avatar_url || undefined} />
-                        <AvatarFallback>
-                          {cleaner.name.split(' ').map(n => n[0]).join('')}
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                        <AvatarImage src={cleaner.avatar_url || cleaner.photo_url || undefined} />
+                        <AvatarFallback className="text-xs sm:text-sm">
+                          {(cleaner.name || cleaner.full_name) ? (cleaner.name || cleaner.full_name).split(' ').map(n => n[0]).join('') : 'N/A'}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium">{cleaner.name}</p>
+                        <p className="font-medium text-xs sm:text-sm">{cleaner.name || cleaner.full_name || 'Unnamed Cleaner'}</p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium">{cleaner.rating?.toFixed(1) || 'N/A'}</span>
+                      <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="font-medium text-xs sm:text-sm">{cleaner.rating?.toFixed(1) || 'N/A'}</span>
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden md:table-cell">
                     <div className="flex flex-wrap gap-1">
-                      {cleaner.service_areas.slice(0, 3).map((area, index) => (
+                      {(cleaner.service_areas || []).slice(0, 3).map((area, index) => (
                         <Badge key={index} variant="secondary" className="text-xs">
                           {area}
                         </Badge>
                       ))}
-                      {cleaner.service_areas.length > 3 && (
+                      {(cleaner.service_areas || []).length > 3 && (
                         <Badge variant="secondary" className="text-xs">
-                          +{cleaner.service_areas.length - 3} more
+                          +{(cleaner.service_areas || []).length - 3} more
+                        </Badge>
+                      )}
+                      {(cleaner.service_areas || []).length === 0 && (
+                        <Badge variant="secondary" className="text-xs">
+                          No areas
                         </Badge>
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell text-xs sm:text-sm">
                     {cleaner.created_at ? new Date(cleaner.created_at).toLocaleDateString() : 'N/A'}
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-1 sm:gap-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleEditCleaner(cleaner)}
+                        className="h-8 w-8 p-0"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteClick(cleaner)}
+                        className="h-8 w-8 p-0"
                       >
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
                       </Button>
                     </div>
                   </TableCell>
@@ -173,6 +201,17 @@ export function AdminCleanersTable({ cleaners, onUpdate }: AdminCleanersTablePro
           </TableBody>
         </Table>
       </div>
+
+      {cleaners.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={cleaners.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      )}
 
       <CleanerDialog
         open={dialogOpen}
