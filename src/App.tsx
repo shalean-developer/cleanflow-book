@@ -1,14 +1,14 @@
-// Safe App with Home page (no problematic dependencies)
+// Minimal safe App with Home page (no problematic dependencies)
 import { HelmetProvider } from "react-helmet-async";
 import { SiteLayout } from "@/layouts/SiteLayout";
-import IndexSafe from "./pages/IndexSafe";
+import IndexMinimalSafe from "./pages/IndexMinimalSafe";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 const App = () => (
   <ErrorBoundary>
     <HelmetProvider>
       <SiteLayout>
-        <IndexSafe />
+        <IndexMinimalSafe />
       </SiteLayout>
     </HelmetProvider>
   </ErrorBoundary>
